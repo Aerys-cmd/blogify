@@ -1,0 +1,54 @@
+@page
+@model Blogify.Web.Areas.Blog.Pages.IndexModel
+@{
+    ViewData["Title"] = "Blog";
+}
+
+@if (Model.IsTenantView)
+{
+    <div class="mb-4">
+        <h1 class="display-6">@Model.TenantTitle</h1>
+        <p class="text-muted">Reader view for this tenant blog.</p>
+    </div>
+
+    @if (Model.PublishedPosts.Count == 0)
+    {
+        <p class="text-muted">No published posts yet.</p>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var post in Model.PublishedPosts)
+            {
+                <div class="list-group-item">
+                    <h2 class="h6 mb-1">@post.Title</h2>
+                    <small class="text-muted">/@post.Slug</small>
+                </div>
+            }
+        </div>
+    }
+}
+else
+{
+    <div class="mb-4">
+        <h1 class="display-6">Blog Directory</h1>
+        <p class="text-muted">Available blogs in the platform.</p>
+    </div>
+
+    @if (Model.Blogs.Count == 0)
+    {
+        <p class="text-muted">No blogs have been created yet.</p>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var blog in Model.Blogs)
+            {
+                <div class="list-group-item">
+                    <h2 class="h6 mb-1">@blog.Title</h2>
+                    <small class="text-muted">@($"{blog.Subdomain}.localhost")</small>
+                </div>
+            }
+        </div>
+    }
+}

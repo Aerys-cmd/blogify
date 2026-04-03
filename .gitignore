@@ -1,0 +1,50 @@
+# User-specific
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build
+bin/
+obj/
+Debug/
+Release/
+
+# Rider / VSCode
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+.env.*
+secrets.json
+
+# NuGet
+*.nupkg
+packages/
+
+# EF / DB
+*.db
+*.sqlite
+*.sqlite3
+
+# Publish
+publish/
+
+# Docker
+docker-compose.override.yml
+
+# Aspire
+.aspire/
+aspire-manifest.json
+
+# Dapr
+.dapr/

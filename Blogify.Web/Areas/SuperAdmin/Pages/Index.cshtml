@@ -1,0 +1,18 @@
+@page
+@model Blogify.Web.Areas.SuperAdmin.Pages.IndexModel
+@{
+    ViewData["Title"] = "SuperAdmin";
+}
+
+<div class="mb-4">
+    <h1 class="display-6">SuperAdmin Dashboard</h1>
+    <p class="text-muted">Global platform management overview.</p>
+</div>
+
+<div class="card" style="max-width: 22rem;">
+    <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted">Total Blogs</h2>
+        <p class="display-6 mb-0">@Model.BlogCount</p>
+    </div>
+</div>
+

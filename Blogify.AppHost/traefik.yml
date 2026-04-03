@@ -1,0 +1,10 @@
+http:
+  routers:
+    web-router:
+      rule: "HostRegexp(`{subdomain:[a-z0-9-]+}.localhost`) || Host(`localhost`)"
+      service: web-service
+  services:
+    web-service:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:5050"

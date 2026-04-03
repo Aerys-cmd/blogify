@@ -1,0 +1,42 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center mb-4">
+    <h1 class="display-5">Blogify Landing</h1>
+    <p class="lead">Use one of the three areas below based on your role.</p>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">SuperAdmin Area</h2>
+                <p>Manage all blogs in the platform and monitor the global dashboard.</p>
+                <a class="btn btn-outline-primary" asp-area="SuperAdmin" asp-page="/Index">Open SuperAdmin</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">Blog Admin Area</h2>
+                <p>Create posts, adjust themes, and handle blog-level settings.</p>
+                <a class="btn btn-outline-primary" asp-area="BlogAdmin" asp-page="/Index">Open Blog Admin</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">Blog Area</h2>
+                <p>Reader-facing blog browsing area for published blogs and content.</p>
+                <a class="btn btn-outline-primary" asp-area="Blog" asp-page="/Index">Open Blog Area</a>
+            </div>
+        </div>
+    </div>
+</div>
