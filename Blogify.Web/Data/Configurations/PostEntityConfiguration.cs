@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Blogify.Web.Data.Configurations;
 
-public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
+public sealed class PostEntityConfiguration : IEntityTypeConfiguration<Post>
 {
     public void Configure(EntityTypeBuilder<Post> builder)
     {
@@ -12,24 +12,29 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
 
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.TenantId)
-            .IsRequired();
+        builder.Property(p => p.Id).ValueGeneratedNever();
+
+        builder.Property(p => p.BlogId).IsRequired();
 
         builder.Property(p => p.Slug)
             .IsRequired()
-            .HasMaxLength(150);
+            .HasMaxLength(300);
+
+        builder.Property(p => p.Status)
+            .IsRequired()
+            .HasConversion<string>();
 
         builder.Property(p => p.PublishedRevisionId);
 
-        builder.Property(p => p.DraftRevisionId);
+        builder.Property(p => p.CreatedAt).IsRequired();
 
-        builder.HasIndex(p => new { p.TenantId, p.Slug })
-            .IsUnique();
+        builder.Property(p => p.DeletedAt);
+
+        builder.HasIndex(p => new { p.BlogId, p.Slug }).IsUnique();
 
         builder.HasMany(p => p.Revisions)
-            .WithOne(r => r.Post)
+            .WithOne()
             .HasForeignKey(r => r.PostId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
-

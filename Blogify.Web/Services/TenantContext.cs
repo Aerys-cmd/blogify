@@ -1,21 +1,21 @@
 using Blogify.Web.Models;
 
-namespace Blogify.Web.Services
+namespace Blogify.Web.Services;
+
+public sealed class TenantContext
 {
-    public class TenantContext
+    public Tenant? CurrentTenant { get; private set; }
+    public Guid? CurrentTenantId => CurrentTenant?.Id;
+    public bool IsTenantResolved => CurrentTenant is not null;
+
+    public void Resolve(Tenant tenant)
     {
-        public Tenant? CurrentTenant { get; private set; }
-        public int? CurrentTenantId => CurrentTenant?.Id;
-        public bool IsTenantResolved => CurrentTenant != null;
+        ArgumentNullException.ThrowIfNull(tenant);
+        CurrentTenant = tenant;
+    }
 
-        public void Resolve(Tenant tenant)
-        {
-            CurrentTenant = tenant;
-        }
-
-        public void Clear()
-        {
-            CurrentTenant = null;
-        }
+    public void Clear()
+    {
+        CurrentTenant = null;
     }
 }

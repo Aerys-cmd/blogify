@@ -4,34 +4,33 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Blogify.Web.Data.Configurations;
 
-public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<Tenant>
+public sealed class TagEntityConfiguration : IEntityTypeConfiguration<Tag>
 {
-    public void Configure(EntityTypeBuilder<Tenant> builder)
+    public void Configure(EntityTypeBuilder<Tag> builder)
     {
-        builder.ToTable("Blogs");
+        builder.ToTable("Tags");
 
         builder.HasKey(t => t.Id);
 
         builder.Property(t => t.Id).ValueGeneratedNever();
 
-        builder.Property(t => t.Title)
-            .IsRequired()
-            .HasMaxLength(200);
+        builder.Property(t => t.BlogId).IsRequired();
 
-        builder.Property(t => t.Subdomain)
+        builder.Property(t => t.Name)
             .IsRequired()
-            .HasMaxLength(63);
+            .HasMaxLength(100);
 
-        builder.Property(t => t.OwnerId)
+        builder.Property(t => t.Slug)
             .IsRequired()
-            .HasMaxLength(450);
+            .HasMaxLength(100);
 
         builder.Property(t => t.CreatedAt).IsRequired();
 
         builder.Property(t => t.DeletedAt);
 
-        builder.HasIndex(t => t.Subdomain).IsUnique();
+        builder.HasIndex(t => new { t.BlogId, t.Slug }).IsUnique();
 
         builder.HasQueryFilter(t => t.DeletedAt == null);
     }
 }
+

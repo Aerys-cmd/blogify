@@ -12,21 +12,22 @@ namespace Blogify.Web.Data
         {
         }
 
-        public int? CurrentTenantId { get; set; }
+        public Guid? CurrentTenantId { get; set; }
 
         public DbSet<Tenant> Blogs { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostRevision> PostRevisions { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Media> Media { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
             builder.Entity<Post>()
-                .HasQueryFilter(post => CurrentTenantId.HasValue && post.TenantId == CurrentTenantId.Value);
-
-            builder.Entity<PostRevision>()
-                .HasQueryFilter(revision => CurrentTenantId.HasValue && revision.TenantId == CurrentTenantId.Value);
+                .HasQueryFilter(post => post.DeletedAt == null &&
+                    (!CurrentTenantId.HasValue || post.BlogId == CurrentTenantId.Value));
 
             base.OnModelCreating(builder);
         }
