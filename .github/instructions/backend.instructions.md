@@ -88,20 +88,42 @@ public sealed class Post
 
 ---
 
-## Repository Contracts
+## Data Access — DbContext Direct Usage
 
-- One interface per aggregate root, defined in the domain layer.
-- Method signatures return domain types or `IReadOnlyList<T>`. Never return `IQueryable<T>`.
-- No `SaveChanges` inside repositories. Unit of Work is handled by the application layer.
-- Repositories never take EF-specific types as arguments.
+- There are no repository interfaces or implementations. Application services inject `ApplicationDbContext` directly.
+- All queries are written as async LINQ against `dbContext.Set<T>()` or named `DbSet<T>` properties.
+- Never return `IQueryable<T>` from a service method. Always materialize with `ToListAsync`, `FirstOrDefaultAsync`, `SingleOrDefaultAsync`, etc.
+- Use `AsNoTracking()` on all read-only queries that do not result in tracked mutations.
+- Call `SaveChangesAsync` exactly once at the end of a mutating service method. Never call it more than once per operation.
+- Every query on tenant-scoped data (Post, Category, Tag, Media) must include a `.Where(x => x.BlogId == blogId)` clause.
 
 ```csharp
-public interface IPostRepository
+public sealed class PostService(ApplicationDbContext dbContext, TenantContext tenantContext) : IPostService
 {
-    Task<Post?> FindBySlugAsync(Guid blogId, string slug, CancellationToken ct = default);
-    Task<IReadOnlyList<Post>> GetPublishedByBlogAsync(Guid blogId, CancellationToken ct = default);
-    void Add(Post post);
-    void Remove(Post post);
+    public async Task<Post?> FindBySlugAsync(string slug, CancellationToken ct = default)
+    {
+        Guid blogId = tenantContext.RequiredBlogId;
+        return await dbContext.Posts
+            .Where(p => p.BlogId == blogId && p.Slug == slug)
+            .FirstOrDefaultAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<Post>> GetPublishedAsync(CancellationToken ct = default)
+    {
+        Guid blogId = tenantContext.RequiredBlogId;
+        return await dbContext.Posts
+            .AsNoTracking()
+            .Where(p => p.BlogId == blogId && p.Status == PostStatus.Published)
+            .OrderByDescending(p => p.PublishedAt)
+            .ToListAsync(ct);
+    }
+
+    public async Task CreateAsync(Guid blogId, string slug, string title, string content, CancellationToken ct = default)
+    {
+        Post post = Post.Create(blogId, slug, title, content);
+        dbContext.Posts.Add(post);
+        await dbContext.SaveChangesAsync(ct);
+    }
 }
 ```
 
@@ -109,7 +131,8 @@ public interface IPostRepository
 
 ## Application Layer
 
-- Application services are thin orchestrators: load aggregate → call domain method → persist → return result.
+- Application services are thin orchestrators: load aggregate via `ApplicationDbContext` → call domain method → call `SaveChangesAsync` → return result.
+- Services inject `ApplicationDbContext` directly. No repository interfaces are used.
 - Use command/query records as inputs. Never pass raw primitives as method arguments beyond 2 parameters.
 - Results use a `Result<T>` discriminated union or throw typed exceptions — never return `null` to signal failure.
 - Do not perform authorization checks inside application services. Use ASP.NET Core authorization policies.
@@ -148,7 +171,8 @@ public interface IPostRepository
 | Concept | Convention |
 |---|---|
 | Aggregate root | `Post`, `Blog`, `Category` |
-| Repository interface | `IPostRepository` |
+| Application service interface | `IPostService` |
+| Application service implementation | `PostService` |
 | Application command | `PublishPostCommand` |
 | Application query | `GetPublishedPostsQuery` |
 | Application handler | `PublishPostHandler` |

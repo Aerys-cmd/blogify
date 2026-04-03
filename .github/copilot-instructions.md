@@ -17,7 +17,7 @@
 - Domain events are raised inside aggregates when state changes. Never from handlers.
 - Value objects are immutable records. If it has identity, it is an entity. If not, it is a value object.
 - No `static` utility classes that encode domain logic.
-- Repositories have one per aggregate root. Never inject a repository for a non-root entity.
+- Application services inject `ApplicationDbContext` directly. No repository interfaces or implementations.
 - Application services (handlers) orchestrate only. No business logic inside them.
 - Do not use EF Core navigation properties to bypass aggregate boundaries.
 
@@ -79,5 +79,5 @@
 - When generating a PageModel, always include the full `OnGetAsync`/`OnPostAsync` and all view model records.
 - When generating an entity, include all properties, constructors, domain methods, and EF configuration class.
 - When generating a migration, verify the snapshot is in sync.
-- When generating a service, include the interface, implementation, and DI registration.
+- When generating a service, include the interface, implementation (injecting `ApplicationDbContext`), and DI registration.
 
