@@ -14,7 +14,6 @@
 - Aggregates expose behavior through methods. Properties are never mutated from outside.
 - Invariants are enforced inside the aggregate constructor or domain methods — never in infrastructure layers.
 - Use `private set` or `init` on all entity properties. No public setters.
-- Domain events are raised inside aggregates when state changes. Never from PageModels.
 - Value objects are immutable records. If it has identity, it is an entity. If not, it is a value object.
 - No `static` utility classes that encode domain logic.
 - Do not use EF Core navigation properties to bypass aggregate boundaries.
@@ -28,7 +27,7 @@
   - `Areas/BlogAdmin/` — route prefix `/admin`
   - `Areas/Blog/` — public blog, subdomain-resolved
 - PageModel classes use primary constructor injection.
-- `OnGetAsync` / `OnPostAsync` inject `ApplicationDbContext` directly and orchestrate: load aggregate → call domain method → call `SaveChangesAsync` → return result.
+- `OnGetAsync` / `OnPostAsync` orchestrate: load aggregate → call domain method → call `SaveChangesAsync` → return result.
 - No separate application service layer. All orchestration lives in the PageModel.
 - View models are `sealed record` types defined at the bottom of the PageModel file.
 - Never use `ViewData` or `ViewBag`. Use strongly-typed properties on PageModel.
@@ -41,11 +40,13 @@
 
 - There are no repository interfaces or implementations. PageModels inject `ApplicationDbContext` directly.
 - All queries are written as async LINQ against `dbContext.Set<T>()` or named `DbSet<T>` properties.
+- The `DbSet<Tenant>` property is named `Blogs` on `ApplicationDbContext` (maps to the `Blogs` table). Use `dbContext.Blogs` when querying tenants.
 - Never return `IQueryable<T>` from any method. Materialize with `ToListAsync`, `FirstOrDefaultAsync`, etc.
 - Use `AsNoTracking()` for all read-only queries that do not result in EF-tracked mutations.
 - Call `SaveChangesAsync` exactly once per mutating handler. Never call it more than once per operation.
-- Every query on tenant-scoped data (Post, Category, Tag, Media) must include a `.Where(x => x.BlogId == blogId)` clause.
-- `blogId` is always obtained from the scoped `TenantContext`. Never derive it from route parameters or claims alone.
+- Tenant-scoped entities (`Post`, `PostRevision`) are filtered automatically via **EF Core global query filters** registered in `ApplicationDbContext.OnModelCreating`. The middleware sets `dbContext.CurrentTenantId` per request from `TenantContext`. Do **not** add redundant explicit `.Where(x => x.TenantId == ...)` clauses on top of these — the filter is already applied.
+- `tenantId` is always obtained from the scoped `TenantContext.CurrentTenantId`. Never derive it from route parameters or claims alone.
+- The tenant-scoped property on `Post` and `PostRevision` is named `TenantId` (type `int`), not `BlogId`.
 
 ---
 
@@ -55,7 +56,7 @@
 - Resource names must be stable constants. `"blogdb"` is the canonical DB resource name.
 - `Blogify.ServiceDefaults/Extensions.cs` is the only place for cross-cutting defaults (OTel, health, resilience).
 - Do not add middleware or configuration in `ServiceDefaults` that is feature-specific.
-- Health check endpoints: `/health` (liveness + readiness), `/alive` (liveness only, Development only).
+- Health check endpoints are **Development-only**: `/health` (all checks — liveness + readiness) and `/alive` (liveness tag only). Neither endpoint is exposed in production.
 
 ---
 
@@ -63,7 +64,7 @@
 
 - Roles: `SuperAdmin`, `BlogAdmin`. No other roles are defined.
 - Authorization is enforced at two layers: endpoint (`[Authorize(Roles = ...)]`) and domain (aggregate checks tenant ownership).
-- Each `BlogAdmin` user is associated with exactly one `Tenant` (Blog). This association is stored on `ApplicationUser`.
+- The `BlogAdmin`↔`Tenant` association is modelled on the `Tenant` aggregate: `Tenant.OwnerId` is a foreign key to `ApplicationUser.Id`. `ApplicationUser` has no tenant property — do not add one.
 - Never trust role alone for data access. Always verify tenant ownership in the domain layer.
 - Authentication pages live under `Areas/Identity/` (scaffolded or custom). Do not move them.
 
@@ -74,10 +75,10 @@
 - No `var` where type is not obvious from the right-hand side.
 - No nullable reference warnings suppressed with `!`. Fix the root cause.
 - All async methods end with `Async`. All return `Task` or `ValueTask`.
-- Use `sealed` on all classes that are not designed for inheritance.
+- Use `sealed` on all **new** classes that are not designed for inheritance.
 - Use `IReadOnlyList<T>` or `IReadOnlyCollection<T>` for exposing collections from domain objects.
 - Use `required` keyword on DTO/record properties that must always be provided.
-- Use `ArgumentNullException.ThrowIfNull` at aggregate boundaries.
+- Use `ArgumentNullException.ThrowIfNull` for null-guard checks on reference-type parameters in **new** code. Use `ArgumentException` or `ArgumentOutOfRangeException` for value validation (empty strings, out-of-range integers), consistent with the existing aggregates.
 - No commented-out code in committed files.
 - No `TODO` or `FIXME` left in generated code.
 
