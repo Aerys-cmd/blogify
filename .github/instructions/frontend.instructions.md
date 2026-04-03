@@ -20,28 +20,36 @@ applyTo: "**/*.cshtml,**/*.cshtml.cs"
 
 - Primary constructor injection only. No `[FromServices]` attribute injection in page methods.
 - All public properties used in the view are initialized to non-null defaults.
-- `OnGetAsync` and `OnPostAsync` call application services only. No EF calls inside PageModels.
-- `RedirectToPage(...)` is the only valid navigation response from `OnPostAsync`. Never return `Page()` after a successful mutation.
+- `OnGetAsync` and `OnPostAsync` inject `ApplicationDbContext` directly and orchestrate: load aggregate → call domain method → call `SaveChangesAsync` → return result.
+- No separate application service layer. All orchestration lives in the PageModel.
+- `RedirectToPage(...)` is the only valid navigation response from `OnPostAsync` after a successful mutation. Never return `Page()` after a successful mutation.
 - Model binding uses `[BindProperty]` only on input models, never on display properties.
 - Input models are `sealed record` types with `required` properties, defined at the bottom of the PageModel file.
 - View models are `sealed record` types, defined at the bottom of the PageModel file.
 
 ```csharp
-public sealed class CreateModel(IPostService postService, TenantContext tenantContext) : PageModel
+public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
     [BindProperty]
     public required CreatePostInput Input { get; set; }
 
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync(CancellationToken ct)
     {
         if (!ModelState.IsValid) return Page();
-        await postService.CreateAsync(tenantContext.RequiredTenant.Id, Input.Title, Input.Content);
+
+        Guid blogId = tenantContext.RequiredBlogId;
+        Post post = Post.Create(blogId, Input.Slug, Input.Title, Input.Content);
+        dbContext.Posts.Add(post);
+        await dbContext.SaveChangesAsync(ct);
         return RedirectToPage("./Index");
     }
 
     public sealed record CreatePostInput
     {
-        [Required, MaxLength(200)]
+        [Required, MaxLength(300)]
+        public required string Slug { get; init; }
+
+        [Required, MaxLength(500)]
         public required string Title { get; init; }
 
         [Required]
@@ -122,4 +130,4 @@ public sealed class CreateModel(IPostService postService, TenantContext tenantCo
 - No raw SQL or EF calls inside `.cshtml` files.
 - No Bootstrap 4 grid or utility class patterns.
 - No client-side rendering of data fetched via AJAX (use server-rendered partials via HTMX instead).
-
+- No separate application service classes injected into PageModels — use `ApplicationDbContext` directly.

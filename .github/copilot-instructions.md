@@ -12,13 +12,11 @@
 
 - Every domain concept lives in a named aggregate. No free-floating entities.
 - Aggregates expose behavior through methods. Properties are never mutated from outside.
-- Invariants are enforced inside the aggregate constructor or domain methods — never in application or infrastructure layers.
+- Invariants are enforced inside the aggregate constructor or domain methods — never in infrastructure layers.
 - Use `private set` or `init` on all entity properties. No public setters.
-- Domain events are raised inside aggregates when state changes. Never from handlers.
+- Domain events are raised inside aggregates when state changes. Never from PageModels.
 - Value objects are immutable records. If it has identity, it is an entity. If not, it is a value object.
 - No `static` utility classes that encode domain logic.
-- Application services inject `ApplicationDbContext` directly. No repository interfaces or implementations.
-- Application services (handlers) orchestrate only. No business logic inside them.
 - Do not use EF Core navigation properties to bypass aggregate boundaries.
 
 ---
@@ -30,11 +28,24 @@
   - `Areas/BlogAdmin/` — route prefix `/admin`
   - `Areas/Blog/` — public blog, subdomain-resolved
 - PageModel classes use primary constructor injection.
-- `OnGetAsync` / `OnPostAsync` do not contain business logic. They delegate to application services.
+- `OnGetAsync` / `OnPostAsync` inject `ApplicationDbContext` directly and orchestrate: load aggregate → call domain method → call `SaveChangesAsync` → return result.
+- No separate application service layer. All orchestration lives in the PageModel.
 - View models are `sealed record` types defined at the bottom of the PageModel file.
 - Never use `ViewData` or `ViewBag`. Use strongly-typed properties on PageModel.
 - Shared layout and partials live in `Pages/Shared/`. Area-specific ones in `Areas/{Area}/Pages/Shared/`.
 - Tag Helpers and Partial Tag Helpers are preferred over HTML Helpers.
+
+---
+
+## Data Access — DbContext Direct Usage
+
+- There are no repository interfaces or implementations. PageModels inject `ApplicationDbContext` directly.
+- All queries are written as async LINQ against `dbContext.Set<T>()` or named `DbSet<T>` properties.
+- Never return `IQueryable<T>` from any method. Materialize with `ToListAsync`, `FirstOrDefaultAsync`, etc.
+- Use `AsNoTracking()` for all read-only queries that do not result in EF-tracked mutations.
+- Call `SaveChangesAsync` exactly once per mutating handler. Never call it more than once per operation.
+- Every query on tenant-scoped data (Post, Category, Tag, Media) must include a `.Where(x => x.BlogId == blogId)` clause.
+- `blogId` is always obtained from the scoped `TenantContext`. Never derive it from route parameters or claims alone.
 
 ---
 
@@ -66,7 +77,7 @@
 - Use `sealed` on all classes that are not designed for inheritance.
 - Use `IReadOnlyList<T>` or `IReadOnlyCollection<T>` for exposing collections from domain objects.
 - Use `required` keyword on DTO/record properties that must always be provided.
-- Use `ArgumentNullException.ThrowIfNull` at aggregate/service boundaries.
+- Use `ArgumentNullException.ThrowIfNull` at aggregate boundaries.
 - No commented-out code in committed files.
 - No `TODO` or `FIXME` left in generated code.
 
@@ -76,8 +87,6 @@
 
 - Every generated file must be complete and immediately compilable.
 - Never produce partial code with placeholder comments like `// ... rest of implementation`.
-- When generating a PageModel, always include the full `OnGetAsync`/`OnPostAsync` and all view model records.
+- When generating a PageModel, always include the full `OnGetAsync`/`OnPostAsync`, all EF queries, all domain method calls, and all view model records.
 - When generating an entity, include all properties, constructors, domain methods, and EF configuration class.
 - When generating a migration, verify the snapshot is in sync.
-- When generating a service, include the interface, implementation (injecting `ApplicationDbContext`), and DI registration.
-

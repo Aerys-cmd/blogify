@@ -34,7 +34,7 @@ public sealed class Post
 
     public static Post Create(Guid blogId, string slug, string initialTitle, string initialContent)
     {
-        var revision = PostRevision.Create(initialTitle, initialContent);
+        PostRevision revision = PostRevision.Create(initialTitle, initialContent);
         return new Post(blogId, slug, revision);
     }
 
@@ -47,7 +47,7 @@ public sealed class Post
 
     public PostRevision AddRevision(string title, string content)
     {
-        var revision = PostRevision.Create(title, content);
+        PostRevision revision = PostRevision.Create(title, content);
         _revisions.Add(revision);
         return revision;
     }
@@ -90,52 +90,43 @@ public sealed class Post
 
 ## Data Access — DbContext Direct Usage
 
-- There are no repository interfaces or implementations. Application services inject `ApplicationDbContext` directly.
+- There are no repository interfaces or implementations. PageModels inject `ApplicationDbContext` directly.
 - All queries are written as async LINQ against `dbContext.Set<T>()` or named `DbSet<T>` properties.
-- Never return `IQueryable<T>` from a service method. Always materialize with `ToListAsync`, `FirstOrDefaultAsync`, `SingleOrDefaultAsync`, etc.
+- Never return `IQueryable<T>` from any method. Always materialize with `ToListAsync`, `FirstOrDefaultAsync`, `SingleOrDefaultAsync`, etc.
 - Use `AsNoTracking()` on all read-only queries that do not result in tracked mutations.
-- Call `SaveChangesAsync` exactly once at the end of a mutating service method. Never call it more than once per operation.
+- Call `SaveChangesAsync` exactly once at the end of a mutating handler. Never call it more than once per operation.
 - Every query on tenant-scoped data (Post, Category, Tag, Media) must include a `.Where(x => x.BlogId == blogId)` clause.
+- `blogId` is always obtained from the scoped `TenantContext`. Never derive it from route parameters or claims alone.
 
+Example PageModel handler (read + mutate):
 ```csharp
-public sealed class PostService(ApplicationDbContext dbContext, TenantContext tenantContext) : IPostService
+public sealed class PublishModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
-    public async Task<Post?> FindBySlugAsync(string slug, CancellationToken ct = default)
+    public async Task<IActionResult> OnPostAsync(Guid id, Guid revisionId, CancellationToken ct)
     {
         Guid blogId = tenantContext.RequiredBlogId;
-        return await dbContext.Posts
-            .Where(p => p.BlogId == blogId && p.Slug == slug)
+        Post? post = await dbContext.Posts
+            .Include(p => p.Revisions)
+            .Where(p => p.BlogId == blogId && p.Id == id)
             .FirstOrDefaultAsync(ct);
-    }
 
-    public async Task<IReadOnlyList<Post>> GetPublishedAsync(CancellationToken ct = default)
-    {
-        Guid blogId = tenantContext.RequiredBlogId;
-        return await dbContext.Posts
-            .AsNoTracking()
-            .Where(p => p.BlogId == blogId && p.Status == PostStatus.Published)
-            .OrderByDescending(p => p.PublishedAt)
-            .ToListAsync(ct);
-    }
+        if (post is null) return NotFound();
 
-    public async Task CreateAsync(Guid blogId, string slug, string title, string content, CancellationToken ct = default)
-    {
-        Post post = Post.Create(blogId, slug, title, content);
-        dbContext.Posts.Add(post);
+        post.Publish(revisionId);
         await dbContext.SaveChangesAsync(ct);
+        return RedirectToPage("./Index");
     }
 }
 ```
 
 ---
 
-## Application Layer
+## Orchestration Pattern (PageModel)
 
-- Application services are thin orchestrators: load aggregate via `ApplicationDbContext` → call domain method → call `SaveChangesAsync` → return result.
-- Services inject `ApplicationDbContext` directly. No repository interfaces are used.
-- Use command/query records as inputs. Never pass raw primitives as method arguments beyond 2 parameters.
-- Results use a `Result<T>` discriminated union or throw typed exceptions — never return `null` to signal failure.
-- Do not perform authorization checks inside application services. Use ASP.NET Core authorization policies.
+- PageModel `OnGetAsync` / `OnPostAsync` are the orchestration layer: load aggregate via `ApplicationDbContext` → call domain method → call `SaveChangesAsync` → return result.
+- No separate application service classes exist. All orchestration belongs in the PageModel handler.
+- Authorization checks happen via `[Authorize]` attributes or `IAuthorizationService`, not inside the handler logic.
+- Do not put business rules directly in `OnGetAsync`/`OnPostAsync` — business rules belong in the domain aggregate.
 
 ---
 
@@ -152,7 +143,7 @@ public sealed class PostService(ApplicationDbContext dbContext, TenantContext te
 ## Tenant Isolation
 
 - Every query against tenant-scoped data (Post, Category, Tag, Media) MUST filter by `BlogId`.
-- Application services receive `Guid blogId` from the resolved `TenantContext`. Never derive `blogId` from user claims alone.
+- PageModels receive `Guid blogId` from the resolved `TenantContext`. Never derive `blogId` from user claims alone.
 - Aggregate methods that modify tenant data verify `BlogId` matches before mutating state.
 
 ---
@@ -171,14 +162,9 @@ public sealed class PostService(ApplicationDbContext dbContext, TenantContext te
 | Concept | Convention |
 |---|---|
 | Aggregate root | `Post`, `Blog`, `Category` |
-| Application service interface | `IPostService` |
-| Application service implementation | `PostService` |
-| Application command | `PublishPostCommand` |
-| Application query | `GetPublishedPostsQuery` |
-| Application handler | `PublishPostHandler` |
 | Value object | `Slug`, `MediaUrl` |
 | Domain event | `PostPublishedEvent` |
 | EF configuration | `PostEntityConfiguration` |
-| PageModel | `IndexModel`, `EditModel` |
+| PageModel | `IndexModel`, `EditModel`, `PublishModel` |
 | View model record | `PostSummary`, `PostDetail` |
-
+| Input model record | `CreatePostInput`, `PublishPostInput` |

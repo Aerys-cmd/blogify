@@ -99,12 +99,9 @@ Razor Pages Router
     │
     ▼
 PageModel.OnGetAsync / OnPostAsync
-    │  ── delegates to application service
-    │
-    ▼
-Application Service (Handler)
-    │  ── loads aggregate from repository
-    │  ── calls domain method
+    │  ── injects ApplicationDbContext + TenantContext directly
+    │  ── loads aggregate via EF Core query (filtered by BlogId)
+    │  ── calls domain method on aggregate
     │  ── calls SaveChangesAsync (Unit of Work)
     │
     ▼
