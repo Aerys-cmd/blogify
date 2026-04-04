@@ -37,14 +37,11 @@
 </div>
 
 <div class="list-group">
-    <div class="list-group-item">
+    <a class="list-group-item list-group-item-action" asp-area="BlogAdmin" asp-page="/Posts/Index">
         <strong>Posts</strong> - Create and manage posts for this blog.
-    </div>
-    <div class="list-group-item">
-        <strong>Themes</strong> - Configure look and feel.
-    </div>
-    <div class="list-group-item">
-        <strong>General Settings</strong> - Adjust title, subdomain, and metadata.
-    </div>
+    </a>
+    <a class="list-group-item list-group-item-action" asp-area="BlogAdmin" asp-page="/Categories/Index">
+        <strong>Categories</strong> - Organize posts into categories.
+    </a>
 </div>
 
