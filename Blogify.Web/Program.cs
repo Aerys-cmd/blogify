@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
+using Blogify.Web.Services;
+using Blogify.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +15,12 @@ builder.Services
     {
         options.SignIn.RequireConfirmedAccount = false;
     })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddScoped<Blogify.Web.Services.TenantContext>();
+builder.Services.AddScoped<TenantContext>();
+builder.Services.AddScoped<DatabaseMigrator>();
+builder.Services.AddScoped<DatabaseSeeder>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -24,7 +28,11 @@ builder.Services.AddRazorPages();
 var app = builder.Build();
 
 
-await app.Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.MigrateAsync();
+await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
+{
+    await scope.ServiceProvider.GetRequiredService<DatabaseMigrator>().MigrateAsync();
+    await scope.ServiceProvider.GetRequiredService<DatabaseSeeder>().SeedAsync();
+}
 
 app.MapDefaultEndpoints();
 
@@ -43,7 +51,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<Blogify.Web.Middleware.TenantResolutionMiddleware>();
+app.UseMiddleware<TenantResolutionMiddleware>();
 
 app.MapStaticAssets();
 app.MapRazorPages()
