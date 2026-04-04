@@ -29,3 +29,63 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* ── BlogAdmin sidebar layout ──────────────────────────────────────── */
+
+.ba-layout {
+  margin-bottom: 0;
+}
+
+#adminSidebar {
+  --bs-offcanvas-width: 240px;
+}
+
+.ba-sidebar-inner {
+  width: 240px;
+  min-height: 100vh;
+}
+
+@media (min-width: 992px) {
+  .ba-sidebar-inner {
+    position: sticky;
+    top: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+.ba-sidebar-section-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+}
+
+.ba-sidebar-inner .nav-link {
+  color: rgba(255, 255, 255, 0.55);
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.ba-sidebar-inner .nav-link.ba-nav-active {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.ba-sidebar-inner .nav-link:hover {
+  color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.ba-sidebar-inner .nav-link.ba-nav-active:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.17);
+}
+
+.ba-sidebar-user-icon {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ba-sidebar-username {
+  color: rgba(255, 255, 255, 0.6);
+}
