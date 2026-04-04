@@ -73,6 +73,12 @@ public sealed class Category
         Slug = trimmed;
     }
 
+    public void Update(string name, string slug)
+    {
+        Rename(name);
+        ChangeSlug(slug);
+    }
+
     public void SoftDelete()
     {
         if (DeletedAt.HasValue)

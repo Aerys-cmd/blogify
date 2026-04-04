@@ -9,6 +9,7 @@ public sealed class Post
         new Regex(@"^[a-z0-9-]+$", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
 
     private readonly List<PostRevision> _revisions = [];
+    private readonly List<PostCategory> _categories = [];
 
     private Post() { }
 
@@ -41,12 +42,12 @@ public sealed class Post
     public string Slug { get; private set; } = string.Empty;
     public string? Excerpt { get; private set; }
     public string? FeaturedImageUrl { get; private set; }
-    public Guid? CategoryId { get; private set; }
     public PostStatus Status { get; private set; }
     public Guid? PublishedRevisionId { get; private set; }
     public DateTimeOffset CreatedAt { get; private init; }
     public DateTimeOffset? DeletedAt { get; private set; }
     public IReadOnlyList<PostRevision> Revisions => _revisions.AsReadOnly();
+    public IReadOnlyList<PostCategory> Categories => _categories.AsReadOnly();
 
     public static Post Create(Guid blogId, string authorId, string slug, string initialTitle, string initialContent)
     {
@@ -82,9 +83,14 @@ public sealed class Post
         FeaturedImageUrl = string.IsNullOrEmpty(trimmed) ? null : trimmed;
     }
 
-    public void AssignCategory(Guid? categoryId)
+    public void SetCategories(IEnumerable<Guid> categoryIds)
     {
-        CategoryId = categoryId == Guid.Empty ? null : categoryId;
+        ArgumentNullException.ThrowIfNull(categoryIds);
+        _categories.Clear();
+        foreach (Guid categoryId in categoryIds)
+        {
+            _categories.Add(new PostCategory(Id, categoryId));
+        }
     }
 
     public void AddRevision(string title, string content)

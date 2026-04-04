@@ -7,7 +7,6 @@ using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
@@ -18,21 +17,22 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
     [BindProperty]
     public CreatePostInput Input { get; set; } = new();
 
-    public IReadOnlyList<SelectListItem> CategoryOptions { get; private set; } = [];
+    [BindProperty]
+    public List<Guid> SelectedCategoryIds { get; set; } = [];
+
+    public IReadOnlyList<CategorySelectItem> AvailableCategories { get; private set; } = [];
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
-        await LoadCategoryOptionsAsync(tenantContext.RequiredTenant.Id, ct);
+        await LoadAvailableCategoriesAsync(ct);
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken ct = default)
     {
-        Guid blogId = tenantContext.RequiredTenant.Id;
-
         if (!ModelState.IsValid)
         {
-            await LoadCategoryOptionsAsync(blogId, ct);
+            await LoadAvailableCategoriesAsync(ct);
             return Page();
         }
 
@@ -40,7 +40,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         if (string.IsNullOrWhiteSpace(authorId))
         {
             ModelState.AddModelError(string.Empty, "Unable to determine the current user. Please sign in again.");
-            await LoadCategoryOptionsAsync(blogId, ct);
+            await LoadAvailableCategoriesAsync(ct);
             return Page();
         }
 
@@ -51,9 +51,11 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         if (slugTaken)
         {
             ModelState.AddModelError(nameof(Input.Slug), "This slug is already in use for this blog.");
-            await LoadCategoryOptionsAsync(blogId, ct);
+            await LoadAvailableCategoriesAsync(ct);
             return Page();
         }
+
+        Guid blogId = tenantContext.RequiredTenant.Id;
 
         Post post = Post.Create(
             blogId: blogId,
@@ -65,7 +67,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         post.UpdateExcerpt(Input.Excerpt);
         post.UpdateFeaturedImageUrl(Input.FeaturedImageUrl);
-        post.AssignCategory(Input.CategoryId);
+        post.SetCategories(SelectedCategoryIds);
 
         if (Input.Publish)
         {
@@ -79,16 +81,15 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         return RedirectToPage("/Posts/Index", new { area = "BlogAdmin" });
     }
 
-    private async Task LoadCategoryOptionsAsync(Guid blogId, CancellationToken ct)
+    private async Task LoadAvailableCategoriesAsync(CancellationToken ct)
     {
         List<Category> categories = await dbContext.Categories
             .AsNoTracking()
-            .Where(c => c.BlogId == blogId && c.DeletedAt == null)
             .OrderBy(c => c.Name)
             .ToListAsync(ct);
 
-        CategoryOptions = categories
-            .Select(c => new SelectListItem(c.Name, c.Id.ToString()))
+        AvailableCategories = categories
+            .Select(c => new CategorySelectItem(c.Id, c.Name, SelectedCategoryIds.Contains(c.Id)))
             .ToList();
     }
 }
@@ -110,10 +111,10 @@ public sealed class CreatePostInput
     [Required(ErrorMessage = "Content is required.")]
     public string Content { get; set; } = string.Empty;
 
-    public Guid? CategoryId { get; set; }
-
     [MaxLength(2048, ErrorMessage = "Featured image URL must not exceed 2048 characters.")]
     public string? FeaturedImageUrl { get; set; }
 
     public bool Publish { get; set; }
 }
+
+public sealed record CategorySelectItem(Guid Id, string Name, bool IsSelected);

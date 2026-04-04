@@ -17,6 +17,7 @@ namespace Blogify.Web.Data
         public DbSet<Tenant> Blogs { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostRevision> PostRevisions { get; set; }
+        public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Media> Media { get; set; }
@@ -28,6 +29,10 @@ namespace Blogify.Web.Data
             builder.Entity<Post>()
                 .HasQueryFilter(post => post.DeletedAt == null &&
                     (!CurrentTenantId.HasValue || post.BlogId == CurrentTenantId.Value));
+
+            builder.Entity<Category>()
+                .HasQueryFilter(c => c.DeletedAt == null &&
+                    (!CurrentTenantId.HasValue || c.BlogId == CurrentTenantId.Value));
 
             base.OnModelCreating(builder);
         }

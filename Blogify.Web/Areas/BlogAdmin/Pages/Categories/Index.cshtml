@@ -1,0 +1,59 @@
+@page
+@model Blogify.Web.Areas.BlogAdmin.Pages.Categories.IndexModel
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Categories</h1>
+        <p class="text-muted mb-0">@Model.TenantTitle — @Model.Categories.Count category/categories</p>
+    </div>
+    <a asp-area="BlogAdmin" asp-page="/Categories/Create" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+        </svg>
+        New Category
+    </a>
+</div>
+
+@if (Model.Categories.Count == 0)
+{
+    <div class="alert alert-info">
+        No categories yet. <a asp-area="BlogAdmin" asp-page="/Categories/Create">Create your first category</a>.
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <tr>
+                            <td class="align-middle fw-semibold">@category.Name</td>
+                            <td class="align-middle text-muted font-monospace small">@category.Slug</td>
+                            <td class="align-middle text-end">
+                                <a asp-area="BlogAdmin" asp-page="/Categories/Edit"
+                                   asp-route-id="@category.Id"
+                                   class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                                <a asp-area="BlogAdmin" asp-page="/Categories/Delete"
+                                   asp-route-id="@category.Id"
+                                   class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+

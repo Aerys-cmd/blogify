@@ -30,7 +30,6 @@ public sealed class PostEntityConfiguration : IEntityTypeConfiguration<Post>
         builder.Property(p => p.FeaturedImageUrl)
             .HasMaxLength(2048);
 
-        builder.Property(p => p.CategoryId);
 
         builder.Property(p => p.Status)
             .IsRequired()

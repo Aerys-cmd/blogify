@@ -1,0 +1,57 @@
+@page "{id:guid}"
+@model Blogify.Web.Areas.BlogAdmin.Pages.Categories.EditModel
+@{
+    ViewData["Title"] = $"Edit — {Model.CategoryName}";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item">
+                <a asp-area="BlogAdmin" asp-page="/Categories/Index">Categories</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Edit</li>
+        </ol>
+    </nav>
+    <h1 class="h3 mb-0">Edit Category</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="post" novalidate>
+                    @if (!Model.ModelState.IsValid)
+                    {
+                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+                    }
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Name" class="form-label fw-semibold">Name <span class="text-danger">*</span></label>
+                        <input asp-for="Input.Name" class="form-control"
+                               placeholder="e.g. ASP.NET Core" autocomplete="off" />
+                        <span asp-validation-for="Input.Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Input.Slug" class="form-label fw-semibold">Slug <span class="text-danger">*</span></label>
+                        <input asp-for="Input.Slug" class="form-control font-monospace"
+                               placeholder="e.g. asp-net-core" autocomplete="off" />
+                        <div class="form-text">Lowercase letters, digits, and hyphens only.</div>
+                        <span asp-validation-for="Input.Slug" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a asp-area="BlogAdmin" asp-page="/Categories/Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

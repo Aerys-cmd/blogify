@@ -30,7 +30,7 @@ public sealed class CategoryEntityConfiguration : IEntityTypeConfiguration<Categ
 
         builder.HasIndex(c => new { c.BlogId, c.Slug }).IsUnique();
 
-        builder.HasQueryFilter(c => c.DeletedAt == null);
+        builder.HasIndex(c => new { c.BlogId, c.Name }).IsUnique();
     }
 }
 

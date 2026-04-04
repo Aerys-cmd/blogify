@@ -2,17 +2,15 @@ using System.ComponentModel.DataAnnotations;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
 using Blogify.Web.Models.Posts;
-using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -20,13 +18,17 @@ public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tena
     [BindProperty]
     public EditPostInput Input { get; set; } = new();
 
-    public IReadOnlyList<SelectListItem> CategoryOptions { get; private set; } = [];
+    [BindProperty]
+    public List<Guid> SelectedCategoryIds { get; set; } = [];
+
+    public IReadOnlyList<CategorySelectItem> AvailableCategories { get; private set; } = [];
     public string PostTitle { get; private set; } = string.Empty;
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
         Post? post = await dbContext.Posts
             .Include(p => p.Revisions)
+            .Include(p => p.Categories)
             .FirstOrDefaultAsync(p => p.Id == Id, ct);
 
         if (post is null || post.DeletedAt.HasValue)
@@ -39,6 +41,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tena
             .First();
 
         PostTitle = latestRevision.Title;
+        SelectedCategoryIds = post.Categories.Select(pc => pc.CategoryId).ToList();
 
         Input = new EditPostInput
         {
@@ -46,27 +49,25 @@ public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tena
             Slug = post.Slug,
             Excerpt = post.Excerpt,
             Content = latestRevision.Content,
-            CategoryId = post.CategoryId,
             FeaturedImageUrl = post.FeaturedImageUrl,
             IsPublished = post.Status == PostStatus.Published
         };
 
-        await LoadCategoryOptionsAsync(tenantContext.RequiredTenant.Id, ct);
+        await LoadAvailableCategoriesAsync(ct);
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken ct = default)
     {
-        Guid blogId = tenantContext.RequiredTenant.Id;
-
         if (!ModelState.IsValid)
         {
-            await LoadCategoryOptionsAsync(blogId, ct);
+            await LoadAvailableCategoriesAsync(ct);
             return Page();
         }
 
         Post? post = await dbContext.Posts
             .Include(p => p.Revisions)
+            .Include(p => p.Categories)
             .FirstOrDefaultAsync(p => p.Id == Id, ct);
 
         if (post is null || post.DeletedAt.HasValue)
@@ -83,7 +84,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tena
         if (slugTaken)
         {
             ModelState.AddModelError(nameof(Input.Slug), "This slug is already in use for this blog.");
-            await LoadCategoryOptionsAsync(blogId, ct);
+            await LoadAvailableCategoriesAsync(ct);
             return Page();
         }
 
@@ -106,7 +107,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tena
 
         post.UpdateExcerpt(Input.Excerpt);
         post.UpdateFeaturedImageUrl(Input.FeaturedImageUrl);
-        post.AssignCategory(Input.CategoryId);
+        post.SetCategories(SelectedCategoryIds);
 
         bool currentlyPublished = post.Status == PostStatus.Published;
 
@@ -133,16 +134,15 @@ public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tena
         return RedirectToPage("/Posts/Index", new { area = "BlogAdmin" });
     }
 
-    private async Task LoadCategoryOptionsAsync(Guid blogId, CancellationToken ct)
+    private async Task LoadAvailableCategoriesAsync(CancellationToken ct)
     {
         List<Category> categories = await dbContext.Categories
             .AsNoTracking()
-            .Where(c => c.BlogId == blogId && c.DeletedAt == null)
             .OrderBy(c => c.Name)
             .ToListAsync(ct);
 
-        CategoryOptions = categories
-            .Select(c => new SelectListItem(c.Name, c.Id.ToString()))
+        AvailableCategories = categories
+            .Select(c => new CategorySelectItem(c.Id, c.Name, SelectedCategoryIds.Contains(c.Id)))
             .ToList();
     }
 }
@@ -164,7 +164,6 @@ public sealed class EditPostInput
     [Required(ErrorMessage = "Content is required.")]
     public string Content { get; set; } = string.Empty;
 
-    public Guid? CategoryId { get; set; }
 
     [MaxLength(2048, ErrorMessage = "Featured image URL must not exceed 2048 characters.")]
     public string? FeaturedImageUrl { get; set; }
