@@ -1,0 +1,155 @@
+@page "{id:guid}"
+@model Blogify.Web.Areas.BlogAdmin.Pages.Posts.EditModel
+@{
+    ViewData["Title"] = $"Edit — {Model.PostTitle}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item">
+                    <a asp-area="BlogAdmin" asp-page="/Posts/Index">Posts</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Edit</li>
+            </ol>
+        </nav>
+        <h1 class="h3 mb-0">Edit Post</h1>
+    </div>
+</div>
+
+<form method="post" id="editPostForm" novalidate>
+    <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-semibold">Content</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Input.Title" class="form-label fw-semibold">Title <span class="text-danger">*</span></label>
+                        <input asp-for="Input.Title" class="form-control form-control-lg"
+                               placeholder="Enter post title…" autocomplete="off"
+                               id="postTitle" />
+                        <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Slug" class="form-label fw-semibold">Slug <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text text-muted">/</span>
+                            <input asp-for="Input.Slug" class="form-control"
+                                   placeholder="my-post-slug" autocomplete="off"
+                                   id="postSlug" />
+                        </div>
+                        <div class="form-text">Lowercase letters, digits, and hyphens only.</div>
+                        <span asp-validation-for="Input.Slug" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Excerpt" class="form-label fw-semibold">Excerpt</label>
+                        <textarea asp-for="Input.Excerpt" class="form-control" rows="3"
+                                  placeholder="A short summary of the post (optional)…"></textarea>
+                        <div class="form-text">Max 500 characters. Displayed in post listings.</div>
+                        <span asp-validation-for="Input.Excerpt" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Content" class="form-label fw-semibold">Content <span class="text-danger">*</span></label>
+                        <textarea asp-for="Input.Content" class="form-control font-monospace" rows="16"
+                                  placeholder="Write your post content here…" style="resize: vertical;"></textarea>
+                        <span asp-validation-for="Input.Content" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-semibold">Publish</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Status</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="Input.IsPublished" id="statusDraft"
+                                   value="false" @(Model.Input.IsPublished ? "" : "checked") />
+                            <label class="form-check-label" for="statusDraft">
+                                <span class="badge bg-secondary me-1">Draft</span>
+                                Save as draft
+                            </label>
+                        </div>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="radio"
+                                   name="Input.IsPublished" id="statusPublished"
+                                   value="true" @(Model.Input.IsPublished ? "checked" : "") />
+                            <label class="form-check-label" for="statusPublished">
+                                <span class="badge bg-success me-1">Published</span>
+                                Published
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            Update Post
+                        </button>
+                        <a asp-area="BlogAdmin" asp-page="/Posts/Index" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-semibold">Category</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label asp-for="Input.CategoryId" class="form-label">Category</label>
+                        <select asp-for="Input.CategoryId"
+                                asp-items="Model.CategoryOptions"
+                                class="form-select">
+                            <option value="">— None —</option>
+                        </select>
+                        <span asp-validation-for="Input.CategoryId" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-semibold">Featured Image</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label asp-for="Input.FeaturedImageUrl" class="form-label">Image URL</label>
+                        <input asp-for="Input.FeaturedImageUrl" class="form-control"
+                               placeholder="https://example.com/image.jpg" />
+                        <div class="form-text">Paste a direct URL to the image.</div>
+                        <span asp-validation-for="Input.FeaturedImageUrl" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const titleInput = document.getElementById('postTitle');
+            const slugInput  = document.getElementById('postSlug');
+
+            if (!titleInput || !slugInput) return;
+
+            titleInput.addEventListener('input', function () {
+                slugInput.value = titleInput.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+            });
+        })();
+    </script>
+}
+

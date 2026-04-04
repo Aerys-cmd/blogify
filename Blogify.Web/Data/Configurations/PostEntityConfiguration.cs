@@ -16,9 +16,21 @@ public sealed class PostEntityConfiguration : IEntityTypeConfiguration<Post>
 
         builder.Property(p => p.BlogId).IsRequired();
 
+        builder.Property(p => p.AuthorId)
+            .IsRequired()
+            .HasMaxLength(450);
+
         builder.Property(p => p.Slug)
             .IsRequired()
             .HasMaxLength(300);
+
+        builder.Property(p => p.Excerpt)
+            .HasMaxLength(500);
+
+        builder.Property(p => p.FeaturedImageUrl)
+            .HasMaxLength(2048);
+
+        builder.Property(p => p.CategoryId);
 
         builder.Property(p => p.Status)
             .IsRequired()

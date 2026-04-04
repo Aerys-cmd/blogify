@@ -12,15 +12,21 @@ public sealed class Post
 
     private Post() { }
 
-    private Post(Guid blogId, string slug, string initialTitle, string initialContent)
+    private Post(Guid blogId, string authorId, string slug, string initialTitle, string initialContent)
     {
         if (blogId == Guid.Empty)
         {
             throw new ArgumentException("Blog id is required.", nameof(blogId));
         }
 
+        if (string.IsNullOrWhiteSpace(authorId))
+        {
+            throw new ArgumentException("Author id is required.", nameof(authorId));
+        }
+
         Id = Guid.NewGuid();
         BlogId = blogId;
+        AuthorId = authorId.Trim();
         Status = PostStatus.Draft;
         CreatedAt = DateTimeOffset.UtcNow;
         ChangeSlug(slug);
@@ -31,16 +37,54 @@ public sealed class Post
 
     public Guid Id { get; private init; }
     public Guid BlogId { get; private init; }
+    public string AuthorId { get; private set; } = string.Empty;
     public string Slug { get; private set; } = string.Empty;
+    public string? Excerpt { get; private set; }
+    public string? FeaturedImageUrl { get; private set; }
+    public Guid? CategoryId { get; private set; }
     public PostStatus Status { get; private set; }
     public Guid? PublishedRevisionId { get; private set; }
     public DateTimeOffset CreatedAt { get; private init; }
     public DateTimeOffset? DeletedAt { get; private set; }
     public IReadOnlyList<PostRevision> Revisions => _revisions.AsReadOnly();
 
-    public static Post Create(Guid blogId, string slug, string initialTitle, string initialContent)
+    public static Post Create(Guid blogId, string authorId, string slug, string initialTitle, string initialContent)
     {
-        return new Post(blogId, slug, initialTitle, initialContent);
+        return new Post(blogId, authorId, slug, initialTitle, initialContent);
+    }
+
+    public void UpdateExcerpt(string? excerpt)
+    {
+        if (excerpt is null)
+        {
+            Excerpt = null;
+            return;
+        }
+
+        string trimmed = excerpt.Trim();
+        if (trimmed.Length > 500)
+        {
+            throw new ArgumentException("Excerpt must not exceed 500 characters.", nameof(excerpt));
+        }
+
+        Excerpt = string.IsNullOrEmpty(trimmed) ? null : trimmed;
+    }
+
+    public void UpdateFeaturedImageUrl(string? url)
+    {
+        if (url is null)
+        {
+            FeaturedImageUrl = null;
+            return;
+        }
+
+        string trimmed = url.Trim();
+        FeaturedImageUrl = string.IsNullOrEmpty(trimmed) ? null : trimmed;
+    }
+
+    public void AssignCategory(Guid? categoryId)
+    {
+        CategoryId = categoryId == Guid.Empty ? null : categoryId;
     }
 
     public void AddRevision(string title, string content)
