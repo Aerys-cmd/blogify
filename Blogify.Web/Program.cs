@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
 using Blogify.Web.Services;
@@ -23,10 +24,35 @@ builder.Services.AddScoped<DatabaseMigrator>();
 builder.Services.AddScoped<DatabaseSeeder>();
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    // Map the BlogAdmin area under the /admin route prefix instead of /BlogAdmin.
+    options.Conventions.AddAreaFolderRouteModelConvention(
+        areaName: "BlogAdmin",
+        folderPath: "/",
+        action: model =>
+        {
+            const string areaPrefix = "BlogAdmin";
+            const string newPrefix = "admin";
+
+            foreach (SelectorModel selector in model.Selectors)
+            {
+                if (selector.AttributeRouteModel?.Template is not string template)
+                    continue;
+
+                if (string.Equals(template, areaPrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    selector.AttributeRouteModel.Template = newPrefix;
+                }
+                else if (template.StartsWith(areaPrefix + "/", StringComparison.OrdinalIgnoreCase))
+                {
+                    selector.AttributeRouteModel.Template = newPrefix + template[areaPrefix.Length..];
+                }
+            }
+        });
+});
 
 var app = builder.Build();
-
 
 await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
 {
@@ -40,18 +66,27 @@ app.MapDefaultEndpoints();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 
+// Explicit routing must be first so that route data is available to all subsequent middleware.
 app.UseRouting();
 
 app.UseAuthentication();
+
+// Tenant resolution must run after authentication (user identity is set) but before
+// authorization so that downstream middleware and pages can access TenantContext.
+app.UseTenantResolution();
+
+// BlogAdmin access guard: validates tenant presence and ownership/membership for
+// requests targeting the BlogAdmin area. Runs after tenant resolution and before
+// the ASP.NET Core authorization middleware.
+app.UseBlogAdminAccess();
+
 app.UseAuthorization();
 
-app.UseMiddleware<TenantResolutionMiddleware>();
 
 app.MapStaticAssets();
 app.MapRazorPages()
