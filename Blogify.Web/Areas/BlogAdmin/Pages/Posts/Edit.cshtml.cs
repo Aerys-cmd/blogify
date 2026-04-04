@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
-[Authorize(Roles = "BlogAdmin,SuperAdmin")]
+[Authorize(Roles = "BlogAdmin")]
 public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -25,11 +25,6 @@ public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tena
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
-        if (!tenantContext.IsTenantResolved || tenantContext.CurrentTenant is null)
-        {
-            return NotFound("Blog admin area requires a tenant host.");
-        }
-
         Post? post = await dbContext.Posts
             .Include(p => p.Revisions)
             .FirstOrDefaultAsync(p => p.Id == Id, ct);
@@ -56,18 +51,13 @@ public sealed class EditModel(ApplicationDbContext dbContext, TenantContext tena
             IsPublished = post.Status == PostStatus.Published
         };
 
-        await LoadCategoryOptionsAsync(tenantContext.CurrentTenant.Id, ct);
+        await LoadCategoryOptionsAsync(tenantContext.RequiredTenant.Id, ct);
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken ct = default)
     {
-        if (!tenantContext.IsTenantResolved || tenantContext.CurrentTenant is null)
-        {
-            return NotFound("Blog admin area requires a tenant host.");
-        }
-
-        Guid blogId = tenantContext.CurrentTenant.Id;
+        Guid blogId = tenantContext.RequiredTenant.Id;
 
         if (!ModelState.IsValid)
         {
@@ -181,4 +171,3 @@ public sealed class EditPostInput
 
     public bool IsPublished { get; set; }
 }
-

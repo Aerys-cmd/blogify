@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
-[Authorize(Roles = "BlogAdmin,SuperAdmin")]
+[Authorize(Roles = "BlogAdmin")]
 public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
     private const int PageSize = 10;
@@ -21,12 +21,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
     public async Task<IActionResult> OnGetAsync(int page = 1, CancellationToken ct = default)
     {
-        if (!tenantContext.IsTenantResolved || tenantContext.CurrentTenant is null)
-        {
-            return NotFound("Blog admin area requires a tenant host (for example: yourblog.localhost).");
-        }
-
-        TenantTitle = tenantContext.CurrentTenant.Title;
+        TenantTitle = tenantContext.RequiredTenant.Title;
 
         IQueryable<Post> query = dbContext.Posts
             .AsNoTracking()
@@ -68,11 +63,6 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken ct = default)
     {
-        if (!tenantContext.IsTenantResolved)
-        {
-            return NotFound("Blog admin area requires a tenant host (for example: yourblog.localhost).");
-        }
-
         Post? post = await dbContext.Posts
             .Include(p => p.Revisions)
             .FirstOrDefaultAsync(p => p.Id == id, ct);
@@ -97,4 +87,3 @@ public sealed record PostRow(
     string AuthorId,
     DateTimeOffset CreatedAt
 );
-

@@ -46,8 +46,6 @@
 - Call `SaveChangesAsync` exactly once per mutating handler. Never call it more than once per operation.
 - Tenant-scoped entities (`Post`, `PostRevision`) are filtered automatically via **EF Core global query filters** registered in `ApplicationDbContext.OnModelCreating`. The middleware sets `dbContext.CurrentTenantId` per request from `TenantContext`. Do **not** add redundant explicit `.Where(x => x.TenantId == ...)` clauses on top of these — the filter is already applied.
 - `tenantId` is always obtained from the scoped `TenantContext.CurrentTenantId`. Never derive it from route parameters or claims alone.
-- The tenant-scoped property on `Post` and `PostRevision` is named `TenantId` (type `int`), not `BlogId`.
-
 ---
 
 ## Aspire Usage

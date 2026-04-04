@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
-[Authorize(Roles = "BlogAdmin,SuperAdmin")]
+[Authorize(Roles = "BlogAdmin")]
 public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
     [BindProperty]
@@ -22,23 +22,13 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
-        if (!tenantContext.IsTenantResolved || tenantContext.CurrentTenant is null)
-        {
-            return NotFound("Blog admin area requires a tenant host (for example: yourblog.localhost).");
-        }
-
-        await LoadCategoryOptionsAsync(tenantContext.CurrentTenant.Id, ct);
+        await LoadCategoryOptionsAsync(tenantContext.RequiredTenant.Id, ct);
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken ct = default)
     {
-        if (!tenantContext.IsTenantResolved || tenantContext.CurrentTenant is null)
-        {
-            return NotFound("Blog admin area requires a tenant host (for example: yourblog.localhost).");
-        }
-
-        Guid blogId = tenantContext.CurrentTenant.Id;
+        Guid blogId = tenantContext.RequiredTenant.Id;
 
         if (!ModelState.IsValid)
         {
@@ -127,4 +117,3 @@ public sealed class CreatePostInput
 
     public bool Publish { get; set; }
 }
-

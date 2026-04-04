@@ -8,6 +8,9 @@ public sealed class TenantContext
     public Guid? CurrentTenantId => CurrentTenant?.Id;
     public bool IsTenantResolved => CurrentTenant is not null;
 
+    public Tenant RequiredTenant =>
+        CurrentTenant ?? throw new InvalidOperationException("Tenant is not resolved for this request.");
+
     public void Resolve(Tenant tenant)
     {
         ArgumentNullException.ThrowIfNull(tenant);
