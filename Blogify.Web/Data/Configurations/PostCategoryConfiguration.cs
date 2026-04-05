@@ -18,15 +18,11 @@ public sealed class PostCategoryConfiguration : IEntityTypeConfiguration<PostCat
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Navigation(pc => pc.Post).IsRequired(false);
-
         builder.HasOne(pc => pc.Category)
             .WithMany()
             .HasForeignKey(pc => pc.CategoryId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Navigation(pc => pc.Category).IsRequired(false);
     }
 }
 

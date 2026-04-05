@@ -86,8 +86,19 @@ public sealed class Post
     public void SetCategories(IEnumerable<Guid> categoryIds)
     {
         ArgumentNullException.ThrowIfNull(categoryIds);
-        _categories.Clear();
-        foreach (Guid categoryId in categoryIds)
+
+        HashSet<Guid> newIds = categoryIds.ToHashSet();
+
+        // Remove only entries that are no longer selected.
+        // Mutating the existing tracked instances lets EF Core mark them Deleted
+        // without creating a PK identity conflict with newly added objects.
+        _categories.RemoveAll(pc => !newIds.Contains(pc.CategoryId));
+
+        // After trimming, capture which IDs are still present (retained / unchanged).
+        HashSet<Guid> existingIds = _categories.Select(pc => pc.CategoryId).ToHashSet();
+
+        // Add only genuinely new category associations.
+        foreach (Guid categoryId in newIds.Where(id => !existingIds.Contains(id)))
         {
             _categories.Add(new PostCategory(Id, categoryId));
         }
