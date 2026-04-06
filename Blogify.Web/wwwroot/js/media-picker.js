@@ -12,7 +12,13 @@ document.addEventListener('click', function (e) {
         const modalId = selectBtn.dataset.modalId;
 
         document.dispatchEvent(new CustomEvent('mediaSelected', {
-            detail: { targetInputId, mediaId, url }
+            detail: {
+                targetInputId,
+                mediaId,
+                url,
+                fullUrl: selectBtn.dataset.fullUrl ?? url,
+                altText: selectBtn.dataset.altText ?? ''
+            }
         }));
 
         if (modalId) {
