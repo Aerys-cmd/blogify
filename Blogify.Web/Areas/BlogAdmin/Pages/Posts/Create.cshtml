@@ -58,9 +58,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Input.Content" class="form-label fw-semibold">Content <span class="text-danger">*</span></label>
-                        <textarea asp-for="Input.Content" class="form-control font-monospace" rows="16"
-                                  placeholder="Write your post content here…" style="resize: vertical;"></textarea>
+                        <label for="postEditorHidden" class="form-label fw-semibold">Content <span class="text-danger">*</span></label>
+                        <div id="postEditorWrapper" class="post-editor-wrapper"></div>
+                        <textarea asp-for="Input.Content" id="postEditorHidden"
+                                  class="visually-hidden" tabindex="-1"></textarea>
                         <span asp-validation-for="Input.Content" class="text-danger small"></span>
                     </div>
                 </div>
@@ -147,6 +148,11 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="~/css/post-editor.css" asp-append-version="true" />
+    <script type="module">
+        import { initPostEditor } from '/js/post-editor.js';
+        await initPostEditor('postEditorWrapper', 'postEditorHidden', 'createPostForm');
+    </script>
     <script>
         (function () {
             const titleInput = document.getElementById('postTitle');
