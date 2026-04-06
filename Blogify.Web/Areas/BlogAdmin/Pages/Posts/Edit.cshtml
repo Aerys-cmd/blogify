@@ -57,10 +57,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="postEditorHidden" class="form-label fw-semibold">Content <span class="text-danger">*</span></label>
-                        <div id="postEditorWrapper" class="post-editor-wrapper"></div>
+                        <label id="postEditorLabel" class="form-label fw-semibold">Content <span class="text-danger">*</span></label>
+                        <div id="postEditorWrapper" class="post-editor-wrapper" role="group" aria-labelledby="postEditorLabel"></div>
                         <textarea asp-for="Input.Content" id="postEditorHidden"
-                                  class="visually-hidden" tabindex="-1"></textarea>
+                                  class="visually-hidden" tabindex="-1" aria-hidden="true"></textarea>
                         <span asp-validation-for="Input.Content" class="text-danger small"></span>
                     </div>
                 </div>
