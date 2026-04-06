@@ -34,7 +34,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, UserManager<Appl
 
         string normalizedSubdomain = Input.Subdomain.Trim().ToLowerInvariant();
         bool subdomainExists = await dbContext.Blogs
-            .AnyAsync(t => t.DeletedAt == null && t.Subdomain == normalizedSubdomain, ct);
+            .AnyAsync(t => t.Subdomain == normalizedSubdomain, ct);
 
         if (subdomainExists)
         {
