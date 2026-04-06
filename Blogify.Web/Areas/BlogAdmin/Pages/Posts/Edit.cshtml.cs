@@ -23,25 +23,47 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
 
     public IReadOnlyList<CategorySelectItem> AvailableCategories { get; private set; } = [];
     public string PostTitle { get; private set; } = string.Empty;
+    public string? CoverImagePreviewUrl { get; private set; }
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
-        Post? post = await dbContext.Posts
-            .Include(p => p.Revisions)
-            .Include(p => p.Categories)
-            .FirstOrDefaultAsync(p => p.Id == Id, ct);
+        var postWithCover = await dbContext.Posts
+            .AsNoTracking()
+            .Where(p => p.Id == Id)
+            .Select(p => new
+            {
+                Post = p,
+                CoverUrl = p.CoverImageId != null
+                    ? dbContext.Media
+                        .Where(m => m.Id == p.CoverImageId)
+                        .Select(m => m.ThumbnailUrl ?? m.Url)
+                        .FirstOrDefault()
+                    : null
+            })
+            .FirstOrDefaultAsync(ct);
 
-        if (post is null || post.DeletedAt.HasValue)
+        if (postWithCover is null || postWithCover.Post.DeletedAt.HasValue)
         {
             return NotFound();
         }
 
-        PostRevision latestRevision = post.Revisions
+        Post post = postWithCover.Post;
+        CoverImagePreviewUrl = postWithCover.CoverUrl;
+
+        IReadOnlyList<PostRevision> revisions = await dbContext.PostRevisions
+            .AsNoTracking()
+            .Where(r => r.PostId == Id)
             .OrderByDescending(r => r.CreatedAt)
-            .First();
+            .ToListAsync(ct);
+
+        PostRevision latestRevision = revisions.First();
 
         PostTitle = latestRevision.Title;
-        SelectedCategoryIds = post.Categories.Select(pc => pc.CategoryId).ToList();
+        SelectedCategoryIds = await dbContext.PostCategories
+            .AsNoTracking()
+            .Where(pc => pc.PostId == Id)
+            .Select(pc => pc.CategoryId)
+            .ToListAsync(ct);
 
         Input = new EditPostInput
         {
@@ -49,7 +71,7 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
             Slug = post.Slug,
             Excerpt = post.Excerpt,
             Content = latestRevision.Content,
-            FeaturedImageUrl = post.FeaturedImageUrl,
+            CoverImageId = post.CoverImageId,
             IsPublished = post.Status == PostStatus.Published
         };
 
@@ -106,7 +128,7 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
         }
 
         post.UpdateExcerpt(Input.Excerpt);
-        post.UpdateFeaturedImageUrl(Input.FeaturedImageUrl);
+        post.SetCoverImage(Input.CoverImageId);
         post.SetCategories(SelectedCategoryIds);
 
         bool currentlyPublished = post.Status == PostStatus.Published;
@@ -164,9 +186,7 @@ public sealed class EditPostInput
     [Required(ErrorMessage = "Content is required.")]
     public string Content { get; set; } = string.Empty;
 
-
-    [MaxLength(2048, ErrorMessage = "Featured image URL must not exceed 2048 characters.")]
-    public string? FeaturedImageUrl { get; set; }
+    public Guid? CoverImageId { get; set; }
 
     public bool IsPublished { get; set; }
 }

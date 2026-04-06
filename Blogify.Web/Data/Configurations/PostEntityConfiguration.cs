@@ -1,3 +1,4 @@
+using Blogify.Web.Models;
 using Blogify.Web.Models.Posts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -27,9 +28,13 @@ public sealed class PostEntityConfiguration : IEntityTypeConfiguration<Post>
         builder.Property(p => p.Excerpt)
             .HasMaxLength(500);
 
-        builder.Property(p => p.FeaturedImageUrl)
-            .HasMaxLength(2048);
+        builder.Property(p => p.CoverImageId);
 
+        builder.HasOne<Media>()
+            .WithMany()
+            .HasForeignKey(p => p.CoverImageId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
 
         builder.Property(p => p.Status)
             .IsRequired()

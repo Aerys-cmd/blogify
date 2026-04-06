@@ -5,13 +5,27 @@
         : $"{bytes / 1024.0:F0} KB";
 }
 
-<div class="col">
+<div class="col position-relative" data-media-id="@Model.Id">
+    @* Checkbox overlay *@
+    <div class="position-absolute top-0 start-0 p-1 media-checkbox-wrap" style="z-index: 2;">
+        <input type="checkbox" class="form-check-input shadow-sm media-check"
+               data-media-id="@Model.Id" aria-label="Select @Model.FileName" />
+    </div>
+
     <div class="card h-100 shadow-sm">
-        <div class="card-img-top d-flex align-items-center justify-content-center bg-light overflow-hidden"
-             style="height: 100px;">
+        @* Thumbnail — click opens detail offcanvas *@
+        <button type="button"
+                class="card-img-top d-flex align-items-center justify-content-center bg-light overflow-hidden border-0 w-100 p-0 media-thumb-btn"
+                style="height: 100px;"
+                hx-get="?handler=MediaDetail&id=@Model.Id"
+                hx-target="#media-detail-offcanvas-body"
+                hx-swap="innerHTML"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#media-detail-offcanvas"
+                aria-label="View details for @Model.FileName">
             @if (Model.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
             {
-                <img src="@Model.Url" alt="@Model.FileName"
+                <img src="@(Model.ThumbnailUrl ?? Model.Url)" alt="@(Model.AltText ?? Model.FileName)"
                      class="img-fluid w-100 h-100 object-fit-cover" />
             }
             else
@@ -21,7 +35,8 @@
                     <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 4.5z"/>
                 </svg>
             }
-        </div>
+        </button>
+
         <div class="card-body p-2">
             <p class="card-text small text-truncate mb-0" title="@Model.FileName">@Model.FileName</p>
             <p class="card-text small text-muted mb-0">@FormatFileSize(Model.SizeBytes)</p>

@@ -9,9 +9,13 @@
                 <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
                 <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
             </svg>
-            <p class="text-muted mb-0">No media files yet. Upload your first file above.</p>
+            <p class="text-muted mb-0">No media files yet. Upload your first file using the Upload button.</p>
         </div>
     </div>
+}
+else if (Model.ViewMode == "list")
+{
+    <partial name="_MediaList" model="Model" />
 }
 else
 {
@@ -22,41 +26,15 @@ else
         }
     </div>
 
-    @if (Model.Pager.TotalPages > 1)
+    @if (!string.IsNullOrEmpty(Model.Pager.NextCursor))
     {
-        <nav aria-label="Media pagination">
-            <ul class="pagination justify-content-center">
-                <li class="page-item @(Model.Pager.CurrentPage <= 1 ? "disabled" : "")">
-                    <button type="button" class="page-link"
-                            hx-get="?page=@(Model.Pager.CurrentPage - 1)"
-                            hx-target="#media-grid"
-                            hx-swap="innerHTML"
-                            @(Model.Pager.CurrentPage <= 1 ? "disabled" : "")
-                            aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </button>
-                </li>
-                @for (int p = 1; p <= Model.Pager.TotalPages; p++)
-                {
-                    <li class="page-item @(p == Model.Pager.CurrentPage ? "active" : "")">
-                        <button type="button" class="page-link"
-                                hx-get="?page=@p"
-                                hx-target="#media-grid"
-                                hx-swap="innerHTML">@p</button>
-                    </li>
-                }
-                <li class="page-item @(Model.Pager.CurrentPage >= Model.Pager.TotalPages ? "disabled" : "")">
-                    <button type="button" class="page-link"
-                            hx-get="?page=@(Model.Pager.CurrentPage + 1)"
-                            hx-target="#media-grid"
-                            hx-swap="innerHTML"
-                            @(Model.Pager.CurrentPage >= Model.Pager.TotalPages ? "disabled" : "")
-                            aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </button>
-                </li>
-            </ul>
-        </nav>
+        <div class="d-flex justify-content-center mb-3">
+            <button type="button" class="btn btn-outline-secondary"
+                    hx-get="?cursor=@Model.Pager.NextCursor&q=@Model.SearchQuery&type=@Model.TypeFilter&month=@Model.MonthFilter&view=grid"
+                    hx-target="#media-content"
+                    hx-swap="innerHTML">
+                Load more
+            </button>
+        </div>
     }
 }
-

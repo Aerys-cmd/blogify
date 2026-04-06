@@ -41,7 +41,7 @@ public sealed class Post
     public string AuthorId { get; private set; } = string.Empty;
     public string Slug { get; private set; } = string.Empty;
     public string? Excerpt { get; private set; }
-    public string? FeaturedImageUrl { get; private set; }
+    public Guid? CoverImageId { get; private set; }
     public PostStatus Status { get; private set; }
     public Guid? PublishedRevisionId { get; private set; }
     public DateTimeOffset CreatedAt { get; private init; }
@@ -71,16 +71,9 @@ public sealed class Post
         Excerpt = string.IsNullOrEmpty(trimmed) ? null : trimmed;
     }
 
-    public void UpdateFeaturedImageUrl(string? url)
+    public void SetCoverImage(Guid? mediaId)
     {
-        if (url is null)
-        {
-            FeaturedImageUrl = null;
-            return;
-        }
-
-        string trimmed = url.Trim();
-        FeaturedImageUrl = string.IsNullOrEmpty(trimmed) ? null : trimmed;
+        CoverImageId = mediaId;
     }
 
     public void SetCategories(IEnumerable<Guid> categoryIds)

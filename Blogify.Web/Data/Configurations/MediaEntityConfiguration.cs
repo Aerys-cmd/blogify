@@ -31,6 +31,21 @@ public sealed class MediaEntityConfiguration : IEntityTypeConfiguration<Media>
         builder.Property(m => m.UploadedAt).IsRequired();
 
         builder.Property(m => m.DeletedAt);
+
+        builder.Property(m => m.AltText).HasMaxLength(500);
+
+        builder.Property(m => m.Title).HasMaxLength(255);
+
+        builder.Property(m => m.Description).HasMaxLength(2000);
+
+        builder.Property(m => m.ThumbnailUrl);
+
+        builder.Property(m => m.WidthPx);
+
+        builder.Property(m => m.HeightPx);
+
+        builder.HasIndex(m => new { m.BlogId, m.UploadedAt })
+            .HasDatabaseName("IX_Media_BlogId_UploadedAt");
     }
 }
 

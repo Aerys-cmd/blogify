@@ -66,7 +66,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         );
 
         post.UpdateExcerpt(Input.Excerpt);
-        post.UpdateFeaturedImageUrl(Input.FeaturedImageUrl);
+        post.SetCoverImage(Input.CoverImageId);
         post.SetCategories(SelectedCategoryIds);
 
         if (Input.Publish)
@@ -111,8 +111,7 @@ public sealed class CreatePostInput
     [Required(ErrorMessage = "Content is required.")]
     public string Content { get; set; } = string.Empty;
 
-    [MaxLength(2048, ErrorMessage = "Featured image URL must not exceed 2048 characters.")]
-    public string? FeaturedImageUrl { get; set; }
+    public Guid? CoverImageId { get; set; }
 
     public bool Publish { get; set; }
 }

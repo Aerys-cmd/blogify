@@ -1,0 +1,110 @@
+@model Blogify.Web.Areas.BlogAdmin.Pages.Media.IndexModel
+@{
+    string FormatFileSize(long bytes) => bytes >= 1_048_576
+        ? $"{bytes / 1_048_576.0:F1} MB"
+        : $"{bytes / 1024.0:F0} KB";
+}
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 36px;">
+                    <input type="checkbox" class="form-check-input" id="select-all-check"
+                           aria-label="Select all on this page" />
+                </th>
+                <th style="width: 52px;"></th>
+                <th>Name</th>
+                <th class="d-none d-md-table-cell">Type</th>
+                <th>Size</th>
+                <th class="d-none d-sm-table-cell">Uploaded</th>
+                <th style="width: 48px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (MediaItemVm item in Model.Items)
+            {
+                <tr data-media-id="@item.Id">
+                    <td>
+                        <input type="checkbox" class="form-check-input media-check"
+                               data-media-id="@item.Id" aria-label="Select @item.FileName" />
+                    </td>
+                    <td>
+                        <button type="button"
+                                class="border-0 bg-transparent p-0 d-block"
+                                style="width: 40px; height: 40px;"
+                                hx-get="?handler=MediaDetail&id=@item.Id"
+                                hx-target="#media-detail-offcanvas-body"
+                                hx-swap="innerHTML"
+                                data-bs-toggle="offcanvas"
+                                data-bs-target="#media-detail-offcanvas"
+                                aria-label="View details for @item.FileName">
+                            @if (item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <img src="@(item.ThumbnailUrl ?? item.Url)" alt="@(item.AltText ?? item.FileName)"
+                                     width="40" height="40"
+                                     class="rounded d-block" style="object-fit:cover;" />
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center justify-content-center bg-light rounded"
+                                     style="width: 40px; height: 40px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                         class="text-secondary" viewBox="0 0 16 16" aria-hidden="true">
+                                        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 4.5z"/>
+                                    </svg>
+                                </div>
+                            }
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button"
+                                class="btn btn-link p-0 text-start text-decoration-none fw-semibold text-body"
+                                hx-get="?handler=MediaDetail&id=@item.Id"
+                                hx-target="#media-detail-offcanvas-body"
+                                hx-swap="innerHTML"
+                                data-bs-toggle="offcanvas"
+                                data-bs-target="#media-detail-offcanvas">
+                            <span class="text-truncate d-block" style="max-width: 260px;" title="@item.FileName">
+                                @item.FileName
+                            </span>
+                        </button>
+                    </td>
+                    <td class="d-none d-md-table-cell">
+                        <span class="badge bg-light text-dark border small">@item.ContentType</span>
+                    </td>
+                    <td class="text-muted small">@FormatFileSize(item.SizeBytes)</td>
+                    <td class="d-none d-sm-table-cell text-muted small">
+                        @item.UploadedAt.LocalDateTime.ToString("dd MMM yyyy")
+                    </td>
+                    <td>
+                        <button type="button"
+                                class="btn btn-outline-danger btn-sm py-0 px-2"
+                                hx-post="?handler=Delete&id=@item.Id"
+                                hx-confirm="Delete this file?"
+                                hx-target="closest tr"
+                                hx-swap="outerHTML">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                                 viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Pager.NextCursor))
+{
+    <div class="d-flex justify-content-center p-3 border-top">
+        <button type="button" class="btn btn-outline-secondary btn-sm"
+                hx-get="?cursor=@Model.Pager.NextCursor&q=@Model.SearchQuery&type=@Model.TypeFilter&month=@Model.MonthFilter&view=list"
+                hx-target="#media-content"
+                hx-swap="innerHTML">
+            Load more
+        </button>
+    </div>
+}

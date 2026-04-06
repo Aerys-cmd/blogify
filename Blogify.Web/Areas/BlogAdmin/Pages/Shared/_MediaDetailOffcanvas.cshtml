@@ -1,0 +1,127 @@
+@model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaDetailVm
+@{
+    string FormatFileSize(long bytes) => bytes >= 1_048_576
+        ? $"{bytes / 1_048_576.0:F1} MB"
+        : $"{bytes / 1024.0:F0} KB";
+}
+
+<div class="p-3">
+    @* Preview *@
+    @if (Model.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+    {
+        <div class="mb-3 text-center bg-light rounded p-2">
+            <img src="@(Model.ThumbnailUrl ?? Model.Url)" alt="@(Model.AltText ?? Model.FileName)"
+                 class="img-fluid rounded" style="max-height: 200px; object-fit: contain;" />
+        </div>
+    }
+    else
+    {
+        <div class="d-flex align-items-center justify-content-center bg-light rounded mb-3" style="height: 120px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+                 class="text-secondary" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 4.5z"/>
+            </svg>
+        </div>
+    }
+
+    @* Metadata form *@
+    <form hx-post="?handler=UpdateMetadata"
+          hx-target="#metadata-save-result"
+          hx-swap="innerHTML"
+          class="mb-3">
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="mb-2">
+            <label for="meta-alt-@Model.Id" class="form-label small fw-semibold mb-1">Alt Text</label>
+            <input type="text" class="form-control form-control-sm"
+                   id="meta-alt-@Model.Id" name="altText" value="@Model.AltText"
+                   placeholder="Describe this image for screen readers…" maxlength="500" />
+        </div>
+
+        <div class="mb-2">
+            <label for="meta-title-@Model.Id" class="form-label small fw-semibold mb-1">Title</label>
+            <input type="text" class="form-control form-control-sm"
+                   id="meta-title-@Model.Id" name="title" value="@Model.Title"
+                   placeholder="Optional display title…" maxlength="255" />
+        </div>
+
+        <div class="mb-2">
+            <label for="meta-desc-@Model.Id" class="form-label small fw-semibold mb-1">Description</label>
+            <textarea class="form-control form-control-sm"
+                      id="meta-desc-@Model.Id" name="description" rows="3"
+                      placeholder="Optional description…" maxlength="2000">@Model.Description</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm w-100">Save Metadata</button>
+    </form>
+
+    <div id="metadata-save-result" class="mb-3" aria-live="polite"></div>
+
+    @* File info *@
+    <dl class="row small mb-3">
+        <dt class="col-5 text-muted fw-normal">File name</dt>
+        <dd class="col-7 text-truncate mb-1 fw-semibold" title="@Model.FileName">@Model.FileName</dd>
+
+        <dt class="col-5 text-muted fw-normal">Type</dt>
+        <dd class="col-7 mb-1">@Model.ContentType</dd>
+
+        <dt class="col-5 text-muted fw-normal">Size</dt>
+        <dd class="col-7 mb-1">@FormatFileSize(Model.SizeBytes)</dd>
+
+        @if (Model.WidthPx.HasValue && Model.HeightPx.HasValue)
+        {
+            <dt class="col-5 text-muted fw-normal">Dimensions</dt>
+            <dd class="col-7 mb-1">@Model.WidthPx × @Model.HeightPx px</dd>
+        }
+
+        <dt class="col-5 text-muted fw-normal">Uploaded</dt>
+        <dd class="col-7 mb-1">@Model.UploadedAt.LocalDateTime.ToString("dd MMM yyyy HH:mm")</dd>
+    </dl>
+
+    @* URL copy *@
+    <div class="mb-3">
+        <label class="form-label small fw-semibold mb-1">URL</label>
+        <div class="input-group input-group-sm">
+            <input type="text" class="form-control font-monospace small"
+                   id="detail-url-@Model.Id" value="@Model.Url" readonly />
+            <button type="button" class="btn btn-outline-secondary"
+                    data-copy-target="detail-url-@Model.Id">
+                Copy
+            </button>
+        </div>
+    </div>
+
+    @* Usage *@
+    @if (Model.UsedInPosts.Count > 0)
+    {
+        <div class="mb-3">
+            <p class="small fw-semibold mb-1">Used as cover in:</p>
+            <ul class="list-unstyled mb-0">
+                @foreach (string postTitle in Model.UsedInPosts)
+                {
+                    <li class="small text-muted">• @postTitle</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @* Delete *@
+    <div class="border-top pt-3 mt-2">
+        <button type="button"
+                class="btn btn-outline-danger btn-sm w-100"
+                hx-post="?handler=Delete&id=@Model.Id"
+                hx-confirm="Delete '@System.Web.HttpUtility.HtmlAttributeEncode(Model.FileName)'? Posts using this as cover image will lose their cover."
+                hx-target="[data-media-id='@Model.Id']"
+                hx-swap="outerHTML"
+                hx-on:htmx:after-request="if(event.detail.successful) { const oc = bootstrap.Offcanvas.getInstance(document.getElementById('media-detail-offcanvas')); if(oc) oc.hide(); }">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                 class="me-1" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+            </svg>
+            Delete File
+        </button>
+    </div>
+</div>
+
+
