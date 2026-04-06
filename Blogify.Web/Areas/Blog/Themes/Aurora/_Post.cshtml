@@ -35,3 +35,100 @@
         &larr; Back to all posts
     </a>
 </div>
+
+<section class="mt-10" aria-label="Comments">
+    <h2 class="text-xl font-bold text-indigo-900 mb-6">Comments (@Model.Comments.Count)</h2>
+
+    @foreach (CommentViewModel comment in Model.Comments)
+    {
+        <div class="mb-6">
+            <div class="border border-indigo-100 rounded-xl p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-semibold text-indigo-800">@comment.AuthorName</span>
+                    <span class="text-xs text-stone-400">@comment.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")</span>
+                </div>
+                <p class="text-stone-700 mb-2">@comment.Content</p>
+
+                @if (Model.IsAuthenticated)
+                {
+                    <details class="mt-2">
+                        <summary class="text-xs text-indigo-600 hover:text-indigo-800 underline cursor-pointer">
+                            Reply
+                        </summary>
+                        <div class="mt-3">
+                            <form method="post">
+                                <input type="hidden" name="Input.ParentCommentId" value="@comment.Id" />
+                                <label for="reply-content-@comment.Id" class="sr-only">Reply to @comment.AuthorName</label>
+                                <textarea id="reply-content-@comment.Id"
+                                          name="Input.Content"
+                                          class="w-full border border-indigo-200 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                          rows="2"
+                                          maxlength="2000"
+                                          placeholder="Write your reply…"
+                                          required></textarea>
+                                <button type="submit"
+                                        class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1.5 rounded-lg">
+                                    Post Reply
+                                </button>
+                            </form>
+                        </div>
+                    </details>
+                }
+            </div>
+
+            @if (comment.Replies.Count > 0)
+            {
+                <div class="ml-6 mt-2 space-y-2">
+                    @foreach (CommentViewModel reply in comment.Replies)
+                    {
+                        <div class="border border-indigo-50 bg-indigo-50 rounded-xl p-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-semibold text-indigo-700 text-sm">@reply.AuthorName</span>
+                                <span class="text-xs text-stone-400">@reply.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")</span>
+                            </div>
+                            <p class="text-stone-600 text-sm">@reply.Content</p>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    @if (Model.Comments.Count == 0)
+    {
+        <p class="text-stone-400 text-sm">No comments yet. Be the first to share your thoughts!</p>
+    }
+
+    <div class="mt-8 pt-6 border-t border-indigo-100">
+        @if (Model.IsAuthenticated)
+        {
+            <h3 class="text-lg font-semibold text-indigo-900 mb-4">Leave a comment</h3>
+            <form method="post" class="space-y-3">
+                <div asp-validation-summary="ModelOnly" class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm"></div>
+                <div>
+                    <label asp-for="Input.Content" class="block text-sm font-medium text-stone-700 mb-1">Your comment</label>
+                    <textarea asp-for="Input.Content"
+                              class="w-full border border-indigo-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                              rows="4"
+                              maxlength="2000"
+                              placeholder="Write your comment here…"></textarea>
+                    <span asp-validation-for="Input.Content" class="text-red-600 text-xs mt-1 block"></span>
+                </div>
+                <button type="submit"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    Post Comment
+                </button>
+            </form>
+        }
+        else
+        {
+            <p class="text-stone-500 text-sm">
+                <a href="@Model.LoginUrl"
+                   class="text-indigo-600 hover:text-indigo-800 underline">Sign in</a>
+                to leave a comment.
+            </p>
+        }
+    </div>
+</section>
+
+

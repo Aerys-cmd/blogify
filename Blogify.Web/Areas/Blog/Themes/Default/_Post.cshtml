@@ -37,5 +37,99 @@
         <a asp-area="Blog" asp-page="/Index" class="btn btn-outline-secondary">
             &larr; Back to all posts
         </a>
+
+        <hr class="my-5" />
+
+        <section aria-label="Comments">
+            <h2 class="h4 mb-4">Comments (@Model.Comments.Count)</h2>
+
+            @foreach (CommentViewModel comment in Model.Comments)
+            {
+                <div class="mb-4">
+                    <div class="border rounded p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong>@comment.AuthorName</strong>
+                            <small class="text-muted">@comment.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")</small>
+                        </div>
+                        <p class="mb-2">@comment.Content</p>
+
+                        @if (Model.IsAuthenticated)
+                        {
+                            <a href="#reply-@comment.Id"
+                               class="btn btn-sm btn-outline-secondary"
+                               data-bs-toggle="collapse"
+                               aria-expanded="false"
+                               aria-controls="reply-@comment.Id">
+                                Reply
+                            </a>
+                            <div id="reply-@comment.Id" class="collapse mt-3">
+                                <form method="post">
+                                    <input type="hidden" name="Input.ParentCommentId" value="@comment.Id" />
+                                    <div class="mb-2">
+                                        <label for="reply-content-@comment.Id" class="visually-hidden">Reply to @comment.AuthorName</label>
+                                        <textarea id="reply-content-@comment.Id"
+                                                  name="Input.Content"
+                                                  class="form-control"
+                                                  rows="2"
+                                                  maxlength="2000"
+                                                  placeholder="Write your reply…"
+                                                  required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm btn-primary">Post Reply</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+
+                    @if (comment.Replies.Count > 0)
+                    {
+                        <div class="ms-4 mt-2">
+                            @foreach (CommentViewModel reply in comment.Replies)
+                            {
+                                <div class="border rounded p-3 mb-2 bg-light">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong>@reply.AuthorName</strong>
+                                        <small class="text-muted">@reply.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")</small>
+                                    </div>
+                                    <p class="mb-0">@reply.Content</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (Model.Comments.Count == 0)
+            {
+                <p class="text-muted">No comments yet. Be the first to share your thoughts!</p>
+            }
+
+            <div class="mt-4">
+                @if (Model.IsAuthenticated)
+                {
+                    <h3 class="h5 mb-3">Leave a comment</h3>
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        <div class="mb-3">
+                            <label asp-for="Input.Content" class="form-label">Your comment</label>
+                            <textarea asp-for="Input.Content"
+                                      class="form-control"
+                                      rows="4"
+                                      maxlength="2000"
+                                      placeholder="Write your comment here…"></textarea>
+                            <span asp-validation-for="Input.Content" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Post Comment</button>
+                    </form>
+                }
+                else
+                {
+                    <p class="text-muted">
+                        <a href="@Model.LoginUrl">Sign in</a>
+                        to leave a comment.
+                    </p>
+                }
+            </div>
+        </section>
     </div>
 </div>
