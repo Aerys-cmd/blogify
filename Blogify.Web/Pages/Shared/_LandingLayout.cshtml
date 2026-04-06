@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blogify — Your story. Your blog. Your way.</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" asp-area="" asp-page="/Index">Blogify</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#landingNav" aria-controls="landingNav"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="landingNav">
+                <div class="ms-auto d-flex gap-2 align-items-center">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a class="btn btn-primary btn-sm" href="/admin">Go to Blog Admin</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-light btn-sm" asp-area="Identity" asp-page="/Account/Login">Sign In</a>
+                        <a class="btn btn-primary btn-sm" asp-page="/GetStarted/Step1">Get Started</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding-top: 56px;">
+        @RenderBody()
+    </main>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <span>&copy; @DateTime.UtcNow.Year Blogify</span>
+            <a class="text-light" asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
