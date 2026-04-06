@@ -123,7 +123,7 @@
         else
         {
             <p class="text-stone-500 text-sm">
-                <a asp-area="" asp-page="/Identity/Account/Login" asp-route-returnUrl="@Context.Request.Path"
+                <a href="@Model.LoginUrl"
                    class="text-indigo-600 hover:text-indigo-800 underline">Sign in</a>
                 to leave a comment.
             </p>

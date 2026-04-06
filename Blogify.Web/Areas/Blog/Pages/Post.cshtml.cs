@@ -22,6 +22,7 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
     public BlogSidebarViewModel Sidebar { get; private set; } = new([]);
     public IReadOnlyList<CommentViewModel> Comments { get; private set; } = [];
     public bool IsAuthenticated { get; private set; }
+    public string LoginUrl { get; private set; } = string.Empty;
 
     [BindProperty]
     public CommentInput Input { get; set; } = new();
@@ -39,25 +40,25 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
             return Challenge();
         }
 
+        IActionResult? loadResult = await LoadPostDataAsync(slug, ct);
+        if (loadResult is not null)
+        {
+            return loadResult;
+        }
+
         if (!ModelState.IsValid)
         {
-            IActionResult? loadResult = await LoadPostDataAsync(slug, ct);
-            return loadResult ?? Page();
+            return Page();
         }
 
-        Post? post = await dbContext.Posts
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Slug == slug && p.PublishedRevisionId != null, ct);
-
-        if (post is null)
+        string? authorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (authorId is null)
         {
-            return NotFound();
+            return Challenge();
         }
 
-        string authorId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         Guid blogId = tenantContext.RequiredTenant.Id;
-
-        Comment comment = Comment.Create(blogId, post.Id, authorId, Input.Content, Input.ParentCommentId);
+        Comment comment = Comment.Create(blogId, PostId, authorId, Input.Content, Input.ParentCommentId);
         dbContext.Comments.Add(comment);
         await dbContext.SaveChangesAsync(ct);
 
@@ -123,7 +124,7 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
             .OrderBy(c => c.CreatedAt)
             .ToListAsync(ct);
 
-        IEnumerable<string> commentAuthorIds = allComments.Select(c => c.AuthorId).Distinct();
+        List<string> commentAuthorIds = allComments.Select(c => c.AuthorId).Distinct().ToList();
         Dictionary<string, string> authorNames = await dbContext.Users
             .Where(u => commentAuthorIds.Contains(u.Id))
             .ToDictionaryAsync(u => u.Id, u => u.UserName ?? u.Email ?? "Anonymous", ct);
@@ -139,6 +140,8 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
             .ToList();
 
         IsAuthenticated = User.Identity?.IsAuthenticated ?? false;
+        LoginUrl = Url.Page("/Identity/Account/Login", new { area = string.Empty, returnUrl = HttpContext.Request.Path.Value })
+            ?? "/Identity/Account/Login";
 
         return null;
     }
