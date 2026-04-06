@@ -22,37 +22,64 @@ public sealed class FeedService(ApplicationDbContext dbContext, IMemoryCache cac
 
     public async Task<string> GetSitemapAsync(Guid tenantId, string baseUrl, CancellationToken ct)
     {
-        string key = SitemapCacheKey(tenantId);
-        string? xml = await cache.GetOrCreateAsync(key, async entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = CacheDuration;
-            return await BuildSitemapAsync(tenantId, baseUrl, ct);
-        });
-        return xml ?? string.Empty;
+        List<SitemapRow> rows = await GetSitemapRowsAsync(tenantId, ct);
+        return BuildSitemapXml(rows, baseUrl);
     }
 
     public async Task<string> GetRssAsync(Guid tenantId, string blogTitle, string baseUrl, CancellationToken ct)
     {
-        string key = RssCacheKey(tenantId);
-        string? xml = await cache.GetOrCreateAsync(key, async entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = CacheDuration;
-            return await BuildRssAsync(tenantId, blogTitle, baseUrl, ct);
-        });
-        return xml ?? string.Empty;
+        List<RssRow> rows = await GetRssRowsAsync(tenantId, ct);
+        return BuildRssXml(rows, blogTitle, baseUrl);
     }
 
-    private async Task<string> BuildSitemapAsync(Guid tenantId, string baseUrl, CancellationToken ct)
+    private async Task<List<SitemapRow>> GetSitemapRowsAsync(Guid tenantId, CancellationToken ct)
+    {
+        string key = SitemapCacheKey(tenantId);
+        List<SitemapRow>? rows = await cache.GetOrCreateAsync(key, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = CacheDuration;
+            return await QuerySitemapRowsAsync(tenantId, ct);
+        });
+        return rows ?? [];
+    }
+
+    private async Task<List<RssRow>> GetRssRowsAsync(Guid tenantId, CancellationToken ct)
+    {
+        string key = RssCacheKey(tenantId);
+        List<RssRow>? rows = await cache.GetOrCreateAsync(key, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = CacheDuration;
+            return await QueryRssRowsAsync(tenantId, ct);
+        });
+        return rows ?? [];
+    }
+
+    private async Task<List<SitemapRow>> QuerySitemapRowsAsync(Guid tenantId, CancellationToken ct)
     {
         dbContext.CurrentTenantId = tenantId;
-        List<SitemapRow> posts = await (
+        return await (
             from p in dbContext.Posts.AsNoTracking()
             where p.PublishedRevisionId != null
             join r in dbContext.PostRevisions.AsNoTracking() on p.PublishedRevisionId equals r.Id
             orderby r.CreatedAt descending
             select new SitemapRow(p.Slug, r.CreatedAt)
         ).ToListAsync(ct);
+    }
 
+    private async Task<List<RssRow>> QueryRssRowsAsync(Guid tenantId, CancellationToken ct)
+    {
+        dbContext.CurrentTenantId = tenantId;
+        return await (
+            from p in dbContext.Posts.AsNoTracking()
+            where p.PublishedRevisionId != null
+            join r in dbContext.PostRevisions.AsNoTracking() on p.PublishedRevisionId equals r.Id
+            orderby r.CreatedAt descending
+            select new RssRow(p.Slug, r.Title, p.Excerpt, r.Content, r.CreatedAt)
+        ).Take(20).ToListAsync(ct);
+    }
+
+    private static string BuildSitemapXml(List<SitemapRow> posts, string baseUrl)
+    {
         XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
         XDocument doc = new XDocument(
             new XDeclaration("1.0", "utf-8", null),
@@ -69,17 +96,8 @@ public sealed class FeedService(ApplicationDbContext dbContext, IMemoryCache cac
         return ToXmlString(doc);
     }
 
-    private async Task<string> BuildRssAsync(Guid tenantId, string blogTitle, string baseUrl, CancellationToken ct)
+    private static string BuildRssXml(List<RssRow> posts, string blogTitle, string baseUrl)
     {
-        dbContext.CurrentTenantId = tenantId;
-        List<RssRow> posts = await (
-            from p in dbContext.Posts.AsNoTracking()
-            where p.PublishedRevisionId != null
-            join r in dbContext.PostRevisions.AsNoTracking() on p.PublishedRevisionId equals r.Id
-            orderby r.CreatedAt descending
-            select new RssRow(p.Slug, r.Title, p.Excerpt, r.Content, r.CreatedAt)
-        ).Take(20).ToListAsync(ct);
-
         XDocument doc = new XDocument(
             new XDeclaration("1.0", "utf-8", null),
             new XElement("rss",
