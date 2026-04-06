@@ -27,6 +27,10 @@ builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<FeedService>();
 
+builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
+builder.Services.AddSingleton<AnalyticsChannel>();
+builder.Services.AddHostedService<AnalyticsWriterService>();
+
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
     options.ViewLocationExpanders.Add(new ThemeViewLocationExpander());
@@ -132,6 +136,10 @@ app.UseBlogAdminAccess();
 // the appropriate destination based on the user's authentication state and role.
 // Runs after tenant resolution and before the ASP.NET Core authorization middleware.
 app.UseBlogAccess();
+
+// Analytics tracking: fire-and-forget page view recording for the Blog area.
+// Runs after access guards so only legitimate tenant page views are tracked.
+app.UseAnalyticsTracking();
 
 app.UseAuthorization();
 
