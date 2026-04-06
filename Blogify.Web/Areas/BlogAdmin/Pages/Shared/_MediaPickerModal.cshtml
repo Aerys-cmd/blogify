@@ -75,6 +75,8 @@
                                         data-media-select
                                         data-media-id="@item.Id"
                                         data-url="@(item.ThumbnailUrl ?? item.Url)"
+                                        data-full-url="@item.Url"
+                                        data-alt-text="@(item.AltText ?? item.FileName)"
                                         data-target="@Model.TargetInputId"
                                         data-modal-id="@Model.ModalId">
                                     Select
