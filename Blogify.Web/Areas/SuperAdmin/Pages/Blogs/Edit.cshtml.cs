@@ -23,7 +23,7 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
     {
         Tenant? tenant = await dbContext.Blogs
             .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Id == Id && t.DeletedAt == null, ct);
+            .FirstOrDefaultAsync(t => t.Id == Id, ct);
 
         if (tenant is null)
         {
@@ -39,7 +39,7 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
     public async Task<IActionResult> OnPostAsync(CancellationToken ct = default)
     {
         Tenant? tenant = await dbContext.Blogs
-            .FirstOrDefaultAsync(t => t.Id == Id && t.DeletedAt == null, ct);
+            .FirstOrDefaultAsync(t => t.Id == Id, ct);
 
         if (tenant is null)
         {
@@ -55,7 +55,7 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
 
         string normalizedSubdomain = Input.Subdomain.Trim().ToLowerInvariant();
         bool subdomainExists = await dbContext.Blogs
-            .AnyAsync(t => t.DeletedAt == null && t.Id != Id && t.Subdomain == normalizedSubdomain, ct);
+            .AnyAsync(t => t.Id != Id && t.Subdomain == normalizedSubdomain, ct);
 
         if (subdomainExists)
         {

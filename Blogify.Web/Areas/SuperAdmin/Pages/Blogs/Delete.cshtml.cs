@@ -19,7 +19,7 @@ public sealed class DeleteModel(ApplicationDbContext dbContext) : PageModel
     {
         Tenant? tenant = await dbContext.Blogs
             .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Id == Id && t.DeletedAt == null, ct);
+            .FirstOrDefaultAsync(t => t.Id == Id, ct);
 
         if (tenant is null)
         {
@@ -33,7 +33,7 @@ public sealed class DeleteModel(ApplicationDbContext dbContext) : PageModel
     public async Task<IActionResult> OnPostAsync(CancellationToken ct = default)
     {
         Tenant? tenant = await dbContext.Blogs
-            .FirstOrDefaultAsync(t => t.Id == Id && t.DeletedAt == null, ct);
+            .FirstOrDefaultAsync(t => t.Id == Id, ct);
 
         if (tenant is null)
         {

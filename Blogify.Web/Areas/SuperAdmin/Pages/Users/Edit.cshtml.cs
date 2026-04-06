@@ -122,7 +122,6 @@ public sealed class EditModel(
     {
         AvailableTenants = await dbContext.Blogs
             .AsNoTracking()
-            .Where(t => t.DeletedAt == null)
             .OrderBy(t => t.Title)
             .Select(t => new TenantSelectItem(t.Id, t.Title))
             .ToListAsync(ct);
