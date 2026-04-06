@@ -21,6 +21,7 @@ namespace Blogify.Web.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Media> Media { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -37,6 +38,10 @@ namespace Blogify.Web.Data
             builder.Entity<Media>()
                 .HasQueryFilter(m => m.DeletedAt == null &&
                     (!CurrentTenantId.HasValue || m.BlogId == CurrentTenantId.Value));
+
+            builder.Entity<Comment>()
+                .HasQueryFilter(c => c.DeletedAt == null &&
+                    (!CurrentTenantId.HasValue || c.BlogId == CurrentTenantId.Value));
 
             base.OnModelCreating(builder);
         }
