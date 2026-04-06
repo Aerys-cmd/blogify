@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Blogify.Web.Areas.SuperAdmin.Pages.Users;
 
 [Authorize(Roles = "SuperAdmin")]
-public sealed class IndexModel(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager) : PageModel
+public sealed class IndexModel(ApplicationDbContext dbContext) : PageModel
 {
     private const int PageSize = 20;
 
@@ -51,29 +51,43 @@ public sealed class IndexModel(ApplicationDbContext dbContext, UserManager<Appli
 
         List<Guid> tenantIds = pageUsers
             .Where(u => u.TenantId.HasValue)
-            .Select(u => u.TenantId.Value)
+            .Select(u => u.TenantId.GetValueOrDefault())
             .Distinct()
             .ToList();
 
-        Dictionary<Guid, string> blogTitles = await dbContext.Blogs
+        List<string> userIds = pageUsers.Select(u => u.Id).ToList();
+
+        Task<Dictionary<Guid, string>> blogTitlesTask = dbContext.Blogs
             .AsNoTracking()
-            .Where(t => tenantIds.Contains(t.Id) && t.DeletedAt == null)
+            .Where(t => tenantIds.Contains(t.Id))
             .ToDictionaryAsync(t => t.Id, t => t.Title, ct);
 
-        List<UserListItem> items = [];
-        foreach (ApplicationUser user in pageUsers)
+        Task<Dictionary<string, List<string>>> rolesTask = (
+            from ur in dbContext.UserRoles.AsNoTracking()
+            join r in dbContext.Roles.AsNoTracking() on ur.RoleId equals r.Id
+            where userIds.Contains(ur.UserId) && r.Name != null
+            select new { ur.UserId, r.Name }
+        ).GroupBy(x => x.UserId)
+         .ToDictionaryAsync(g => g.Key, g => g.Select(x => x.Name!).ToList(), ct);
+
+        await Task.WhenAll(blogTitlesTask, rolesTask);
+
+        Dictionary<Guid, string> blogTitles = blogTitlesTask.Result;
+        Dictionary<string, List<string>> rolesByUserId = rolesTask.Result;
+
+        List<UserListItem> items = pageUsers.Select(user =>
         {
-            IList<string> roles = await userManager.GetRolesAsync(user);
+            List<string> roles = rolesByUserId.TryGetValue(user.Id, out List<string>? r) ? r : [];
             string? blogTitle = user.TenantId.HasValue && blogTitles.TryGetValue(user.TenantId.Value, out string? title)
                 ? title
                 : null;
-            items.Add(new UserListItem(
+            return new UserListItem(
                 user.Id,
                 user.Email ?? string.Empty,
                 user.UserName ?? string.Empty,
-                roles.ToList().AsReadOnly(),
-                blogTitle));
-        }
+                roles.AsReadOnly(),
+                blogTitle);
+        }).ToList();
 
         Users = items;
 
