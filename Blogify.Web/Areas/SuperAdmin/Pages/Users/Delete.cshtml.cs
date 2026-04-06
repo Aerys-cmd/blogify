@@ -43,7 +43,18 @@ public sealed class DeleteModel(UserManager<ApplicationUser> userManager) : Page
             return Page();
         }
 
-        await userManager.DeleteAsync(user);
-        return RedirectToPage("./Index");
+        IdentityResult result = await userManager.DeleteAsync(user);
+        if (result.Succeeded)
+        {
+            return RedirectToPage("./Index");
+        }
+
+        UserEmail = user.Email ?? user.UserName ?? Id;
+        foreach (IdentityError error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+
+        return Page();
     }
 }
