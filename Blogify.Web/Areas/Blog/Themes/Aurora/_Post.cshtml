@@ -1,0 +1,37 @@
+@model Blogify.Web.Areas.Blog.Pages.PostModel
+
+<article>
+    @if (Model.CoverImageUrl is not null)
+    {
+        <img src="@Model.CoverImageUrl" class="w-full aspect-video object-cover rounded-xl mb-6" alt="@Model.PostTitle" />
+    }
+
+    <header class="mb-6">
+        <h1 class="text-3xl font-bold text-indigo-900 mb-2">@Model.PostTitle</h1>
+        <p class="text-sm text-stone-400 mb-3">Published @Model.PublishedAt.ToString("MMMM d, yyyy")</p>
+        @if (Model.CategoryItems.Count > 0)
+        {
+            <div class="flex flex-wrap gap-1">
+                @foreach (CategoryLinkViewModel cat in Model.CategoryItems)
+                {
+                    <a asp-area="Blog"
+                       asp-page="/Category"
+                       asp-route-slug="@cat.Slug"
+                       class="bg-indigo-100 text-indigo-700 rounded-full px-2 py-0.5 text-xs no-underline hover:bg-indigo-200">
+                        @cat.Name
+                    </a>
+                }
+            </div>
+        }
+    </header>
+
+    <div class="prose prose-indigo max-w-none">
+        @Html.Raw(Model.PostContent)
+    </div>
+</article>
+
+<div class="mt-8 pt-6 border-t border-indigo-100">
+    <a asp-area="Blog" asp-page="/Index" class="text-sm text-indigo-600 hover:text-indigo-800 underline">
+        &larr; Back to all posts
+    </a>
+</div>

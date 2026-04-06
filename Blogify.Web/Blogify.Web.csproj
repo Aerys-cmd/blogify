@@ -25,4 +25,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <Target Name="BuildTailwind" BeforeTargets="Build">
+    <Exec Command="tailwindcss -i styles/themes/minimal.css -o wwwroot/css/themes/minimal.css --minify" ContinueOnError="WarnAndContinue" />
+    <Exec Command="tailwindcss -i styles/themes/aurora.css -o wwwroot/css/themes/aurora.css --minify" ContinueOnError="WarnAndContinue" />
+  </Target>
+
 </Project>
