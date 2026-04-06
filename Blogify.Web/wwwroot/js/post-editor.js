@@ -117,7 +117,6 @@ function buildTiptapToolbar() {
         [
             { label: 'Bold', command: 'toggleBold', mark: 'bold' },
             { label: 'Italic', command: 'toggleItalic', mark: 'italic' },
-            { label: 'Underline', command: 'toggleUnderline', mark: 'underline' },
             { label: 'Strike', command: 'toggleStrike', mark: 'strike' }
         ],
         [
