@@ -23,7 +23,9 @@ public sealed class MyAdminModel(
         string? userId = userManager.GetUserId(User);
         if (userId is null)
         {
-            return RedirectToPage("/GetStarted/Step1");
+            // [Authorize] ensures authentication; this guard handles edge cases such
+            // as a user record deleted after the cookie was issued.
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
         }
 
         Tenant? tenant = await dbContext.Blogs
@@ -36,14 +38,20 @@ public sealed class MyAdminModel(
         }
 
         HostString currentHost = Request.Host;
-        string rootHost = currentHost.Host;
         string scheme = Request.Scheme;
 
-        // Build the tenant admin URL: {scheme}://{subdomain}.{rootHost}/admin
+        // Extract the root domain by stripping any leading subdomain segment.
+        // e.g. "myblog.localhost" → "localhost", "localhost" → "localhost",
+        //      "myblog.example.com" → "example.com"
+        string hostName = currentHost.Host;
+        int dotIndex = hostName.IndexOf('.');
+        string rootDomain = dotIndex >= 0 ? hostName[(dotIndex + 1)..] : hostName;
+
+        // Build the tenant admin URL: {scheme}://{subdomain}.{rootDomain}/admin
         // preserving any non-standard port (e.g. myblog.localhost:5001/admin in dev).
         string adminUrl = currentHost.Port.HasValue
-            ? $"{scheme}://{tenant.Subdomain}.{rootHost}:{currentHost.Port}/admin"
-            : $"{scheme}://{tenant.Subdomain}.{rootHost}/admin";
+            ? $"{scheme}://{tenant.Subdomain}.{rootDomain}:{currentHost.Port}/admin"
+            : $"{scheme}://{tenant.Subdomain}.{rootDomain}/admin";
 
         return Redirect(adminUrl);
     }
