@@ -1,0 +1,89 @@
+@page
+@model Blogify.Web.Areas.SuperAdmin.Pages.Users.IndexModel
+@{
+    ViewData["Title"] = "Users — Super Admin";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Users</h1>
+        <p class="text-muted mb-0">@Model.TotalCount user@(Model.TotalCount == 1 ? "" : "s") total</p>
+    </div>
+    <a asp-area="SuperAdmin" asp-page="/Users/Create" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+        </svg>
+        New User
+    </a>
+</div>
+
+<form method="get" class="mb-3">
+    <div class="input-group" style="max-width: 400px;">
+        <input type="search" name="q" value="@Model.SearchQuery" class="form-control" placeholder="Search by email or username…" aria-label="Search users" />
+        <button type="submit" class="btn btn-outline-secondary">Search</button>
+    </div>
+</form>
+
+@if (Model.Users.Count == 0)
+{
+    <div class="alert alert-info">
+        @if (!string.IsNullOrEmpty(Model.SearchQuery))
+        {
+            <span>No users found matching <strong>@Model.SearchQuery</strong>.</span>
+        }
+        else
+        {
+            <span>No users found.</span>
+        }
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Email</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Roles</th>
+                        <th scope="col">Blog</th>
+                        <th scope="col" class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (UserListItem user in Model.Users)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@user.Email</td>
+                            <td class="text-muted small">@user.UserName</td>
+                            <td>
+                                @foreach (string role in user.Roles)
+                                {
+                                    <span class="badge @(role == "SuperAdmin" ? "bg-danger" : "bg-primary") me-1">@role</span>
+                                }
+                                @if (user.Roles.Count == 0)
+                                {
+                                    <span class="text-muted small">—</span>
+                                }
+                            </td>
+                            <td class="text-muted small">@(user.BlogTitle ?? "—")</td>
+                            <td class="text-end">
+                                <a asp-area="SuperAdmin"
+                                   asp-page="/Users/Edit"
+                                   asp-route-id="@user.Id"
+                                   class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                                <a asp-area="SuperAdmin"
+                                   asp-page="/Users/Delete"
+                                   asp-route-id="@user.Id"
+                                   class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_Pagination" model="new PaginationModel(Model.CurrentPage, Model.TotalPages, Model.PaginationBaseUrl)" />
+}
