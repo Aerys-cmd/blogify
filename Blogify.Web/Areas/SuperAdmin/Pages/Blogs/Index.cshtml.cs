@@ -24,8 +24,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext) : PageModel
         SearchQuery = q?.Trim() ?? string.Empty;
 
         IQueryable<Tenant> query = dbContext.Blogs
-            .AsNoTracking()
-            .Where(t => t.DeletedAt == null);
+            .AsNoTracking();
 
         if (!string.IsNullOrEmpty(SearchQuery))
         {
