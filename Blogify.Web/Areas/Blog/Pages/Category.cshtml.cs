@@ -1,4 +1,5 @@
 using Blogify.Web.Data;
+using Blogify.Web.Models;
 using Blogify.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -6,20 +7,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.Blog.Pages;
 
-public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class CategoryModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
-    public string BlogTitle { get; private set; } = string.Empty;
+    public string CategoryName { get; private set; } = string.Empty;
+    public string CategorySlug { get; private set; } = string.Empty;
     public IReadOnlyList<PostCardViewModel> Posts { get; private set; } = [];
     public BlogSidebarViewModel Sidebar { get; private set; } = new([]);
 
-    public async Task<IActionResult> OnGetAsync(CancellationToken ct)
+    public async Task<IActionResult> OnGetAsync(string slug, CancellationToken ct)
     {
-        if (!tenantContext.IsTenantResolved)
+        Category? category = await dbContext.Categories
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Slug == slug, ct);
+
+        if (category is null)
         {
-            return RedirectToPage("/Index");
+            return NotFound();
         }
 
-        BlogTitle = tenantContext.RequiredTenant.Title;
+        CategoryName = category.Name;
+        CategorySlug = category.Slug;
 
         List<CategoryLinkViewModel> sidebarCategories = await dbContext.Categories
             .AsNoTracking()
@@ -30,7 +37,9 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
         Sidebar = new BlogSidebarViewModel(sidebarCategories);
 
         List<PostQueryRow> rows = await (
-            from p in dbContext.Posts.AsNoTracking()
+            from pc in dbContext.PostCategories.AsNoTracking()
+            where pc.CategoryId == category.Id
+            join p in dbContext.Posts.AsNoTracking() on pc.PostId equals p.Id
             where p.PublishedRevisionId != null
             join r in dbContext.PostRevisions.AsNoTracking() on p.PublishedRevisionId equals r.Id
             orderby r.CreatedAt descending
@@ -95,16 +104,3 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
     private sealed record PostCategoryRow(Guid PostId, string Name, string Slug);
 }
-
-public sealed record PostCardViewModel(
-    string Slug,
-    string Title,
-    string? Excerpt,
-    string? CoverImageUrl,
-    DateTimeOffset PublishedAt,
-    IReadOnlyList<CategoryLinkViewModel> Categories);
-
-public sealed record CategoryLinkViewModel(string Name, string Slug);
-
-public sealed record BlogSidebarViewModel(IReadOnlyList<CategoryLinkViewModel> Categories);
-
