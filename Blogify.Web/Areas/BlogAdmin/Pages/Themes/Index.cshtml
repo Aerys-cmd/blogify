@@ -1,0 +1,51 @@
+@page
+@using Blogify.Web.Areas.BlogAdmin.Pages.Themes
+@model Blogify.Web.Areas.BlogAdmin.Pages.Themes.IndexModel
+@{
+    ViewData["Title"] = "Themes";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Themes</h1>
+        <p class="text-muted mb-0">Choose the appearance of your public blog.</p>
+    </div>
+</div>
+
+@if (!ModelState.IsValid)
+{
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+}
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (ThemeOptionViewModel theme in Model.AvailableThemes)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm @(theme.Slug == Model.CurrentTheme ? "border-success border-2" : "")">
+                <img src="@theme.PreviewImageUrl"
+                     class="card-img-top"
+                     alt="@theme.DisplayName theme preview"
+                     style="object-fit:cover;height:160px;" />
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <h2 class="card-title h5 mb-0">@theme.DisplayName</h2>
+                        @if (theme.Slug == Model.CurrentTheme)
+                        {
+                            <span class="badge bg-success">&#10003; Active</span>
+                        }
+                    </div>
+                    <p class="card-text text-muted small flex-grow-1">@theme.Description</p>
+                    <form method="post" class="mt-auto">
+                        <input type="hidden" name="SelectedTheme" value="@theme.Slug" />
+                        <button type="submit"
+                                class="btn btn-primary btn-sm w-100"
+                                @(theme.Slug == Model.CurrentTheme ? "disabled" : "")
+                                asp-antiforgery="true">
+                            @(theme.Slug == Model.CurrentTheme ? "Current theme" : "Activate")
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,57 @@
+@model Blogify.Web.Areas.Blog.Pages.CategoryModel
+
+<h1 class="text-2xl font-bold text-indigo-800 mb-6">Posts in &ldquo;@Model.CategoryName&rdquo;</h1>
+
+@if (Model.Posts.Count == 0)
+{
+    <p class="text-indigo-400 py-10 text-center">No published posts in this category yet.</p>
+}
+else
+{
+    <div class="grid sm:grid-cols-2 gap-6">
+        @foreach (PostCardViewModel post in Model.Posts)
+        {
+            <article class="rounded-xl shadow-md overflow-hidden bg-white hover:shadow-xl hover:scale-[1.02] transition-transform">
+                @if (post.CoverImageUrl is not null)
+                {
+                    <img src="@post.CoverImageUrl" class="w-full h-48 object-cover" alt="@post.Title" />
+                }
+                else
+                {
+                    <div class="w-full h-48 bg-indigo-100 flex items-center justify-center" aria-hidden="true">
+                        <span class="text-indigo-300 text-5xl">&#128444;</span>
+                    </div>
+                }
+                <div class="p-4">
+                    <h2 class="font-bold text-stone-900 mb-1">
+                        <a asp-area="Blog"
+                           asp-page="/Post"
+                           asp-route-slug="@post.Slug"
+                           class="text-stone-900 hover:text-indigo-700 no-underline">
+                            @post.Title
+                        </a>
+                    </h2>
+                    <p class="text-xs text-stone-400 mb-2">@post.PublishedAt.ToString("MMMM d, yyyy")</p>
+                    @if (post.Excerpt is not null)
+                    {
+                        <p class="text-sm text-stone-600 mb-3">@post.Excerpt</p>
+                    }
+                    @if (post.Categories.Count > 0)
+                    {
+                        <div class="flex flex-wrap gap-1">
+                            @foreach (CategoryLinkViewModel cat in post.Categories)
+                            {
+                                <a asp-area="Blog"
+                                   asp-page="/Category"
+                                   asp-route-slug="@cat.Slug"
+                                   class="bg-indigo-100 text-indigo-700 rounded-full px-2 py-0.5 text-xs no-underline hover:bg-indigo-200">
+                                    @cat.Name
+                                </a>
+                            }
+                        </div>
+                    }
+                </div>
+            </article>
+        }
+    </div>
+}

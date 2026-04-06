@@ -8,6 +8,8 @@ public sealed class Tenant
     private static readonly Regex SubdomainRegex =
         new Regex(@"^[a-z0-9-]+$", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
 
+    private static readonly HashSet<string> AllowedThemes = ["default", "minimal", "aurora"];
+
     private Tenant() { }
 
     private Tenant(string title, string subdomain, string ownerId)
@@ -29,6 +31,7 @@ public sealed class Tenant
     public string Title { get; private set; } = string.Empty;
     public string Subdomain { get; private set; } = string.Empty;
     public string OwnerId { get; private set; } = string.Empty;
+    public string ActiveTheme { get; private set; } = "default";
     public DateTimeOffset CreatedAt { get; private init; }
     public DateTimeOffset? DeletedAt { get; private set; }
 
@@ -82,5 +85,17 @@ public sealed class Tenant
         }
 
         DeletedAt = DateTimeOffset.UtcNow;
+    }
+
+    public void ChangeTheme(string themeName)
+    {
+        if (string.IsNullOrWhiteSpace(themeName))
+            throw new ArgumentException("Theme name is required.", nameof(themeName));
+
+        string normalized = themeName.Trim().ToLowerInvariant();
+        if (!AllowedThemes.Contains(normalized))
+            throw new DomainException($"'{normalized}' is not a recognised theme.");
+
+        ActiveTheme = normalized;
     }
 }
