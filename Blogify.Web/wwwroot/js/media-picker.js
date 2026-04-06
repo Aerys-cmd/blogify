@@ -18,8 +18,7 @@ document.addEventListener('click', function (e) {
         if (modalId) {
             const modalEl = document.getElementById(modalId);
             if (modalEl) {
-                const bsModal = bootstrap.Modal.getInstance(modalEl);
-                if (bsModal) { bsModal.hide(); }
+                bootstrap.Modal.getOrCreateInstance(modalEl).hide();
             }
         }
 

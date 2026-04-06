@@ -86,7 +86,7 @@
 <div id="bulk-toolbar" class="alert alert-secondary d-flex align-items-center gap-3 mb-3 d-none"
      role="toolbar" aria-label="Bulk actions">
     <span id="bulk-count-label" class="fw-semibold small">0 items selected</span>
-    <form method="post" action="?handler=BulkDelete" id="bulk-delete-form" class="d-inline">
+    <form method="post" asp-page-handler="BulkDelete" id="bulk-delete-form" class="d-inline">
         <div id="bulk-ids-container"></div>
         <button type="submit" class="btn btn-danger btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
