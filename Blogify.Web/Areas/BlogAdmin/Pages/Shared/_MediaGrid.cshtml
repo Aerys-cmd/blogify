@@ -1,0 +1,62 @@
+@model Blogify.Web.Areas.BlogAdmin.Pages.Media.IndexModel
+
+@if (Model.Items.Count == 0)
+{
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+                 class="text-muted mb-3" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+                <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
+            </svg>
+            <p class="text-muted mb-0">No media files yet. Upload your first file above.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-4" id="media-items-row">
+        @foreach (MediaItemVm item in Model.Items)
+        {
+            <partial name="_MediaCard" model="item" />
+        }
+    </div>
+
+    @if (Model.Pager.TotalPages > 1)
+    {
+        <nav aria-label="Media pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.Pager.CurrentPage <= 1 ? "disabled" : "")">
+                    <button type="button" class="page-link"
+                            hx-get="?page=@(Model.Pager.CurrentPage - 1)"
+                            hx-target="#media-grid"
+                            hx-swap="innerHTML"
+                            @(Model.Pager.CurrentPage <= 1 ? "disabled" : "")
+                            aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </li>
+                @for (int p = 1; p <= Model.Pager.TotalPages; p++)
+                {
+                    <li class="page-item @(p == Model.Pager.CurrentPage ? "active" : "")">
+                        <button type="button" class="page-link"
+                                hx-get="?page=@p"
+                                hx-target="#media-grid"
+                                hx-swap="innerHTML">@p</button>
+                    </li>
+                }
+                <li class="page-item @(Model.Pager.CurrentPage >= Model.Pager.TotalPages ? "disabled" : "")">
+                    <button type="button" class="page-link"
+                            hx-get="?page=@(Model.Pager.CurrentPage + 1)"
+                            hx-target="#media-grid"
+                            hx-swap="innerHTML"
+                            @(Model.Pager.CurrentPage >= Model.Pager.TotalPages ? "disabled" : "")
+                            aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    }
+}
+

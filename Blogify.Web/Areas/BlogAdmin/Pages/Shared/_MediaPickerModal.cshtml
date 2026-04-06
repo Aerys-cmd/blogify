@@ -1,0 +1,109 @@
+@model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaPickerModalVm
+@{
+    string FormatFileSize(long bytes) => bytes >= 1_048_576
+        ? $"{bytes / 1_048_576.0:F1} MB"
+        : $"{bytes / 1024.0:F0} KB";
+}
+
+@if (Model.Items.Count == 0)
+{
+    <div class="text-center py-5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+             class="text-muted mb-3" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+            <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
+        </svg>
+        <p class="text-muted mb-0">No media files available.</p>
+    </div>
+}
+else
+{
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-3">
+        @foreach (MediaItemVm item in Model.Items)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-img-top d-flex align-items-center justify-content-center bg-light overflow-hidden"
+                         style="height: 90px;">
+                        @if (item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <img src="@item.Url" alt="@item.FileName"
+                                 class="img-fluid w-100 h-100 object-fit-cover" />
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
+                                 class="text-secondary" viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 4.5z"/>
+                            </svg>
+                        }
+                    </div>
+                    <div class="card-body p-2">
+                        <p class="card-text small text-truncate mb-0" title="@item.FileName">@item.FileName</p>
+                        <p class="card-text small text-muted mb-0">@FormatFileSize(item.SizeBytes)</p>
+                    </div>
+                    <div class="card-footer p-1 bg-transparent">
+                        <button type="button"
+                                class="btn btn-primary btn-sm w-100 media-select-btn"
+                                data-url="@item.Url"
+                                data-target="@Model.TargetInputId">
+                            Select
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model.Pager.TotalPages > 1)
+    {
+        string prevClass = Model.Pager.CurrentPage <= 1 ? "page-item disabled" : "page-item";
+        string nextClass = Model.Pager.CurrentPage >= Model.Pager.TotalPages ? "page-item disabled" : "page-item";
+        <nav aria-label="Media picker pagination">
+            <ul class="pagination pagination-sm justify-content-center">
+                <li class="@prevClass">
+                    <button type="button" class="page-link"
+                            hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&page=@(Model.Pager.CurrentPage - 1)"
+                            hx-target="#@(Model.ModalId)-body"
+                            hx-swap="innerHTML"
+                            @(Model.Pager.CurrentPage <= 1 ? "disabled" : "")
+                            aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </li>
+                @for (int p = 1; p <= Model.Pager.TotalPages; p++)
+                {
+                    string activeClass = p == Model.Pager.CurrentPage ? "page-item active" : "page-item";
+                    <li class="@activeClass">
+                        <button type="button" class="page-link"
+                                hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&page=@p"
+                                hx-target="#@(Model.ModalId)-body"
+                                hx-swap="innerHTML">@p</button>
+                    </li>
+                }
+                <li class="@nextClass">
+                    <button type="button" class="page-link"
+                            hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&page=@(Model.Pager.CurrentPage + 1)"
+                            hx-target="#@(Model.ModalId)-body"
+                            hx-swap="innerHTML"
+                            @(Model.Pager.CurrentPage >= Model.Pager.TotalPages ? "disabled" : "")
+                            aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    }
+}
+
+<script>
+    (function () {
+        document.querySelectorAll('.media-select-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.dispatchEvent(new CustomEvent('mediaSelected', {
+                    detail: { url: btn.dataset.url, targetInputId: btn.dataset.target }
+                }));
+            });
+        });
+    })();
+</script>

@@ -137,13 +137,8 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header fw-semibold">Featured Image</div>
                 <div class="card-body">
-                    <div class="mb-0">
-                        <label asp-for="Input.FeaturedImageUrl" class="form-label">Image URL</label>
-                        <input asp-for="Input.FeaturedImageUrl" class="form-control"
-                               type="url" placeholder="https://example.com/image.jpg" />
-                        <div class="form-text">Optional. Paste a full image URL.</div>
-                        <span asp-validation-for="Input.FeaturedImageUrl" class="text-danger small"></span>
-                    </div>
+                    <partial name="_MediaPickerField"
+                             model="@(new MediaPickerFieldVm("featuredImageUrl", "Input.FeaturedImageUrl", Model.Input.FeaturedImageUrl, "mediaPickerModal"))" />
                 </div>
             </div>
         </div>

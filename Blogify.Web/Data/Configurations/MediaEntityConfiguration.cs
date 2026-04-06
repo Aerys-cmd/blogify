@@ -31,8 +31,6 @@ public sealed class MediaEntityConfiguration : IEntityTypeConfiguration<Media>
         builder.Property(m => m.UploadedAt).IsRequired();
 
         builder.Property(m => m.DeletedAt);
-
-        builder.HasQueryFilter(m => m.DeletedAt == null);
     }
 }
 
