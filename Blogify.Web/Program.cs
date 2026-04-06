@@ -88,6 +88,11 @@ app.UseTenantResolution();
 // the ASP.NET Core authorization middleware.
 app.UseBlogAdminAccess();
 
+// Blog access guard: redirects unresolved-tenant requests for the Blog area to
+// the appropriate destination based on the user's authentication state and role.
+// Runs after tenant resolution and before the ASP.NET Core authorization middleware.
+app.UseBlogAccess();
+
 app.UseAuthorization();
 
 

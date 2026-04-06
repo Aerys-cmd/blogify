@@ -14,17 +14,6 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct)
     {
-        if (!tenantContext.IsTenantResolved)
-        {
-            if (User.Identity?.IsAuthenticated != true)
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
-
-            if (User.IsInRole("SuperAdmin"))
-                return RedirectToPage("/Index", new { area = "SuperAdmin" });
-
-            return RedirectToPage("/Account/Login", new { area = "Identity" });
-        }
-
         BlogTitle = tenantContext.RequiredTenant.Title;
 
         List<CategoryLinkViewModel> sidebarCategories = await dbContext.Categories
