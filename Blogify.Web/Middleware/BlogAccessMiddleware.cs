@@ -4,11 +4,11 @@ namespace Blogify.Web.Middleware;
 
 /// <summary>
 /// Enforces tenant resolution for all requests targeting the Blog area.
-/// When no tenant is resolved, authenticated SuperAdmin users are redirected to /sa,
-/// authenticated non-SuperAdmin users are redirected to /admin, and unauthenticated
-/// users are redirected to the login page. Must be placed after
-/// TenantResolutionMiddleware and after UseAuthentication (so that context.User is
-/// populated), but before the Authorization middleware.
+/// When no tenant is resolved, authenticated SuperAdmin users are redirected to /sa
+/// and all other users (authenticated or not) receive a 404 response, because no blog
+/// exists at the current host. Must be placed after TenantResolutionMiddleware and
+/// after UseAuthentication (so that context.User is populated), but before the
+/// Authorization middleware.
 /// </summary>
 public sealed class BlogAccessMiddleware
 {
@@ -30,22 +30,19 @@ public sealed class BlogAccessMiddleware
             return;
         }
 
-        // Step 2 — Tenant guard: redirect when no tenant has been resolved.
+        // Step 2 — Tenant guard: no blog exists at this host.
         if (!tenantContext.IsTenantResolved)
         {
-            if (context.User.Identity?.IsAuthenticated == true)
+            // SuperAdmin has no blog of their own — send them to the platform dashboard.
+            if (context.User.Identity?.IsAuthenticated == true && context.User.IsInRole("SuperAdmin"))
             {
-                if (context.User.IsInRole("SuperAdmin"))
-                {
-                    context.Response.Redirect("/sa");
-                    return;
-                }
-
-                context.Response.Redirect("/admin");
+                context.Response.Redirect("/sa");
                 return;
             }
 
-            context.Response.Redirect("/Identity/Account/Login");
+            // Everyone else (unauthenticated or BlogAdmin without a resolved tenant)
+            // should see a 404 — there is simply no blog at this host.
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
             return;
         }
 
