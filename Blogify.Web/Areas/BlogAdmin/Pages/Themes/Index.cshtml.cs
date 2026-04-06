@@ -18,12 +18,12 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
     [BindProperty]
     public string SelectedTheme { get; set; } = string.Empty;
 
-    public Task<IActionResult> OnGetAsync(CancellationToken ct)
+    public IActionResult OnGet()
     {
         CurrentTheme = tenantContext.RequiredTenant.ActiveTheme;
         AvailableThemes = BuildAvailableThemes();
         SelectedTheme = CurrentTheme;
-        return Task.FromResult<IActionResult>(Page());
+        return Page();
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken ct)
