@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext, FeedService feedService) : PageModel
 {
     [BindProperty]
     public CreatePostInput Input { get; set; } = new();
@@ -77,6 +77,11 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         dbContext.Posts.Add(post);
         await dbContext.SaveChangesAsync(ct);
+
+        if (Input.Publish)
+        {
+            feedService.InvalidateTenant(blogId);
+        }
 
         return RedirectToPage("/Posts/Index", new { area = "BlogAdmin" });
     }

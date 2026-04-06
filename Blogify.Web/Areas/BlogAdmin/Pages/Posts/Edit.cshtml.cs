@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
 using Blogify.Web.Models.Posts;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
+public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -153,6 +154,7 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
         }
 
         await dbContext.SaveChangesAsync(ct);
+        feedService.InvalidateTenant(post.BlogId);
         return RedirectToPage("/Posts/Index", new { area = "BlogAdmin" });
     }
 
