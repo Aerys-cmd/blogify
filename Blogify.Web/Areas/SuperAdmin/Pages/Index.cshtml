@@ -1,7 +1,7 @@
 @page
 @model Blogify.Web.Areas.SuperAdmin.Pages.IndexModel
 @{
-    ViewData["Title"] = "SuperAdmin";
+    ViewData["Title"] = "Dashboard — Super Admin";
 }
 
 <div class="mb-4">
@@ -9,10 +9,38 @@
     <p class="text-muted">Global platform management overview.</p>
 </div>
 
-<div class="card" style="max-width: 22rem;">
-    <div class="card-body">
-        <h2 class="h6 text-uppercase text-muted">Total Blogs</h2>
-        <p class="display-6 mb-0">@Model.BlogCount</p>
+<div class="row g-3">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h6 text-uppercase text-muted">Total Blogs</h2>
+                <p class="display-6 mb-0">@Model.TotalBlogs</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h6 text-uppercase text-muted">Total Users</h2>
+                <p class="display-6 mb-0">@Model.TotalUsers</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h6 text-uppercase text-muted">Total Posts</h2>
+                <p class="display-6 mb-0">@Model.TotalPosts</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h6 text-uppercase text-muted">New Blogs This Month</h2>
+                <p class="display-6 mb-0">@Model.NewBlogsThisMonth</p>
+            </div>
+        </div>
     </div>
 </div>
 

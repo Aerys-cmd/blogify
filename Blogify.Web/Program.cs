@@ -57,6 +57,31 @@ builder.Services.AddRazorPages(options =>
                 }
             }
         });
+
+    // Map the SuperAdmin area under the /sa route prefix instead of /SuperAdmin.
+    options.Conventions.AddAreaFolderRouteModelConvention(
+        areaName: "SuperAdmin",
+        folderPath: "/",
+        action: model =>
+        {
+            const string areaPrefix = "SuperAdmin";
+            const string newPrefix = "sa";
+
+            foreach (SelectorModel selector in model.Selectors)
+            {
+                if (selector.AttributeRouteModel?.Template is not string template)
+                    continue;
+
+                if (string.Equals(template, areaPrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    selector.AttributeRouteModel.Template = newPrefix;
+                }
+                else if (template.StartsWith(areaPrefix + "/", StringComparison.OrdinalIgnoreCase))
+                {
+                    selector.AttributeRouteModel.Template = newPrefix + template[areaPrefix.Length..];
+                }
+            }
+        });
 });
 
 var app = builder.Build();
