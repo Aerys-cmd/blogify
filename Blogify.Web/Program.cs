@@ -25,6 +25,10 @@ builder.Services.AddScoped<DatabaseMigrator>();
 builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 
+builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
+builder.Services.AddSingleton<AnalyticsChannel>();
+builder.Services.AddHostedService<AnalyticsWriterService>();
+
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
     options.ViewLocationExpanders.Add(new ThemeViewLocationExpander());

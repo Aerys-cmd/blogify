@@ -1,9 +1,8 @@
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using Blogify.Web.Data;
-using Blogify.Web.Models;
 using Blogify.Web.Services;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Blogify.Web.Middleware
 {
@@ -11,19 +10,26 @@ namespace Blogify.Web.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<AnalyticsTrackingMiddleware> _logger;
+        private readonly AnalyticsChannel _channel;
+        private readonly byte[] _ipHashKey;
 
         public AnalyticsTrackingMiddleware(
             RequestDelegate next,
-            ILogger<AnalyticsTrackingMiddleware> logger)
+            ILogger<AnalyticsTrackingMiddleware> logger,
+            AnalyticsChannel analyticsChannel,
+            IOptions<AnalyticsOptions> analyticsOptions)
         {
             _next = next;
             _logger = logger;
+            _channel = analyticsChannel;
+
+            string salt = analyticsOptions.Value.IpHashSalt;
+            _ipHashKey = string.IsNullOrEmpty(salt)
+                ? RandomNumberGenerator.GetBytes(32)
+                : Encoding.UTF8.GetBytes(salt);
         }
 
-        public async Task InvokeAsync(
-            HttpContext context,
-            TenantContext tenantContext,
-            IServiceScopeFactory scopeFactory)
+        public async Task InvokeAsync(HttpContext context, TenantContext tenantContext)
         {
             await _next(context);
 
@@ -53,73 +59,66 @@ namespace Blogify.Web.Middleware
                 return;
             }
 
-            // Capture all primitive data before leaving request scope
+            // Capture all request-scoped data synchronously before the request ends
             Guid tenantId = tenantContext.RequiredTenant.Id;
+            string? pageName = context.GetRouteData().Values["page"]?.ToString();
             string? slug = context.GetRouteData().Values["slug"]?.ToString();
-            string? referrer = context.Request.Headers.Referer.ToString();
-            string? utmSource = context.Request.Query["utm_source"].ToString();
-            string? ipAddress = context.Connection.RemoteIpAddress?.ToString();
-            string? ipHash = ipAddress is null ? null : HashIp(ipAddress);
+            string? referrer = NormalizeReferrer(context.Request.Headers.Referer.ToString());
+            string? utmSource = NormalizeUtmSource(context.Request.Query["utm_source"].ToString());
+            string? ipHash = context.Connection.RemoteIpAddress is IPAddress ip
+                ? HashIp(ip, _ipHashKey)
+                : null;
 
-            // Fire-and-forget: create a new DI scope for the background DB operation
-            _ = RecordEventAsync(
-                scopeFactory,
-                _logger,
+            AnalyticsEventData data = new(
                 tenantId,
+                pageName,
                 slug,
-                string.IsNullOrEmpty(referrer) ? null : referrer,
-                string.IsNullOrEmpty(utmSource) ? null : utmSource,
-                ipHash);
-        }
+                referrer,
+                utmSource,
+                ipHash,
+                DateTimeOffset.UtcNow);
 
-        private static async Task RecordEventAsync(
-            IServiceScopeFactory scopeFactory,
-            ILogger logger,
-            Guid tenantId,
-            string? slug,
-            string? referrer,
-            string? utmSource,
-            string? ipHash)
-        {
-            try
+            if (!_channel.TryEnqueue(data))
             {
-                await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
-                ApplicationDbContext db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                db.CurrentTenantId = tenantId;
-
-                Guid? postId = null;
-                if (slug is not null)
-                {
-                    var post = await db.Posts
-                        .AsNoTracking()
-                        .Where(p => p.Slug == slug && p.PublishedRevisionId != null)
-                        .Select(p => new { p.Id })
-                        .FirstOrDefaultAsync(CancellationToken.None);
-
-                    postId = post?.Id;
-                }
-
-                AnalyticsEvent analyticsEvent = AnalyticsEvent.Create(
-                    tenantId,
-                    postId,
-                    AnalyticsEventType.PageView,
-                    referrer,
-                    utmSource,
-                    ipHash);
-
-                db.AnalyticsEvents.Add(analyticsEvent);
-                await db.SaveChangesAsync(CancellationToken.None);
-            }
-            catch (Exception ex)
-            {
-                // Analytics tracking must never affect the user-facing response.
-                logger.LogWarning(ex, "Failed to record analytics event for tenant {TenantId}.", tenantId);
+                _logger.LogDebug(
+                    "Analytics channel is full; dropping page view event for tenant {TenantId}.",
+                    tenantId);
             }
         }
 
-        private static string HashIp(string ipAddress)
+        private static string? NormalizeReferrer(string? referrer)
         {
-            byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(ipAddress));
+            if (string.IsNullOrEmpty(referrer))
+            {
+                return null;
+            }
+
+            // Strip query string and fragment to reduce cardinality and avoid storing
+            // potentially sensitive query parameters from inbound referrer headers.
+            if (Uri.TryCreate(referrer, UriKind.Absolute, out Uri? uri))
+            {
+                string normalized = uri.GetLeftPart(UriPartial.Path);
+                return normalized.Length > 2048 ? normalized[..2048] : normalized;
+            }
+
+            return referrer.Length > 2048 ? referrer[..2048] : referrer;
+        }
+
+        private static string? NormalizeUtmSource(string? utmSource)
+        {
+            if (string.IsNullOrEmpty(utmSource))
+            {
+                return null;
+            }
+
+            return utmSource.Length > 255 ? utmSource[..255] : utmSource;
+        }
+
+        private static string HashIp(IPAddress ipAddress, byte[] key)
+        {
+            // Use address bytes directly (stable for IPv4/IPv6, avoids string encoding overhead)
+            byte[] addressBytes = ipAddress.GetAddressBytes();
+            byte[] hash = HMACSHA256.HashData(key, addressBytes);
             return Convert.ToHexString(hash).ToLowerInvariant();
         }
     }
