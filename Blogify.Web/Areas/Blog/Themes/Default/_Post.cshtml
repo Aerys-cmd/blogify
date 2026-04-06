@@ -125,7 +125,7 @@
                 else
                 {
                     <p class="text-muted">
-                        <a asp-area="" asp-page="/Identity/Account/Login" asp-route-returnUrl="@Context.Request.Path">Sign in</a>
+                        <a href="@Model.LoginUrl">Sign in</a>
                         to leave a comment.
                     </p>
                 }
