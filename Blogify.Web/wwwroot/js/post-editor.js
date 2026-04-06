@@ -70,41 +70,48 @@ export async function initPostEditor(wrapperId, hiddenTextareaId, formId) {
     } catch (err) {
         if (tiptapLoaded) throw err;
 
-        configureJQueryValidation();
-        await loadQuillAssets();
+        try {
+            configureJQueryValidation();
+            await loadQuillAssets();
 
-        const quillWrapper = document.createElement('div');
-        quillWrapper.className = 'post-editor-quill';
-        wrapperEl.appendChild(quillWrapper);
+            const quillWrapper = document.createElement('div');
+            quillWrapper.className = 'post-editor-quill';
+            wrapperEl.appendChild(quillWrapper);
 
-        const quillEl = document.createElement('div');
-        quillWrapper.appendChild(quillEl);
+            const quillEl = document.createElement('div');
+            quillWrapper.appendChild(quillEl);
 
-        const quill = new window.Quill(quillEl, {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'strike'],
-                    ['link', 'blockquote', 'code-block'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    [{ header: 2 }, { header: 3 }]
-                ]
+            const quill = new window.Quill(quillEl, {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['link', 'blockquote', 'code-block'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ header: 2 }, { header: 3 }]
+                    ]
+                }
+            });
+
+            if (initialContent) {
+                quill.clipboard.dangerouslyPasteHTML(initialContent);
             }
-        });
 
-        if (initialContent) {
-            quill.clipboard.dangerouslyPasteHTML(initialContent);
+            syncToHidden(quill.root.innerHTML);
+
+            quill.on('text-change', function () {
+                syncToHidden(quill.root.innerHTML);
+            });
+
+            formEl.addEventListener('submit', function () {
+                syncToHidden(quill.root.innerHTML);
+            });
+        } catch (_quillErr) {
+            hiddenTextareaEl.classList.remove('visually-hidden');
+            hiddenTextareaEl.removeAttribute('aria-hidden');
+            hiddenTextareaEl.removeAttribute('tabindex');
+            hiddenTextareaEl.classList.add('form-control');
         }
-
-        syncToHidden(quill.root.innerHTML);
-
-        quill.on('text-change', function () {
-            syncToHidden(quill.root.innerHTML);
-        });
-
-        formEl.addEventListener('submit', function () {
-            syncToHidden(quill.root.innerHTML);
-        });
     }
 }
 
