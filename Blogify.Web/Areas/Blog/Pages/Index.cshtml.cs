@@ -16,7 +16,13 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
     {
         if (!tenantContext.IsTenantResolved)
         {
-            return RedirectToPage("/Index");
+            if (User.Identity?.IsAuthenticated != true)
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+
+            if (User.IsInRole("SuperAdmin"))
+                return RedirectToPage("/Index", new { area = "SuperAdmin" });
+
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
         }
 
         BlogTitle = tenantContext.RequiredTenant.Title;
