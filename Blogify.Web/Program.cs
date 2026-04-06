@@ -131,6 +131,10 @@ app.UseBlogAdminAccess();
 // Runs after tenant resolution and before the ASP.NET Core authorization middleware.
 app.UseBlogAccess();
 
+// Analytics tracking: fire-and-forget page view recording for the Blog area.
+// Runs after access guards so only legitimate tenant page views are tracked.
+app.UseAnalyticsTracking();
+
 app.UseAuthorization();
 
 
