@@ -22,6 +22,7 @@ namespace Blogify.Web.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Media> Media { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<AnalyticsEvent> AnalyticsEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
