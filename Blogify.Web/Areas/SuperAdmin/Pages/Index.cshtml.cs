@@ -20,10 +20,10 @@ public sealed class IndexModel(ApplicationDbContext dbContext) : PageModel
             DateTimeOffset.UtcNow.Month,
             1, 0, 0, 0, TimeSpan.Zero);
 
-        Task<int> blogsTask = dbContext.Blogs.CountAsync(t => t.DeletedAt == null, ct);
+        Task<int> blogsTask = dbContext.Blogs.CountAsync(ct);
         Task<int> usersTask = dbContext.Users.CountAsync(ct);
         Task<int> postsTask = dbContext.Posts.IgnoreQueryFilters().CountAsync(p => p.DeletedAt == null, ct);
-        Task<int> newBlogsTask = dbContext.Blogs.CountAsync(t => t.DeletedAt == null && t.CreatedAt >= firstDayOfMonth, ct);
+        Task<int> newBlogsTask = dbContext.Blogs.CountAsync(t => t.CreatedAt >= firstDayOfMonth, ct);
 
         await Task.WhenAll(blogsTask, usersTask, postsTask, newBlogsTask);
 
