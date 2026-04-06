@@ -35,3 +35,98 @@
         &larr; Back to all posts
     </a>
 </div>
+
+<section class="mt-10" aria-label="Comments">
+    <h2 class="text-lg font-bold text-stone-900 mb-6">Comments (@Model.Comments.Count)</h2>
+
+    @foreach (CommentViewModel comment in Model.Comments)
+    {
+        <div class="mb-6">
+            <div class="border-l-2 border-stone-200 pl-4 py-1">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-medium text-stone-800 text-sm">@comment.AuthorName</span>
+                    <span class="text-xs text-stone-400">@comment.CreatedAt.ToString("MMMM d, yyyy")</span>
+                </div>
+                <p class="text-stone-700 text-sm mb-2">@comment.Content</p>
+
+                @if (Model.IsAuthenticated)
+                {
+                    <button type="button"
+                            class="text-xs text-stone-500 hover:text-stone-800 underline"
+                            data-reply-toggle="reply-@comment.Id">
+                        Reply
+                    </button>
+                    <div id="reply-@comment.Id" class="hidden mt-3">
+                        <form method="post">
+                            <input type="hidden" name="Input.ParentCommentId" value="@comment.Id" />
+                            <label for="reply-content-@comment.Id" class="sr-only">Reply to @comment.AuthorName</label>
+                            <textarea id="reply-content-@comment.Id"
+                                      name="Input.Content"
+                                      class="w-full border border-stone-200 rounded p-2 text-sm focus:outline-none focus:ring-1 focus:ring-stone-400"
+                                      rows="2"
+                                      maxlength="2000"
+                                      placeholder="Write your reply…"
+                                      required></textarea>
+                            <button type="submit"
+                                    class="mt-2 bg-stone-800 hover:bg-stone-900 text-white text-xs px-3 py-1.5 rounded">
+                                Post Reply
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+
+            @if (comment.Replies.Count > 0)
+            {
+                <div class="ml-6 mt-2 space-y-2">
+                    @foreach (CommentViewModel reply in comment.Replies)
+                    {
+                        <div class="border-l-2 border-stone-100 pl-4 py-1">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-medium text-stone-700 text-xs">@reply.AuthorName</span>
+                                <span class="text-xs text-stone-400">@reply.CreatedAt.ToString("MMMM d, yyyy")</span>
+                            </div>
+                            <p class="text-stone-600 text-sm">@reply.Content</p>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    @if (Model.Comments.Count == 0)
+    {
+        <p class="text-stone-400 text-sm">No comments yet. Be the first to share your thoughts!</p>
+    }
+
+    <div class="mt-8 pt-6 border-t border-stone-200">
+        @if (Model.IsAuthenticated)
+        {
+            <h3 class="text-base font-semibold text-stone-900 mb-4">Leave a comment</h3>
+            <form method="post" class="space-y-3">
+                <div asp-validation-summary="ModelOnly" class="border border-red-200 text-red-700 rounded p-3 text-sm"></div>
+                <div>
+                    <label asp-for="Input.Content" class="block text-sm font-medium text-stone-700 mb-1">Your comment</label>
+                    <textarea asp-for="Input.Content"
+                              class="w-full border border-stone-200 rounded p-3 text-sm focus:outline-none focus:ring-1 focus:ring-stone-400"
+                              rows="4"
+                              maxlength="2000"
+                              placeholder="Write your comment here…"></textarea>
+                    <span asp-validation-for="Input.Content" class="text-red-600 text-xs mt-1 block"></span>
+                </div>
+                <button type="submit"
+                        class="bg-stone-800 hover:bg-stone-900 text-white px-4 py-2 rounded text-sm font-medium">
+                    Post Comment
+                </button>
+            </form>
+        }
+        else
+        {
+            <p class="text-stone-500 text-sm">
+                <a asp-area="" asp-page="/Identity/Account/Login" asp-route-returnUrl="@Context.Request.Path"
+                   class="text-stone-800 underline hover:text-stone-900">Sign in</a>
+                to leave a comment.
+            </p>
+        }
+    </div>
+</section>
