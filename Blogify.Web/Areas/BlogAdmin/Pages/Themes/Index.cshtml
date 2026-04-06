@@ -39,8 +39,7 @@
                         <input type="hidden" name="SelectedTheme" value="@theme.Slug" />
                         <button type="submit"
                                 class="btn btn-primary btn-sm w-100"
-                                @(theme.Slug == Model.CurrentTheme ? "disabled" : "")
-                                asp-antiforgery="true">
+                                @(theme.Slug == Model.CurrentTheme ? "disabled" : "")>
                             @(theme.Slug == Model.CurrentTheme ? "Current theme" : "Activate")
                         </button>
                     </form>
