@@ -30,6 +30,11 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<Tenant>
 
         builder.Property(t => t.DeletedAt);
 
+        builder.Property(t => t.ActiveTheme)
+            .IsRequired()
+            .HasMaxLength(50)
+            .HasDefaultValue("default");
+
         builder.HasIndex(t => t.Subdomain).IsUnique();
 
         builder.HasQueryFilter(t => t.DeletedAt == null);
