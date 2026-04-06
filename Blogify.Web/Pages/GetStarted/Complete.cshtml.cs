@@ -15,6 +15,8 @@ public sealed class CompleteModel(
 {
     public string BlogTitle { get; private set; } = string.Empty;
     public string BlogSubdomain { get; private set; } = string.Empty;
+    public string AdminUrl { get; private set; } = string.Empty;
+    public string BlogUrl { get; private set; } = string.Empty;
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct)
     {
@@ -35,6 +37,14 @@ public sealed class CompleteModel(
 
         BlogTitle = tenant.Title;
         BlogSubdomain = tenant.Subdomain;
+
+        string scheme = Request.Scheme;
+        string hostName = Request.Host.Host;
+        int dotIndex = hostName.IndexOf('.');
+        string rootDomain = dotIndex >= 0 ? hostName[(dotIndex + 1)..] : hostName;
+        string portSuffix = Request.Host.Port.HasValue ? $":{Request.Host.Port}" : string.Empty;
+        AdminUrl = $"{scheme}://{tenant.Subdomain}.{rootDomain}{portSuffix}/admin";
+        BlogUrl = $"{scheme}://{tenant.Subdomain}.{rootDomain}{portSuffix}";
 
         return Page();
     }

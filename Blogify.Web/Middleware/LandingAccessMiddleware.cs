@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Blogify.Web.Services;
 
 namespace Blogify.Web.Middleware;
@@ -6,9 +7,10 @@ namespace Blogify.Web.Middleware;
 /// Enforces correct host-based access for the public landing pages (root Pages/).
 ///
 /// Two rules are applied:
-/// 1. Root pages (no area) are only accessible on the root domain. When a tenant is
-///    resolved (subdomain request), they return 404 — the landing page and registration
-///    wizard must not be reachable from tenant subdomains.
+/// 1. Root Razor Pages (no area) are only accessible on the root domain. When a tenant
+///    is resolved (subdomain request), they return 404 — the landing page and registration
+///    wizard must not be reachable from tenant subdomains. Non-Razor endpoints (e.g.
+///    health checks at /health and /alive) are exempt from this rule.
 /// 2. The Blog area index uses <c>@page "/"</c> which claims the absolute "/" route and
 ///    therefore wins over Pages/Index.cshtml for the "/" URL. On the root domain (no
 ///    tenant resolved), such Blog area hits are redirected to the landing page at /Index
@@ -33,9 +35,11 @@ public sealed class LandingAccessMiddleware
     {
         string? area = context.GetRouteValue("area")?.ToString();
 
-        // Rule 1 — Root pages (area = null) are root-domain only.
-        // Tenant subdomain requests to these pages must return 404.
-        if (string.IsNullOrEmpty(area) && tenantContext.IsTenantResolved)
+        // Rule 1 — Root Razor Pages (area = null) are root-domain only.
+        // Only applies to Razor Page endpoints; non-Razor endpoints (health checks, etc.)
+        // are not blocked so that e.g. /health and /alive remain accessible on all hosts.
+        bool isRazorPage = context.GetEndpoint()?.Metadata.GetMetadata<PageActionDescriptor>() is not null;
+        if (string.IsNullOrEmpty(area) && tenantContext.IsTenantResolved && isRazorPage)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             await context.Response.WriteAsync("Not found.");
