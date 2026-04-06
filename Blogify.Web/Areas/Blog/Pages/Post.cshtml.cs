@@ -58,6 +58,18 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
         }
 
         Guid blogId = tenantContext.RequiredTenant.Id;
+        if (Input.ParentCommentId is Guid parentCommentId)
+        {
+            Comment? parentComment = await dbContext.Comments
+                .FirstOrDefaultAsync(c => c.Id == parentCommentId && c.BlogId == blogId && c.PostId == PostId, ct);
+
+            if (parentComment is null)
+            {
+                ModelState.AddModelError(nameof(Input.ParentCommentId), "The selected parent comment is invalid.");
+                return Page();
+            }
+        }
+
         Comment comment = Comment.Create(blogId, PostId, authorId, Input.Content, Input.ParentCommentId);
         dbContext.Comments.Add(comment);
         await dbContext.SaveChangesAsync(ct);
@@ -126,6 +138,7 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
 
         List<string> commentAuthorIds = allComments.Select(c => c.AuthorId).Distinct().ToList();
         Dictionary<string, string> authorNames = await dbContext.Users
+            .AsNoTracking()
             .Where(u => commentAuthorIds.Contains(u.Id))
             .ToDictionaryAsync(u => u.Id, u => u.UserName ?? u.Email ?? "Anonymous", ct);
 
@@ -140,7 +153,8 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
             .ToList();
 
         IsAuthenticated = User.Identity?.IsAuthenticated ?? false;
-        LoginUrl = Url.Page("/Identity/Account/Login", new { area = string.Empty, returnUrl = HttpContext.Request.Path.Value })
+        string returnUrl = $"{Request.PathBase}{Request.Path}{Request.QueryString}";
+        LoginUrl = Url.Page("/Account/Login", pageHandler: null, values: new { area = "Identity", returnUrl })
             ?? "/Identity/Account/Login";
 
         return null;

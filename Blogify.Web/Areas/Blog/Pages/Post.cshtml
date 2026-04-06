@@ -8,17 +8,3 @@
 @section Sidebar {
     @await Html.PartialAsync("_Sidebar", Model.Sidebar)
 }
-
-@section Scripts {
-    <script>
-        document.querySelectorAll('[data-reply-toggle]').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                var targetId = btn.getAttribute('data-reply-toggle');
-                var panel = document.getElementById(targetId);
-                if (panel) {
-                    panel.classList.toggle('hidden');
-                }
-            });
-        });
-    </script>
-}

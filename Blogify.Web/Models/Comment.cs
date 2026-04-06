@@ -30,9 +30,9 @@ public sealed class Comment
         Id = Guid.NewGuid();
         BlogId = blogId;
         PostId = postId;
-        AuthorId = authorId;
+        AuthorId = authorId.Trim();
         Content = trimmedContent;
-        ParentCommentId = parentCommentId;
+        ParentCommentId = parentCommentId == Guid.Empty ? null : parentCommentId;
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
