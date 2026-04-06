@@ -4,6 +4,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+uploads/
 
 # Build
 bin/

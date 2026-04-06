@@ -22,6 +22,7 @@ builder.Services
 builder.Services.AddScoped<TenantContext>();
 builder.Services.AddScoped<DatabaseMigrator>();
 builder.Services.AddScoped<DatabaseSeeder>();
+builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 
 // Add services to the container.
 builder.Services.AddRazorPages(options =>
@@ -70,6 +71,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 // Explicit routing must be first so that route data is available to all subsequent middleware.
 app.UseRouting();

@@ -6,6 +6,7 @@
     string? currentPage = ViewContext.RouteData.Values["page"]?.ToString();
     bool isDashboardActive = string.Equals(currentPage, "/Index", StringComparison.OrdinalIgnoreCase);
     bool isPostsActive = currentPage?.StartsWith("/Posts", StringComparison.OrdinalIgnoreCase) ?? false;
+    bool isMediaActive = currentPage?.StartsWith("/Media", StringComparison.OrdinalIgnoreCase) ?? false;
     bool isCategoriesActive = currentPage?.StartsWith("/Categories", StringComparison.OrdinalIgnoreCase) ?? false;
 }
 
@@ -56,6 +57,18 @@
                     <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m0-2.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                 </svg>
                 Posts
+            </a>
+
+            <a class="nav-link d-flex align-items-center gap-2 px-2 py-2 rounded @(isMediaActive ? "ba-nav-active" : "")"
+               asp-area="BlogAdmin"
+               asp-page="/Media/Index"
+               aria-current="@(isMediaActive ? "page" : null)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+                    <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
+                </svg>
+                Media
             </a>
 
             <a class="nav-link d-flex align-items-center gap-2 px-2 py-2 rounded @(isCategoriesActive ? "ba-nav-active" : "")"

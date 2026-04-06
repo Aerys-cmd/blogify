@@ -34,6 +34,10 @@ namespace Blogify.Web.Data
                 .HasQueryFilter(c => c.DeletedAt == null &&
                     (!CurrentTenantId.HasValue || c.BlogId == CurrentTenantId.Value));
 
+            builder.Entity<Media>()
+                .HasQueryFilter(m => m.DeletedAt == null &&
+                    (!CurrentTenantId.HasValue || m.BlogId == CurrentTenantId.Value));
+
             base.OnModelCreating(builder);
         }
 

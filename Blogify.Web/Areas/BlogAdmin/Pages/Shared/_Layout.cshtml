@@ -1,3 +1,4 @@
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Blogify.Web.styles.css" asp-append-version="true" />
 </head>
-<body class="ba-layout bg-light">
+<body class="ba-layout bg-light"
+      hx-headers='{"RequestVerificationToken": "@Antiforgery.GetAndStoreTokens(Context).RequestToken"}'>
 
     <div class="d-flex">
         <partial name="_Sidebar" />
@@ -42,6 +44,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/htmx/htmx.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
