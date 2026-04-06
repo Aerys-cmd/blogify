@@ -15,7 +15,8 @@ public sealed class AnalyticsEvent
         AnalyticsEventType eventType,
         string? referrer,
         string? utmSource,
-        string? ipHash)
+        string? ipHash,
+        DateTimeOffset timestamp)
     {
         if (tenantId == Guid.Empty)
         {
@@ -28,7 +29,7 @@ public sealed class AnalyticsEvent
         EventType = eventType;
         Referrer = referrer;
         UTMSource = utmSource;
-        Timestamp = DateTimeOffset.UtcNow;
+        Timestamp = timestamp;
         IpHash = ipHash;
     }
 
@@ -47,8 +48,10 @@ public sealed class AnalyticsEvent
         AnalyticsEventType eventType,
         string? referrer,
         string? utmSource,
-        string? ipHash)
+        string? ipHash,
+        DateTimeOffset? timestamp = null)
     {
-        return new AnalyticsEvent(tenantId, postId, eventType, referrer, utmSource, ipHash);
+        return new AnalyticsEvent(tenantId, postId, eventType, referrer, utmSource, ipHash,
+            timestamp ?? DateTimeOffset.UtcNow);
     }
 }

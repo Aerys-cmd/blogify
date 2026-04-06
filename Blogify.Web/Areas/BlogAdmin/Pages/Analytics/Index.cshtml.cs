@@ -47,9 +47,9 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
             .CountAsync(ct);
 
         List<TopPostRow> topPostRows = await tenantEvents
-            .Where(e => e.Timestamp >= cutoff30 && e.PostId != null)
-            .GroupBy(e => e.PostId)
-            .Select(g => new TopPostRow(g.Key!.Value, g.Count()))
+            .Where(e => e.Timestamp >= cutoff30 && e.PostId.HasValue)
+            .GroupBy(e => e.PostId!.Value)
+            .Select(g => new TopPostRow(g.Key, g.Count()))
             .OrderByDescending(r => r.Views)
             .Take(5)
             .ToListAsync(ct);
@@ -74,8 +74,9 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
         TopReferrers = await tenantEvents
             .Where(e => e.Timestamp >= cutoff30 && e.Referrer != null)
-            .GroupBy(e => e.Referrer)
-            .Select(g => new TopReferrerViewModel(g.Key!, g.Count()))
+            .Select(e => e.Referrer ?? string.Empty)
+            .GroupBy(referrer => referrer)
+            .Select(g => new TopReferrerViewModel(g.Key, g.Count()))
             .OrderByDescending(r => r.Views)
             .Take(10)
             .ToListAsync(ct);
