@@ -89,6 +89,13 @@ app.UseAuthentication();
 // authorization so that downstream middleware and pages can access TenantContext.
 app.UseTenantResolution();
 
+// Landing page access guard: enforces host-based routing for root Pages.
+// Root pages (no area) are only accessible on the root domain; tenant subdomain
+// requests to them return 404. Also redirects Blog area hits on the root domain
+// (caused by Areas/Blog/Pages/Index.cshtml using @page "/") to the landing page.
+// Must run after tenant resolution and before Blog/BlogAdmin access guards.
+app.UseLandingAccess();
+
 // BlogAdmin access guard: validates tenant presence and ownership/membership for
 // requests targeting the BlogAdmin area. Runs after tenant resolution and before
 // the ASP.NET Core authorization middleware.
