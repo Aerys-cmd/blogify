@@ -16,7 +16,11 @@ public sealed class Step2Model(
     UserManager<ApplicationUser> userManager) : PageModel
 {
     [BindProperty]
-    public required Step2Input Input { get; set; }
+    public required Step2Input Input { get; set; } = new()
+    {
+        Title = string.Empty,
+        Subdomain = string.Empty
+    };
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct)
     {
