@@ -51,7 +51,15 @@ public sealed class Step1Model(
             return Page();
         }
 
-        await userManager.AddToRoleAsync(user, "BlogAdmin");
+        IdentityResult roleResult = await userManager.AddToRoleAsync(user, "BlogAdmin");
+        if (!roleResult.Succeeded)
+        {
+            foreach (IdentityError error in roleResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return Page();
+        }
         await signInManager.SignInAsync(user, isPersistent: false);
 
         return RedirectToPage("/GetStarted/Step2");
