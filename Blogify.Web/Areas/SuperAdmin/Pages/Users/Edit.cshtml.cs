@@ -64,10 +64,20 @@ public sealed class EditModel(
 
         user.Email = Input.Email;
         user.UserName = Input.UserName;
-        user.TenantId = string.IsNullOrEmpty(Input.TenantId)
-            ? null
-            : Guid.Parse(Input.TenantId);
 
+        if (string.IsNullOrEmpty(Input.TenantId))
+        {
+            user.TenantId = null;
+        }
+        else if (Guid.TryParse(Input.TenantId, out Guid tenantId))
+        {
+            user.TenantId = tenantId;
+        }
+        else
+        {
+            ModelState.AddModelError($"{nameof(Input)}.{nameof(Input.TenantId)}", "The selected tenant is invalid.");
+            return Page();
+        }
         IdentityResult updateResult = await userManager.UpdateAsync(user);
         if (!updateResult.Succeeded)
         {
