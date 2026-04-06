@@ -164,11 +164,7 @@ function buildTiptapToolbar() {
 }
 
 function wireToolbarButtons(toolbar, editor) {
-    toolbar.addEventListener('mousedown', function (e) {
-        const btn = e.target.closest('button[data-command]');
-        if (!btn) return;
-        e.preventDefault();
-
+    function runCommand(btn) {
         const command = btn.dataset.command;
         const attrs = btn.dataset.attrs ? JSON.parse(btn.dataset.attrs) : undefined;
 
@@ -177,6 +173,24 @@ function wireToolbarButtons(toolbar, editor) {
         } else {
             editor.chain().focus()[command]().run();
         }
+    }
+
+    toolbar.addEventListener('mousedown', function (e) {
+        const btn = e.target.closest('button[data-command]');
+        if (!btn) return;
+        e.preventDefault();
+        btn._pointerActivated = true;
+        runCommand(btn);
+    });
+
+    toolbar.addEventListener('click', function (e) {
+        const btn = e.target.closest('button[data-command]');
+        if (!btn) return;
+        if (btn._pointerActivated) {
+            btn._pointerActivated = false;
+            return;
+        }
+        runCommand(btn);
     });
 }
 
