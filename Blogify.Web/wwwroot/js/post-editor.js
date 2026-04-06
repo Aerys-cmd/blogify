@@ -62,13 +62,34 @@ export async function initPostEditor(wrapperId, hiddenTextareaId, formId) {
 
         syncToHidden(editor.getHTML());
 
+        function isImageSelection(detail) {
+            if (!detail) return false;
+
+            if (detail.isImage === true) return true;
+
+            if (typeof detail.contentType === 'string' && detail.contentType.toLowerCase().startsWith('image/')) {
+                return true;
+            }
+
+            const src = detail.fullUrl ?? detail.url;
+            if (typeof src !== 'string' || src.length === 0) {
+                return false;
+            }
+
+            return /\.(apng|avif|bmp|gif|ico|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(src);
+        }
+
         document.addEventListener('mediaSelected', function onEditorMediaSelected(e) {
             if (e.detail.targetInputId !== 'editorImageInsert') return;
+
             const src = e.detail.fullUrl ?? e.detail.url;
             const alt = e.detail.altText ?? '';
-            if (src) {
-                editor.chain().focus().setImage({ src, alt }).run();
+
+            if (!src || !isImageSelection(e.detail)) {
+                return;
             }
+
+            editor.chain().focus().setImage({ src, alt }).run();
         });
 
         wireToolbarButtons(toolbar, editor);
