@@ -28,9 +28,10 @@ export async function initPostEditor(wrapperId, hiddenTextareaId, formId) {
     let tiptapLoaded = false;
 
     try {
-        const [{ Editor }, { StarterKit }] = await Promise.all([
+        const [{ Editor }, { StarterKit }, { Placeholder }] = await Promise.all([
             import('https://esm.sh/@tiptap/core@2'),
-            import('https://esm.sh/@tiptap/starter-kit@2')
+            import('https://esm.sh/@tiptap/starter-kit@2'),
+            import('https://esm.sh/@tiptap/extension-placeholder@2')
         ]);
 
         tiptapLoaded = true;
@@ -45,7 +46,7 @@ export async function initPostEditor(wrapperId, hiddenTextareaId, formId) {
 
         const editor = new Editor({
             element: editorContentEl,
-            extensions: [StarterKit],
+            extensions: [StarterKit, Placeholder.configure({ placeholder: 'Write your post content here\u2026' })],
             content: initialContent,
             onUpdate({ editor: e }) {
                 syncToHidden(e.getHTML());
