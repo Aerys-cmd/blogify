@@ -28,6 +28,14 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
     public async Task<IActionResult> OnPostAsync(CancellationToken ct)
     {
+        if (string.IsNullOrWhiteSpace(SelectedTheme))
+        {
+            ModelState.AddModelError(nameof(SelectedTheme), "A theme must be selected.");
+            CurrentTheme = tenantContext.RequiredTenant.ActiveTheme;
+            AvailableThemes = BuildAvailableThemes();
+            return Page();
+        }
+
         Tenant? tenant = await dbContext.Blogs
             .FirstOrDefaultAsync(t => t.Id == tenantContext.RequiredTenant.Id, ct);
 
