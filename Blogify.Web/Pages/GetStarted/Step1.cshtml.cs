@@ -11,7 +11,12 @@ public sealed class Step1Model(
     SignInManager<ApplicationUser> signInManager) : PageModel
 {
     [BindProperty]
-    public required Step1Input Input { get; set; }
+    public Step1Input Input { get; set; } = new()
+    {
+        Email = string.Empty,
+        Password = string.Empty,
+        ConfirmPassword = string.Empty
+    };
 
     public IActionResult OnGet()
     {
