@@ -1,0 +1,30 @@
+.post-editor-wrapper {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.post-editor-tiptap .ProseMirror {
+    min-height: 320px;
+    padding: 0.75rem 1rem;
+    outline: none;
+}
+
+.post-editor-tiptap .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: #adb5bd;
+    pointer-events: none;
+    float: left;
+    height: 0;
+}
+
+.post-editor-quill .ql-container {
+    min-height: 320px;
+    font-size: 1rem;
+}
+
+.post-editor-quill .ql-toolbar {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
