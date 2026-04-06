@@ -20,7 +20,10 @@
                 <div class="ms-auto d-flex gap-2 align-items-center">
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <a class="btn btn-primary btn-sm" href="/admin">Go to Blog Admin</a>
+                        <div class="d-flex flex-column flex-md-row align-items-md-center gap-2">
+                            <span class="btn btn-primary btn-sm disabled" aria-disabled="true">Blog Admin</span>
+                            <small class="text-light">Open Blog Admin from your blog subdomain.</small>
+                        </div>
                     }
                     else
                     {
