@@ -1,0 +1,74 @@
+@model Blogify.Web.Areas.BlogAdmin.Pages.Media.IndexModel
+
+<div class="d-flex flex-column gap-3">
+    @* Search *@
+    <div>
+        <label class="form-label small fw-semibold mb-1">Search</label>
+        <input type="search" class="form-control form-control-sm"
+               name="q" id="active-q-filter" value="@Model.SearchQuery"
+               placeholder="Filename…"
+               hx-get="?handler=Search"
+               hx-target="#media-content"
+               hx-swap="innerHTML"
+               hx-trigger="input changed delay:400ms, search"
+               hx-include="[name='type'],[name='month']"
+               aria-label="Search by filename" />
+    </div>
+
+    @* Type filter *@
+    <div>
+        <p class="form-label small fw-semibold mb-2">Type</p>
+        @{
+            (string Value, string Label)[] typeOptions =
+            [
+                ("", "All"),
+                ("image", "Images"),
+                ("document", "Documents")
+            ];
+        }
+        <div class="d-flex flex-column gap-1">
+            @foreach ((string value, string label) in typeOptions)
+            {
+                string radioId = $"type-{(value == "" ? "all" : value)}";
+                bool isActive = Model.TypeFilter == value || (string.IsNullOrEmpty(value) && string.IsNullOrEmpty(Model.TypeFilter));
+                <div class="form-check">
+                    <input class="form-check-input" type="radio"
+                           name="type" id="@radioId" value="@value"
+                           checked="@(isActive ? "checked" : null)"
+                           hx-get="?handler=Search"
+                           hx-target="#media-content"
+                           hx-swap="innerHTML"
+                           hx-include="[name='q'],[name='month']"
+                           hx-trigger="change" />
+                    <label class="form-check-label small" for="@radioId">@label</label>
+                </div>
+            }
+        </div>
+    </div>
+
+    @* Month filter *@
+    @if (Model.AvailableMonths.Count > 0)
+    {
+        <div>
+            <label class="form-label small fw-semibold mb-1" for="month-filter-select">Date</label>
+            <select class="form-select form-select-sm" id="month-filter-select" name="month"
+                    hx-get="?handler=Search"
+                    hx-target="#media-content"
+                    hx-swap="innerHTML"
+                    hx-include="[name='q'],[name='type']"
+                    hx-trigger="change">
+                <option value="" selected="@(string.IsNullOrEmpty(Model.MonthFilter) ? "selected" : null)">
+                    All dates
+                </option>
+                @foreach (MonthBucketVm bucket in Model.AvailableMonths)
+                {
+                    <option value="@bucket.Value"
+                            selected="@(Model.MonthFilter == bucket.Value ? "selected" : null)">
+                        @bucket.Label
+                    </option>
+                }
+            </select>
+        </div>
+    }
+</div>
+

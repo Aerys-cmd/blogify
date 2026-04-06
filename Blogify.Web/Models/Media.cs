@@ -64,10 +64,46 @@ public sealed class Media
     public long SizeBytes { get; private init; }
     public DateTimeOffset UploadedAt { get; private init; }
     public DateTimeOffset? DeletedAt { get; private set; }
+    public string? AltText { get; private set; }
+    public string? Title { get; private set; }
+    public string? Description { get; private set; }
+    public string? ThumbnailUrl { get; private set; }
+    public int? WidthPx { get; private set; }
+    public int? HeightPx { get; private set; }
 
     public static Media Upload(Guid blogId, string fileName, string url, string contentType, long sizeBytes)
     {
         return new Media(blogId, fileName, url, contentType, sizeBytes);
+    }
+
+    public void UpdateMetadata(string? altText, string? title, string? description)
+    {
+        if (altText is not null && altText.Trim().Length > 500)
+        {
+            throw new ArgumentException("Alt text must not exceed 500 characters.", nameof(altText));
+        }
+
+        if (title is not null && title.Trim().Length > 255)
+        {
+            throw new ArgumentException("Title must not exceed 255 characters.", nameof(title));
+        }
+
+        if (description is not null && description.Trim().Length > 2000)
+        {
+            throw new ArgumentException("Description must not exceed 2000 characters.", nameof(description));
+        }
+
+        AltText = string.IsNullOrWhiteSpace(altText) ? null : altText.Trim();
+        Title = string.IsNullOrWhiteSpace(title) ? null : title.Trim();
+        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+    }
+
+    internal void SetThumbnail(string thumbnailUrl, int widthPx, int heightPx)
+    {
+        ArgumentNullException.ThrowIfNull(thumbnailUrl);
+        ThumbnailUrl = thumbnailUrl;
+        WidthPx = widthPx;
+        HeightPx = heightPx;
     }
 
     public void SoftDelete()
