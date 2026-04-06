@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
 using Blogify.Web.Services;
@@ -23,6 +24,11 @@ builder.Services.AddScoped<TenantContext>();
 builder.Services.AddScoped<DatabaseMigrator>();
 builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
+builder.Services.Configure<RazorViewEngineOptions>(options =>
+{
+    options.ViewLocationExpanders.Add(new ThemeViewLocationExpander());
+});
 
 // Add services to the container.
 builder.Services.AddRazorPages(options =>

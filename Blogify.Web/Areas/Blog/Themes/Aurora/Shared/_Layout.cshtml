@@ -1,0 +1,41 @@
+@inject Blogify.Web.Services.TenantContext TenantContext
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — @TenantContext.CurrentTenant?.Title</title>
+    <link rel="stylesheet" href="~/css/themes/aurora.css" asp-append-version="true" />
+</head>
+<body class="bg-white antialiased">
+    <header class="bg-indigo-950 text-white py-4 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <a asp-area="Blog" asp-page="/Index" class="text-white no-underline">
+                <span class="text-xl font-bold tracking-tight">@TenantContext.CurrentTenant?.Title</span>
+            </a>
+            <nav aria-label="Site navigation">
+                <a asp-area="Blog" asp-page="/Index" class="text-indigo-200 hover:text-white text-sm no-underline">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+            <main class="lg:col-span-2">
+                @RenderBody()
+            </main>
+            <aside class="mt-8 lg:mt-0">
+                @RenderSection("Sidebar", required: false)
+            </aside>
+        </div>
+    </div>
+
+    <footer class="bg-indigo-950 text-indigo-300 py-6 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
+            &copy; @TenantContext.CurrentTenant?.CreatedAt.Year — @TenantContext.CurrentTenant?.Title
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

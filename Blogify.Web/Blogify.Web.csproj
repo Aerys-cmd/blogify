@@ -25,4 +25,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <EnableTailwindBuild>$(TAILWIND_BUILD)</EnableTailwindBuild>
+    <TailwindCli Condition="'$(OS)' == 'Windows_NT'">$(MSBuildProjectDirectory)\node_modules\.bin\tailwindcss.cmd</TailwindCli>
+    <TailwindCli Condition="'$(OS)' != 'Windows_NT'">$(MSBuildProjectDirectory)/node_modules/.bin/tailwindcss</TailwindCli>
+  </PropertyGroup>
+
+  <Target Name="BuildTailwind" BeforeTargets="Build" Condition="'$(EnableTailwindBuild)' == 'true' And Exists('$(TailwindCli)')">
+    <Exec Command="&quot;$(TailwindCli)&quot; -i styles/themes/minimal.css -o wwwroot/css/themes/minimal.css --minify" ContinueOnError="WarnAndContinue" />
+    <Exec Command="&quot;$(TailwindCli)&quot; -i styles/themes/aurora.css -o wwwroot/css/themes/aurora.css --minify" ContinueOnError="WarnAndContinue" />
+  </Target>
+
 </Project>
