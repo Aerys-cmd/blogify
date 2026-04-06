@@ -1,0 +1,39 @@
+@page "{id}"
+@model Blogify.Web.Areas.SuperAdmin.Pages.Users.DeleteModel
+@{
+    ViewData["Title"] = $"Delete — {Model.UserEmail}";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item">
+                <a asp-area="SuperAdmin" asp-page="/Users/Index">Users</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Delete</li>
+        </ol>
+    </nav>
+    <h1 class="h3 mb-0">Delete User</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white fw-semibold">Confirm Deletion</div>
+            <div class="card-body">
+                <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+                <p>Are you sure you want to permanently delete the following user? This action cannot be undone.</p>
+                <dl class="row mb-4">
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.UserEmail</dd>
+                </dl>
+                <form method="post">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        <a asp-area="SuperAdmin" asp-page="/Users/Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

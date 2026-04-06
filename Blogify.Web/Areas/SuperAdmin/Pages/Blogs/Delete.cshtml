@@ -1,0 +1,38 @@
+@page "{id:guid}"
+@model Blogify.Web.Areas.SuperAdmin.Pages.Blogs.DeleteModel
+@{
+    ViewData["Title"] = $"Delete — {Model.TenantTitle}";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item">
+                <a asp-area="SuperAdmin" asp-page="/Blogs/Index">Blogs</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Delete</li>
+        </ol>
+    </nav>
+    <h1 class="h3 mb-0">Delete Blog</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white fw-semibold">Confirm Deletion</div>
+            <div class="card-body">
+                <p>Are you sure you want to delete the following blog? This action soft-deletes the blog and cannot be undone from this panel.</p>
+                <dl class="row mb-4">
+                    <dt class="col-sm-4">Title</dt>
+                    <dd class="col-sm-8">@Model.TenantTitle</dd>
+                </dl>
+                <form method="post">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        <a asp-area="SuperAdmin" asp-page="/Blogs/Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

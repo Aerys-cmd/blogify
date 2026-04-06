@@ -1,0 +1,82 @@
+@page
+@model Blogify.Web.Areas.SuperAdmin.Pages.Blogs.IndexModel
+@{
+    ViewData["Title"] = "Blogs — Super Admin";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Blogs</h1>
+        <p class="text-muted mb-0">@Model.TotalCount blog@(Model.TotalCount == 1 ? "" : "s") total</p>
+    </div>
+    <a asp-area="SuperAdmin" asp-page="/Blogs/Create" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+        </svg>
+        New Blog
+    </a>
+</div>
+
+<form method="get" class="mb-3">
+    <div class="input-group" style="max-width: 400px;">
+        <input type="search" name="q" value="@Model.SearchQuery" class="form-control" placeholder="Search by title or subdomain…" aria-label="Search blogs" />
+        <button type="submit" class="btn btn-outline-secondary">Search</button>
+    </div>
+</form>
+
+@if (Model.Blogs.Count == 0)
+{
+    <div class="alert alert-info">
+        @if (!string.IsNullOrEmpty(Model.SearchQuery))
+        {
+            <span>No blogs found matching <strong>@Model.SearchQuery</strong>.</span>
+        }
+        else
+        {
+            <span>No blogs yet. <a asp-area="SuperAdmin" asp-page="/Blogs/Create">Create the first blog</a>.</span>
+        }
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Subdomain</th>
+                        <th scope="col">Owner</th>
+                        <th scope="col">Theme</th>
+                        <th scope="col">Created</th>
+                        <th scope="col" class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (BlogListItem blog in Model.Blogs)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@blog.Title</td>
+                            <td><code class="text-muted">@blog.Subdomain</code></td>
+                            <td class="text-muted small">@blog.OwnerEmail</td>
+                            <td><span class="badge bg-secondary">@blog.ActiveTheme</span></td>
+                            <td class="text-muted small">@blog.CreatedAt.ToString("MMM d, yyyy")</td>
+                            <td class="text-end">
+                                <a asp-area="SuperAdmin"
+                                   asp-page="/Blogs/Edit"
+                                   asp-route-id="@blog.Id"
+                                   class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                                <a asp-area="SuperAdmin"
+                                   asp-page="/Blogs/Delete"
+                                   asp-route-id="@blog.Id"
+                                   class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_Pagination" model="new PaginationModel(Model.CurrentPage, Model.TotalPages, Model.PaginationBaseUrl)" />
+}

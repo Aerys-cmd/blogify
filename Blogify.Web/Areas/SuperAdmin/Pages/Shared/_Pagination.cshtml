@@ -1,0 +1,35 @@
+@model PaginationModel
+
+@if (Model.TotalPages > 1)
+{
+    string separator = Model.BaseUrl.Contains('?') ? "&" : "?";
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : "")">
+                <a class="page-link"
+                   href="@(Model.CurrentPage > 1 ? $"{Model.BaseUrl}{separator}page={Model.CurrentPage - 1}" : "#")"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            @for (int p = 1; p <= Model.TotalPages; p++)
+            {
+                int pageNum = p;
+                <li class="page-item @(pageNum == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link"
+                       href="@($"{Model.BaseUrl}{separator}page={pageNum}")">@pageNum</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   href="@(Model.CurrentPage < Model.TotalPages ? $"{Model.BaseUrl}{separator}page={Model.CurrentPage + 1}" : "#")"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}
