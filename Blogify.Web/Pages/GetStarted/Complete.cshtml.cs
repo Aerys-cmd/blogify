@@ -39,12 +39,11 @@ public sealed class CompleteModel(
         BlogSubdomain = tenant.Subdomain;
 
         string scheme = Request.Scheme;
-        string hostName = Request.Host.Host;
-        int dotIndex = hostName.IndexOf('.');
-        string rootDomain = dotIndex >= 0 ? hostName[(dotIndex + 1)..] : hostName;
+        // The Complete page is only reachable on the root domain (LandingAccessMiddleware
+        // blocks it on tenant subdomains), so Request.Host.Host is already the root domain.
         string portSuffix = Request.Host.Port.HasValue ? $":{Request.Host.Port}" : string.Empty;
-        AdminUrl = $"{scheme}://{tenant.Subdomain}.{rootDomain}{portSuffix}/admin";
-        BlogUrl = $"{scheme}://{tenant.Subdomain}.{rootDomain}{portSuffix}";
+        AdminUrl = $"{scheme}://{tenant.Subdomain}.{Request.Host.Host}{portSuffix}/admin";
+        BlogUrl = $"{scheme}://{tenant.Subdomain}.{Request.Host.Host}{portSuffix}";
 
         return Page();
     }

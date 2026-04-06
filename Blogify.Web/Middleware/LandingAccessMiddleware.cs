@@ -38,12 +38,15 @@ public sealed class LandingAccessMiddleware
         // Rule 1 — Root Razor Pages (area = null) are root-domain only.
         // Only applies to Razor Page endpoints; non-Razor endpoints (health checks, etc.)
         // are not blocked so that e.g. /health and /alive remain accessible on all hosts.
-        bool isRazorPage = context.GetEndpoint()?.Metadata.GetMetadata<PageActionDescriptor>() is not null;
-        if (string.IsNullOrEmpty(area) && tenantContext.IsTenantResolved && isRazorPage)
+        if (string.IsNullOrEmpty(area) && tenantContext.IsTenantResolved)
         {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
-            await context.Response.WriteAsync("Not found.");
-            return;
+            bool isRazorPage = context.GetEndpoint()?.Metadata.GetMetadata<PageActionDescriptor>() is not null;
+            if (isRazorPage)
+            {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                await context.Response.WriteAsync("Not found.");
+                return;
+            }
         }
 
         // Rule 2 — Blog area on root domain: the Blog area index page uses @page "/"
