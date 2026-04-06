@@ -44,8 +44,10 @@
 - Never return `IQueryable<T>` from any method. Materialize with `ToListAsync`, `FirstOrDefaultAsync`, etc.
 - Use `AsNoTracking()` for all read-only queries that do not result in EF-tracked mutations.
 - Call `SaveChangesAsync` exactly once per mutating handler. Never call it more than once per operation.
-- Tenant-scoped entities (`Post`, `PostRevision`) are filtered automatically via **EF Core global query filters** registered in `ApplicationDbContext.OnModelCreating`. The middleware sets `dbContext.CurrentTenantId` per request from `TenantContext`. Do **not** add redundant explicit `.Where(x => x.TenantId == ...)` clauses on top of these — the filter is already applied.
-- `tenantId` is always obtained from the scoped `TenantContext.CurrentTenantId`. Never derive it from route parameters or claims alone.
+- Tenant-scoped entities (`Post`, `Category`, `Media`, `Comment`) are filtered automatically via **EF Core global query filters** registered in `ApplicationDbContext.OnModelCreating`. The middleware sets `dbContext.CurrentTenantId` per request from `TenantContext`. Do **not** add redundant explicit `.Where(x => x.BlogId == ...)` clauses on top of these — the filter is already applied.
+- `Tag` does **not** have a global query filter. Queries against `dbContext.Tags` must include an explicit `.Where(t => t.BlogId == blogId)` filter and must exclude soft-deleted records with `.Where(t => t.DeletedAt == null)`.
+- `tenantId` is always obtained from the scoped `TenantContext`. Use `tenantContext.RequiredTenant.Id` when the tenant is guaranteed to exist, or `tenantContext.CurrentTenantId` (nullable) for optional contexts.
+
 ---
 
 ## Aspire Usage
@@ -62,9 +64,22 @@
 
 - Roles: `SuperAdmin`, `BlogAdmin`. No other roles are defined.
 - Authorization is enforced at two layers: endpoint (`[Authorize(Roles = ...)]`) and domain (aggregate checks tenant ownership).
-- The `BlogAdmin`↔`Tenant` association is modelled on the `Tenant` aggregate: `Tenant.OwnerId` is a foreign key to `ApplicationUser.Id`. `ApplicationUser` has no tenant property — do not add one.
-- Never trust role alone for data access. Always verify tenant ownership in the domain layer.
+- The `BlogAdmin`↔`Tenant` association is modelled in two ways:
+  - **Ownership**: `Tenant.OwnerId` is a foreign key to `ApplicationUser.Id`. The owner always has full access to their blog's admin panel.
+  - **Membership** (non-owner): `ApplicationUser.TenantId` (`Guid?`) is a foreign key to `Tenant.Id`. A member user is allowed access to the blog admin panel but is not the owner. `null` for SuperAdmins and unassigned users.
+- Never trust role alone for data access. Always verify tenant ownership or membership in the domain layer or access middleware.
 - Authentication pages live under `Areas/Identity/` (scaffolded or custom). Do not move them.
+
+---
+
+## Themes System
+
+- Each blog selects a theme via `Tenant.ActiveTheme` (stored in the `Blogs` table). Valid themes: `default`, `minimal`, `aurora`.
+- Theme changes go through `Tenant.ChangeTheme(string themeName)` — the domain method validates against the allowed-themes allow-list.
+- The Blog area uses a `ThemeViewLocationExpander` (registered in `Program.cs`) to resolve views from `Areas/Blog/Themes/{Theme}/` before the standard view locations.
+- Theme-specific views live in `Areas/Blog/Themes/{Default|Minimal|Aurora}/` and their `Shared/` subfolders.
+- BlogAdmins can change the theme via `Areas/BlogAdmin/Pages/Themes/Index.cshtml`.
+- Never hard-code theme names outside `Tenant` aggregate and `ThemeViewLocationExpander`.
 
 ---
 

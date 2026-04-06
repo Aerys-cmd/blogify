@@ -23,6 +23,7 @@ Blogify is a SaaS multi-tenant blogging platform. Each tenant is a blog, accesse
   - `Areas/Blog/` — public-facing blog rendering
 - Owns the domain model, EF Core context, identity configuration, middleware, and application services.
 - Registers and runs EF migrations on startup.
+- Implements a **Themes system**: each blog has an `ActiveTheme` (`default`, `minimal`, `aurora`). A `ThemeViewLocationExpander` resolves Blog area views from `Areas/Blog/Themes/{Theme}/` before falling back to the standard view locations. BlogAdmins can switch themes via `Areas/BlogAdmin/Pages/Themes/`.
 
 ### `Blogify.ServiceDefaults`
 - Shared cross-cutting configuration applied via `builder.AddServiceDefaults()`.
@@ -119,7 +120,7 @@ EF Core + PostgreSQL
 
 | Endpoint | Availability | Purpose |
 |---|---|---|
-| `/health` | Always | Liveness + readiness combined |
+| `/health` | Development only | Liveness + readiness combined |
 | `/alive` | Development only | Liveness only (fast probe) |
 
 ---

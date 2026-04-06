@@ -56,12 +56,12 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
     public async Task OnGetAsync(CancellationToken ct)
     {
-        Guid blogId = tenantContext.RequiredBlogId;
+        // Post is filtered by BlogId automatically via global query filter — do NOT add a redundant .Where(p => p.BlogId == blogId).
         Posts = await dbContext.Posts
             .AsNoTracking()
-            .Where(p => p.BlogId == blogId && p.Status == PostStatus.Published)
-            .OrderByDescending(p => p.PublishedAt)
-            .Select(p => new PostSummary { Id = p.Id, Title = p.CurrentTitle, Slug = p.Slug })
+            .Where(p => p.Status == PostStatus.Published)
+            .OrderByDescending(p => p.CreatedAt)
+            .Select(p => new PostSummary { Id = p.Id, Slug = p.Slug })
             .ToListAsync(ct);
     }
 }
@@ -69,8 +69,9 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
 ### Tenant Isolation Enforcement
 
-- Every query that touches Post, Category, Tag, or Media must include a `BlogId` filter. Queries without it are rejected.
-- PageModels receive `Guid blogId` from `TenantContext`. They do not derive it from user claims, route parameters, or any other source.
+- Tenant-scoped entities (`Post`, `Category`, `Media`, `Comment`) have EF Core global query filters that automatically scope to `ApplicationDbContext.CurrentTenantId`. Do **not** add a redundant `.Where(x => x.BlogId == blogId)` for these — the filter is already applied.
+- `Tag` has no global query filter. Always add `.Where(t => t.BlogId == blogId && t.DeletedAt == null)` explicitly when querying tags.
+- PageModels receive `Guid blogId` from `TenantContext` via `tenantContext.RequiredTenant.Id`. They do not derive it from user claims, route parameters, or any other source.
 - Aggregate methods that modify tenant-owned data must verify `BlogId` equality before mutating state. Throw `TenantAccessException` on mismatch.
 - Never pass a raw tenant identifier across aggregate boundaries. Use `Guid blogId` typed parameter.
 
@@ -117,7 +118,8 @@ Before emitting any `.cs` or `.cshtml`/`.cshtml.cs` file, verify:
 - [ ] No domain logic in PageModel handlers (rules live in the aggregate).
 - [ ] No separate application service classes created.
 - [ ] No `IQueryable<T>` returned from any method.
-- [ ] All tenant-scoped queries filter by `BlogId`.
+- [ ] No redundant explicit `.Where(x => x.BlogId == blogId)` on `Post`, `Category`, `Media`, `Comment` — global query filters handle it.
+- [ ] Tag queries include `.Where(t => t.BlogId == blogId && t.DeletedAt == null)` explicitly.
 - [ ] All collections are exposed as `IReadOnlyList<T>`.
 - [ ] All async methods end with `Async` and return `Task` or `ValueTask`.
 - [ ] All dates use `DateTimeOffset`, not `DateTime`.
@@ -129,7 +131,7 @@ Before emitting any `.cs` or `.cshtml`/`.cshtml.cs` file, verify:
 - [ ] Soft delete via `DeletedAt`, never hard delete.
 - [ ] `AsNoTracking()` on all read-only EF queries.
 - [ ] `SaveChangesAsync` called exactly once per mutating handler.
-- [ ] `blogId` sourced exclusively from `TenantContext`.
+- [ ] `blogId` sourced exclusively from `tenantContext.RequiredTenant.Id` or `tenantContext.CurrentTenantId`.
 - [ ] No `ViewData` or `ViewBag` — only strongly-typed PageModel properties.
 
 ---
@@ -150,6 +152,8 @@ Any output containing the following is immediately rejected and must be rewritte
 | `static class SlugHelper` | Domain logic in static utility |
 | `Post post = new Post()` | Public constructor on aggregate |
 | Cross-aggregate navigation: `post.Blog.Title` | Navigation property crossing aggregate boundary |
-| Missing `BlogId` filter on tenant-scoped query | Tenant isolation violation |
+| `.Where(x => x.BlogId == blogId)` on `Post`/`Category`/`Media`/`Comment` | Redundant — global query filter already scopes by tenant |
+| Missing `.Where(t => t.BlogId == blogId && t.DeletedAt == null)` on `Tag` | Tag has no global filter — tenant isolation violation |
+| `tenantContext.RequiredBlogId` | Property does not exist; use `tenantContext.RequiredTenant.Id` |
 | `ViewData["Key"]` or `ViewBag.Key` | Untyped view state |
 | Business rules (if/throw) inside `OnGetAsync`/`OnPostAsync` | PageModel handler — rules belong in the aggregate |

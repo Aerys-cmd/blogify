@@ -20,36 +20,40 @@ public sealed class Post
 
     private Post() { } // EF constructor
 
-    private Post(Guid blogId, string slug, PostRevision initialRevision)
+    private Post(Guid blogId, string authorId, string slug, PostRevision initialRevision)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorId);
         ArgumentException.ThrowIfNullOrWhiteSpace(slug);
         ArgumentNullException.ThrowIfNull(initialRevision);
 
         Id = Guid.NewGuid();
         BlogId = blogId;
+        AuthorId = authorId.Trim();
         Slug = slug;
         _revisions.Add(initialRevision);
         Status = PostStatus.Draft;
     }
 
-    public static Post Create(Guid blogId, string slug, string initialTitle, string initialContent)
+    public static Post Create(Guid blogId, string authorId, string slug, string initialTitle, string initialContent)
     {
-        PostRevision revision = PostRevision.Create(initialTitle, initialContent);
-        return new Post(blogId, slug, revision);
+        PostRevision revision = PostRevision.Create(Guid.Empty, initialTitle, initialContent);
+        return new Post(blogId, authorId, slug, revision);
     }
 
     public Guid Id { get; private init; }
     public Guid BlogId { get; private init; }
-    public string Slug { get; private set; }
+    public string AuthorId { get; private set; } = string.Empty;
+    public string Slug { get; private set; } = string.Empty;
+    public string? Excerpt { get; private set; }
+    public Guid? CoverImageId { get; private set; }
     public PostStatus Status { get; private set; }
     public Guid? PublishedRevisionId { get; private set; }
     public IReadOnlyList<PostRevision> Revisions => _revisions.AsReadOnly();
 
-    public PostRevision AddRevision(string title, string content)
+    public void AddRevision(string title, string content)
     {
-        PostRevision revision = PostRevision.Create(title, content);
+        PostRevision revision = PostRevision.Create(Id, title, content);
         _revisions.Add(revision);
-        return revision;
     }
 
     public void Publish(Guid revisionId)
@@ -95,8 +99,9 @@ public sealed class Post
 - Never return `IQueryable<T>` from any method. Always materialize with `ToListAsync`, `FirstOrDefaultAsync`, `SingleOrDefaultAsync`, etc.
 - Use `AsNoTracking()` on all read-only queries that do not result in tracked mutations.
 - Call `SaveChangesAsync` exactly once at the end of a mutating handler. Never call it more than once per operation.
-- Every query on tenant-scoped data (Post, Category, Tag, Media) must include a `.Where(x => x.BlogId == blogId)` clause.
-- `blogId` is always obtained from the scoped `TenantContext`. Never derive it from route parameters or claims alone.
+- Tenant-scoped entities (`Post`, `Category`, `Media`, `Comment`) have **EF Core global query filters** that automatically filter by `BlogId` and `DeletedAt`. Do **not** add redundant `.Where(x => x.BlogId == blogId)` clauses for these — the filter is already applied via `ApplicationDbContext.CurrentTenantId`.
+- `Tag` does **not** have a global query filter. Always include `.Where(t => t.BlogId == blogId && t.DeletedAt == null)` explicitly when querying tags.
+- `blogId` is always obtained from the scoped `TenantContext`. Use `tenantContext.RequiredTenant.Id` when the tenant is guaranteed to exist, or `tenantContext.CurrentTenantId` (nullable) for optional contexts. Never derive it from route parameters or claims alone.
 
 Example PageModel handler (read + mutate):
 ```csharp
@@ -104,10 +109,10 @@ public sealed class PublishModel(ApplicationDbContext dbContext, TenantContext t
 {
     public async Task<IActionResult> OnPostAsync(Guid id, Guid revisionId, CancellationToken ct)
     {
-        Guid blogId = tenantContext.RequiredBlogId;
+        Guid blogId = tenantContext.RequiredTenant.Id;
         Post? post = await dbContext.Posts
             .Include(p => p.Revisions)
-            .Where(p => p.BlogId == blogId && p.Id == id)
+            .Where(p => p.Id == id)
             .FirstOrDefaultAsync(ct);
 
         if (post is null) return NotFound();
@@ -142,8 +147,9 @@ public sealed class PublishModel(ApplicationDbContext dbContext, TenantContext t
 
 ## Tenant Isolation
 
-- Every query against tenant-scoped data (Post, Category, Tag, Media) MUST filter by `BlogId`.
-- PageModels receive `Guid blogId` from the resolved `TenantContext`. Never derive `blogId` from user claims alone.
+- Global query filters on `Post`, `Category`, `Media`, `Comment` automatically scope queries to the current tenant via `ApplicationDbContext.CurrentTenantId`. Do not add a redundant `BlogId` filter for these entities.
+- `Tag` has no global query filter — always add `.Where(t => t.BlogId == blogId && t.DeletedAt == null)` explicitly.
+- PageModels receive `Guid blogId` from the resolved `TenantContext` (`tenantContext.RequiredTenant.Id`). Never derive `blogId` from user claims alone.
 - Aggregate methods that modify tenant data verify `BlogId` matches before mutating state.
 
 ---
