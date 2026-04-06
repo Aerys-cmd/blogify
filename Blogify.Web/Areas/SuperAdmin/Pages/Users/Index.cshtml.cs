@@ -51,7 +51,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext, UserManager<Appli
 
         List<Guid> tenantIds = pageUsers
             .Where(u => u.TenantId.HasValue)
-            .Select(u => u.TenantId!.Value)
+            .Select(u => u.TenantId.Value)
             .Distinct()
             .ToList();
 
