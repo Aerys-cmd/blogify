@@ -49,6 +49,22 @@ public sealed class Step2Model(
             return Page();
         }
 
+        string? userId = userManager.GetUserId(User);
+        if (userId is null)
+        {
+            return RedirectToPage("/GetStarted/Step1");
+        }
+
+        // Re-check ownership on POST to prevent duplicate tenants on direct/double-submit.
+        bool alreadyOwns = await dbContext.Blogs
+            .AsNoTracking()
+            .AnyAsync(b => b.OwnerId == userId && b.DeletedAt == null, ct);
+
+        if (alreadyOwns)
+        {
+            return RedirectToPage("/GetStarted/Complete");
+        }
+
         string normalizedSubdomain = Input.Subdomain.Trim().ToLowerInvariant();
 
         bool subdomainTaken = await dbContext.Blogs
@@ -59,12 +75,6 @@ public sealed class Step2Model(
         {
             ModelState.AddModelError(nameof(Input.Subdomain), "This subdomain is already taken. Please choose another.");
             return Page();
-        }
-
-        string? userId = userManager.GetUserId(User);
-        if (userId is null)
-        {
-            return RedirectToPage("/GetStarted/Step1");
         }
 
         try
@@ -81,6 +91,13 @@ public sealed class Step2Model(
         catch (DomainException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
+        }
+        catch (DbUpdateException)
+        {
+            // The subdomain unique index was violated by a concurrent request between
+            // the AnyAsync check above and SaveChangesAsync.
+            ModelState.AddModelError(nameof(Input.Subdomain), "This subdomain is already taken. Please choose another.");
             return Page();
         }
 
