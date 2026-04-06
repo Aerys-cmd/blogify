@@ -222,11 +222,11 @@ function loadQuillAssets() {
     return new Promise(function (resolve, reject) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = 'https://cdn.quilljs.com/2.0.3/quill.snow.css';
+        link.href = '/lib/quill/quill.snow.css';
         document.head.appendChild(link);
 
         const script = document.createElement('script');
-        script.src = 'https://cdn.quilljs.com/2.0.3/quill.js';
+        script.src = '/lib/quill/quill.js';
         script.onload = resolve;
         script.onerror = reject;
         document.head.appendChild(script);
