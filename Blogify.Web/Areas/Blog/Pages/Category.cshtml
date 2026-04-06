@@ -1,15 +1,15 @@
-@page "/"
-@model Blogify.Web.Areas.Blog.Pages.IndexModel
+@page "/category/{slug}"
+@model Blogify.Web.Areas.Blog.Pages.CategoryModel
 @{
-    ViewData["Title"] = Model.BlogTitle;
+    ViewData["Title"] = $"Category: {Model.CategoryName}";
 }
 
-<h1 class="mb-4 fw-bold">@Model.BlogTitle</h1>
+<h1 class="mb-4 fw-bold">Posts in &ldquo;@Model.CategoryName&rdquo;</h1>
 
 @if (Model.Posts.Count == 0)
 {
     <div class="text-center py-5">
-        <p class="text-muted fs-5">No posts published yet.</p>
+        <p class="text-muted fs-5">No published posts in this category yet.</p>
     </div>
 }
 else
