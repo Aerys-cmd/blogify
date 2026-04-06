@@ -28,10 +28,11 @@ export async function initPostEditor(wrapperId, hiddenTextareaId, formId) {
     let tiptapLoaded = false;
 
     try {
-        const [{ Editor }, { StarterKit }, { Placeholder }] = await Promise.all([
+        const [{ Editor }, { StarterKit }, { Placeholder }, { Image }] = await Promise.all([
             import('https://esm.sh/@tiptap/core@2'),
             import('https://esm.sh/@tiptap/starter-kit@2'),
-            import('https://esm.sh/@tiptap/extension-placeholder@2')
+            import('https://esm.sh/@tiptap/extension-placeholder@2'),
+            import('https://esm.sh/@tiptap/extension-image@2')
         ]);
 
         tiptapLoaded = true;
@@ -46,7 +47,7 @@ export async function initPostEditor(wrapperId, hiddenTextareaId, formId) {
 
         const editor = new Editor({
             element: editorContentEl,
-            extensions: [StarterKit, Placeholder.configure({ placeholder: 'Write your post content here\u2026' })],
+            extensions: [StarterKit, Placeholder.configure({ placeholder: 'Write your post content here\u2026' }), Image.configure({ inline: false, allowBase64: false })],
             content: initialContent,
             onUpdate({ editor: e }) {
                 syncToHidden(e.getHTML());
@@ -60,6 +61,36 @@ export async function initPostEditor(wrapperId, hiddenTextareaId, formId) {
         });
 
         syncToHidden(editor.getHTML());
+
+        function isImageSelection(detail) {
+            if (!detail) return false;
+
+            if (detail.isImage === true) return true;
+
+            if (typeof detail.contentType === 'string' && detail.contentType.toLowerCase().startsWith('image/')) {
+                return true;
+            }
+
+            const src = detail.fullUrl ?? detail.url;
+            if (typeof src !== 'string' || src.length === 0) {
+                return false;
+            }
+
+            return /\.(apng|avif|bmp|gif|ico|jpe?g|png|svg|webp)(?:[?#].*)?$/i.test(src);
+        }
+
+        document.addEventListener('mediaSelected', function onEditorMediaSelected(e) {
+            if (e.detail.targetInputId !== 'editorImageInsert') return;
+
+            const src = e.detail.fullUrl ?? e.detail.url;
+            const alt = e.detail.altText ?? '';
+
+            if (!src || !isImageSelection(e.detail)) {
+                return;
+            }
+
+            editor.chain().focus().setImage({ src, alt }).run();
+        });
 
         wireToolbarButtons(toolbar, editor);
 
@@ -142,6 +173,9 @@ function buildTiptapToolbar() {
         [
             { label: 'Undo', command: 'undo' },
             { label: 'Redo', command: 'redo' }
+        ],
+        [
+            { label: 'Insert image', command: 'insertImage' }
         ]
     ];
 
@@ -173,8 +207,22 @@ function buildTiptapToolbar() {
 function wireToolbarButtons(toolbar, editor) {
     function runCommand(btn) {
         const command = btn.dataset.command;
-        const attrs = btn.dataset.attrs ? JSON.parse(btn.dataset.attrs) : undefined;
 
+        if (command === 'insertImage') {
+            const modalEl = document.getElementById('editorImageInsert-modal');
+            const bodyEl  = document.getElementById('editorImageInsert-modal-body');
+            if (!modalEl || !bodyEl) return;
+
+            window.htmx.ajax(
+                'GET',
+                '/admin/Media?handler=MediaPicker&targetInputId=editorImageInsert&modalId=editorImageInsert-modal',
+                { target: '#editorImageInsert-modal-body', swap: 'innerHTML' }
+            );
+            window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            return;
+        }
+
+        const attrs = btn.dataset.attrs ? JSON.parse(btn.dataset.attrs) : undefined;
         if (attrs !== undefined) {
             editor.chain().focus()[command](attrs).run();
         } else {
