@@ -10,6 +10,7 @@ using Blogify.Web.Middleware;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.IO;
+using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,8 +50,14 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
         ForwardedHeaders.XForwardedFor |
         ForwardedHeaders.XForwardedProto |
         ForwardedHeaders.XForwardedHost;
+    // Trust only RFC-1918 private ranges used by Docker internal networks.
+    // This restricts header spoofing to hosts inside those private ranges
+    // while still supporting any Docker Compose subnet assignment.
+    options.ForwardLimit = 1;
     options.KnownIPNetworks.Clear();
-    options.KnownProxies.Clear();
+    options.KnownIPNetworks.Add(new System.Net.IPNetwork(IPAddress.Parse("10.0.0.0"), 8));
+    options.KnownIPNetworks.Add(new System.Net.IPNetwork(IPAddress.Parse("172.16.0.0"), 12));
+    options.KnownIPNetworks.Add(new System.Net.IPNetwork(IPAddress.Parse("192.168.0.0"), 16));
 });
 
 string dataProtectionKeysPath = builder.Configuration["DataProtection:KeysPath"]
@@ -136,14 +143,16 @@ await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
 
 app.MapDefaultEndpoints();
 
+// UseForwardedHeaders must be first so that scheme/host/IP are correctly set
+// before any downstream middleware (HSTS, HTTPS redirection, auth callbacks, etc.)
+app.UseForwardedHeaders();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
-
-app.UseForwardedHeaders();
 
 app.UseHttpsRedirection();
 
