@@ -10,6 +10,7 @@ services:
       - traefik-certs:/letsencrypt
     environment:
       CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
+      DOCKER_API_VERSION: "1.43"
     networks:
       - web
     restart: unless-stopped
