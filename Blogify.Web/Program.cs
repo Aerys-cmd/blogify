@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Blogify.Web;
 using Blogify.Web.Data;
 using Blogify.Web.Endpoints;
 using Blogify.Web.Models;
@@ -159,6 +160,7 @@ app.UseAnalyticsTracking();
 
 app.UseAuthorization();
 
+app.UseAntiforgery();
 
 app.MapStaticAssets();
 

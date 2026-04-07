@@ -9,31 +9,31 @@
         <div class="card shadow-sm border-0">
             <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <span class="badge bg-primary mb-2">Step 1 of 2</span>
-                    <h2 class="fw-bold">Create your account</h2>
-                    <p class="text-muted">Already have an account? <a asp-area="Identity" asp-page="/Account/Login">Sign in</a>.</p>
+                    <span class="badge bg-primary mb-2">@Localizer["GetStarted.Step1.StepBadge"]</span>
+                    <h2 class="fw-bold">@Localizer["GetStarted.Step1.Heading"]</h2>
+                    <p class="text-muted">@Localizer["GetStarted.Step1.AlreadyHaveAccount"] <a asp-area="Identity" asp-page="/Account/Login">@Localizer["Action.SignIn"]</a>.</p>
                 </div>
 
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
                 <form method="post">
                     <div class="mb-3">
-                        <label asp-for="Input.Email" class="form-label">Email address</label>
+                        <label asp-for="Input.Email" class="form-label">@Localizer["Label.Email"]</label>
                         <input asp-for="Input.Email" class="form-control" autocomplete="email" />
                         <span asp-validation-for="Input.Email" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="Input.Password" class="form-label">Password</label>
+                        <label asp-for="Input.Password" class="form-label">@Localizer["Label.Password"]</label>
                         <input asp-for="Input.Password" class="form-control" autocomplete="new-password" />
                         <span asp-validation-for="Input.Password" class="text-danger small"></span>
                     </div>
                     <div class="mb-4">
-                        <label asp-for="Input.ConfirmPassword" class="form-label">Confirm password</label>
+                        <label asp-for="Input.ConfirmPassword" class="form-label">@Localizer["Label.ConfirmPassword"]</label>
                         <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" />
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
                     </div>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">Next: Set Up Your Blog &rarr;</button>
+                        <button type="submit" class="btn btn-primary btn-lg">@Localizer["GetStarted.Step1.Submit"]</button>
                     </div>
                 </form>
             </div>

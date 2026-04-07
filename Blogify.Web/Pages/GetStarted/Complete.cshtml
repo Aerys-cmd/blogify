@@ -9,26 +9,25 @@
         <div class="mb-4">
             <span class="display-1 text-success">✓</span>
         </div>
-        <h1 class="fw-bold mb-3">Your blog is live!</h1>
+        <h1 class="fw-bold mb-3">@Localizer["GetStarted.Complete.Heading"]</h1>
         <p class="lead text-muted mb-4">
-            <strong>@Model.BlogTitle</strong> is all set and ready for your first post.
+            <strong>@Model.BlogTitle</strong> @Localizer["GetStarted.Complete.ReadyMessage"]
         </p>
 
         <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-4">
             <a class="btn btn-primary btn-lg"
                href="@Model.AdminUrl">
-                Open Blog Admin
+                @Localizer["GetStarted.Complete.OpenAdmin"]
             </a>
             <a class="btn btn-outline-secondary btn-lg"
                href="@Model.BlogUrl">
-                View Your Blog
+                @Localizer["GetStarted.Complete.ViewBlog"]
             </a>
         </div>
 
         <div class="alert alert-info text-start" role="note">
-            <strong>Note:</strong> Your blog is available at
-            <code>@(Model.BlogSubdomain).localhost</code> locally.
-            In production, it will be accessible at
+            <strong>@Localizer["GetStarted.Complete.Note"]</strong> @Localizer["GetStarted.Complete.LocalNote"]
+            <code>@(Model.BlogSubdomain).localhost</code> @Localizer["GetStarted.Complete.LocalNoteSuffix"]
             <code>@(Model.BlogSubdomain).yourdomain.com</code>.
         </div>
     </div>

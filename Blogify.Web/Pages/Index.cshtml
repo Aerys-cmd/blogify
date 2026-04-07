@@ -8,14 +8,13 @@
 <section class="d-flex align-items-center justify-content-center text-center text-white bg-dark"
          style="min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
     <div class="container py-5">
-        <h1 class="display-3 fw-bold mb-3">Your story. Your blog. Your way.</h1>
+        <h1 class="display-3 fw-bold mb-3">@Localizer["Index.Hero.Heading"]</h1>
         <p class="lead mb-4" style="max-width: 600px; margin: 0 auto;">
-            Blogify is a free multi-tenant blogging platform. Create your own blog on a custom subdomain,
-            pick your theme, and start publishing — no technical setup required.
+            @Localizer["Index.Hero.Subheading"]
         </p>
         <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
-            <a class="btn btn-primary btn-lg px-5" asp-page="/GetStarted/Step1">Start Your Blog — It's Free</a>
-            <a class="btn btn-outline-light btn-lg px-5" href="#features">See a demo</a>
+            <a class="btn btn-primary btn-lg px-5" asp-page="/GetStarted/Step1">@Localizer["Index.Hero.PrimaryButton"]</a>
+            <a class="btn btn-outline-light btn-lg px-5" href="#features">@Localizer["Index.Hero.SecondaryButton"]</a>
         </div>
     </div>
 </section>
@@ -23,16 +22,14 @@
 <!-- Features Section -->
 <section id="features" class="py-5">
     <div class="container">
-        <h2 class="text-center fw-bold mb-5">Everything you need to blog</h2>
+        <h2 class="text-center fw-bold mb-5">@Localizer["Index.Features.Heading"]</h2>
         <div class="row g-4">
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card h-100 border-0 shadow-sm p-3">
                     <div class="card-body">
                         <div class="fs-1 mb-3" aria-hidden="true">🌐</div>
-                        <h5 class="card-title fw-semibold">Custom Subdomain</h5>
-                        <p class="card-text text-muted">
-                            Claim your own subdomain (e.g. myblog.blogify.com) instantly. Your blog, your address.
-                        </p>
+                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Subdomain.Title"]</h5>
+                        <p class="card-text text-muted">@Localizer["Index.Features.Subdomain.Description"]</p>
                     </div>
                 </div>
             </div>
@@ -40,10 +37,8 @@
                 <div class="card h-100 border-0 shadow-sm p-3">
                     <div class="card-body">
                         <div class="fs-1 mb-3" aria-hidden="true">🎨</div>
-                        <h5 class="card-title fw-semibold">Theme Selector</h5>
-                        <p class="card-text text-muted">
-                            Choose from three polished themes — Default, Minimal, and Aurora — and switch anytime.
-                        </p>
+                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Themes.Title"]</h5>
+                        <p class="card-text text-muted">@Localizer["Index.Features.Themes.Description"]</p>
                     </div>
                 </div>
             </div>
@@ -51,10 +46,8 @@
                 <div class="card h-100 border-0 shadow-sm p-3">
                     <div class="card-body">
                         <div class="fs-1 mb-3" aria-hidden="true">🗂️</div>
-                        <h5 class="card-title fw-semibold">Category Management</h5>
-                        <p class="card-text text-muted">
-                            Organise your posts with custom categories to help readers find what they love.
-                        </p>
+                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Categories.Title"]</h5>
+                        <p class="card-text text-muted">@Localizer["Index.Features.Categories.Description"]</p>
                     </div>
                 </div>
             </div>
@@ -62,10 +55,8 @@
                 <div class="card h-100 border-0 shadow-sm p-3">
                     <div class="card-body">
                         <div class="fs-1 mb-3" aria-hidden="true">✍️</div>
-                        <h5 class="card-title fw-semibold">Rich Post Editor</h5>
-                        <p class="card-text text-muted">
-                            Write beautifully with a full-featured editor that supports formatting, images, and embeds.
-                        </p>
+                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Editor.Title"]</h5>
+                        <p class="card-text text-muted">@Localizer["Index.Features.Editor.Description"]</p>
                     </div>
                 </div>
             </div>
@@ -73,10 +64,8 @@
                 <div class="card h-100 border-0 shadow-sm p-3">
                     <div class="card-body">
                         <div class="fs-1 mb-3" aria-hidden="true">🖼️</div>
-                        <h5 class="card-title fw-semibold">Media Library</h5>
-                        <p class="card-text text-muted">
-                            Upload, manage, and reuse images and files across all your posts from one central library.
-                        </p>
+                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Media.Title"]</h5>
+                        <p class="card-text text-muted">@Localizer["Index.Features.Media.Description"]</p>
                     </div>
                 </div>
             </div>
@@ -84,10 +73,8 @@
                 <div class="card h-100 border-0 shadow-sm p-3">
                     <div class="card-body">
                         <div class="fs-1 mb-3" aria-hidden="true">📝</div>
-                        <h5 class="card-title fw-semibold">Markdown-friendly Content</h5>
-                        <p class="card-text text-muted">
-                            Write in Markdown or use the visual editor — Blogify supports both so you stay in flow.
-                        </p>
+                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Markdown.Title"]</h5>
+                        <p class="card-text text-muted">@Localizer["Index.Features.Markdown.Description"]</p>
                     </div>
                 </div>
             </div>
@@ -98,22 +85,22 @@
 <!-- How It Works Section -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center fw-bold mb-5">How it works</h2>
+        <h2 class="text-center fw-bold mb-5">@Localizer["Index.HowItWorks.Heading"]</h2>
         <div class="row g-4 justify-content-center">
             <div class="col-12 col-md-4 text-center">
                 <div class="display-4 fw-bold text-primary mb-3">①</div>
-                <h5 class="fw-semibold">Create your account</h5>
-                <p class="text-muted">Sign up in seconds with just your email and a password. No credit card needed.</p>
+                <h5 class="fw-semibold">@Localizer["Index.HowItWorks.Step1.Title"]</h5>
+                <p class="text-muted">@Localizer["Index.HowItWorks.Step1.Description"]</p>
             </div>
             <div class="col-12 col-md-4 text-center">
                 <div class="display-4 fw-bold text-primary mb-3">②</div>
-                <h5 class="fw-semibold">Name your blog and pick a subdomain</h5>
-                <p class="text-muted">Choose a unique subdomain and give your blog a title that reflects your voice.</p>
+                <h5 class="fw-semibold">@Localizer["Index.HowItWorks.Step2.Title"]</h5>
+                <p class="text-muted">@Localizer["Index.HowItWorks.Step2.Description"]</p>
             </div>
             <div class="col-12 col-md-4 text-center">
                 <div class="display-4 fw-bold text-primary mb-3">③</div>
-                <h5 class="fw-semibold">Start writing and publishing</h5>
-                <p class="text-muted">Head straight to your admin panel and publish your first post to the world.</p>
+                <h5 class="fw-semibold">@Localizer["Index.HowItWorks.Step3.Title"]</h5>
+                <p class="text-muted">@Localizer["Index.HowItWorks.Step3.Description"]</p>
             </div>
         </div>
     </div>
@@ -125,12 +112,12 @@
         @if (Model.TotalBlogCount > 0)
         {
             <p class="fs-4 mb-0 fw-semibold">
-                Join <strong>@Model.TotalBlogCount</strong> blog@(Model.TotalBlogCount == 1 ? string.Empty : "s") already on the platform!
+                @Localizer["Index.Stats.JoinPrefix"] <strong>@Model.TotalBlogCount</strong> @Localizer[Model.TotalBlogCount == 1 ? "Index.Stats.BlogSingular" : "Index.Stats.BlogPlural"]
             </p>
         }
         else
         {
-            <p class="fs-4 mb-0 fw-semibold">Be the first to create a blog on Blogify!</p>
+            <p class="fs-4 mb-0 fw-semibold">@Localizer["Index.Stats.BeFirst"]</p>
         }
     </div>
 </section>
@@ -138,10 +125,8 @@
 <!-- Final CTA Section -->
 <section class="py-5 text-center">
     <div class="container" style="max-width: 640px;">
-        <h2 class="fw-bold mb-3">Ready to share your story?</h2>
-        <p class="text-muted mb-4">
-            Create your free blog today and be part of a growing community of writers, creators, and thinkers.
-        </p>
-        <a class="btn btn-primary btn-lg px-5" asp-page="/GetStarted/Step1">Get Started — It's Free</a>
+        <h2 class="fw-bold mb-3">@Localizer["Index.CTA.Heading"]</h2>
+        <p class="text-muted mb-4">@Localizer["Index.CTA.Description"]</p>
+        <a class="btn btn-primary btn-lg px-5" asp-page="/GetStarted/Step1">@Localizer["Index.CTA.Button"]</a>
     </div>
 </section>

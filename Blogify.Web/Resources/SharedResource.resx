@@ -176,4 +176,56 @@
   <!-- Language switcher -->
   <data name="Lang.English" xml:space="preserve"><value>English</value></data>
   <data name="Lang.Turkish" xml:space="preserve"><value>Turkish</value></data>
+
+  <!-- GetStarted -->
+  <data name="GetStarted.Step1.StepBadge" xml:space="preserve"><value>Step 1 of 2</value></data>
+  <data name="GetStarted.Step1.Heading" xml:space="preserve"><value>Create your account</value></data>
+  <data name="GetStarted.Step1.AlreadyHaveAccount" xml:space="preserve"><value>Already have an account?</value></data>
+  <data name="GetStarted.Step1.Submit" xml:space="preserve"><value>Next: Set Up Your Blog &#x2192;</value></data>
+  <data name="GetStarted.Step2.StepBadge" xml:space="preserve"><value>Step 2 of 2</value></data>
+  <data name="GetStarted.Step2.Heading" xml:space="preserve"><value>Set up your blog</value></data>
+  <data name="GetStarted.Step2.Subheading" xml:space="preserve"><value>Give your blog a name and a home on the web.</value></data>
+  <data name="GetStarted.Step2.TitleLabel" xml:space="preserve"><value>Blog title</value></data>
+  <data name="GetStarted.Step2.DomainPreview" xml:space="preserve"><value>Your blog will be at:</value></data>
+  <data name="GetStarted.Step2.Submit" xml:space="preserve"><value>Launch My Blog &#x2192;</value></data>
+  <data name="GetStarted.Complete.Heading" xml:space="preserve"><value>Your blog is live!</value></data>
+  <data name="GetStarted.Complete.ReadyMessage" xml:space="preserve"><value>is all set and ready for your first post.</value></data>
+  <data name="GetStarted.Complete.OpenAdmin" xml:space="preserve"><value>Open Blog Admin</value></data>
+  <data name="GetStarted.Complete.ViewBlog" xml:space="preserve"><value>View Your Blog</value></data>
+  <data name="GetStarted.Complete.Note" xml:space="preserve"><value>Note:</value></data>
+  <data name="GetStarted.Complete.LocalNote" xml:space="preserve"><value>Your blog is available at</value></data>
+  <data name="GetStarted.Complete.LocalNoteSuffix" xml:space="preserve"><value>locally. In production, it will be accessible at</value></data>
+
+  <!-- Index (Landing) -->
+  <data name="Index.Hero.Heading" xml:space="preserve"><value>Your story. Your blog. Your way.</value></data>
+  <data name="Index.Hero.Subheading" xml:space="preserve"><value>Blogify is a free multi-tenant blogging platform. Create your own blog on a custom subdomain, pick your theme, and start publishing — no technical setup required.</value></data>
+  <data name="Index.Hero.PrimaryButton" xml:space="preserve"><value>Start Your Blog — It&#x2019;s Free</value></data>
+  <data name="Index.Hero.SecondaryButton" xml:space="preserve"><value>See a demo</value></data>
+  <data name="Index.Features.Heading" xml:space="preserve"><value>Everything you need to blog</value></data>
+  <data name="Index.Features.Subdomain.Title" xml:space="preserve"><value>Custom Subdomain</value></data>
+  <data name="Index.Features.Subdomain.Description" xml:space="preserve"><value>Claim your own subdomain (e.g. myblog.blogify.com) instantly. Your blog, your address.</value></data>
+  <data name="Index.Features.Themes.Title" xml:space="preserve"><value>Theme Selector</value></data>
+  <data name="Index.Features.Themes.Description" xml:space="preserve"><value>Choose from three polished themes — Default, Minimal, and Aurora — and switch anytime.</value></data>
+  <data name="Index.Features.Categories.Title" xml:space="preserve"><value>Category Management</value></data>
+  <data name="Index.Features.Categories.Description" xml:space="preserve"><value>Organise your posts with custom categories to help readers find what they love.</value></data>
+  <data name="Index.Features.Editor.Title" xml:space="preserve"><value>Rich Post Editor</value></data>
+  <data name="Index.Features.Editor.Description" xml:space="preserve"><value>Write beautifully with a full-featured editor that supports formatting, images, and embeds.</value></data>
+  <data name="Index.Features.Media.Title" xml:space="preserve"><value>Media Library</value></data>
+  <data name="Index.Features.Media.Description" xml:space="preserve"><value>Upload, manage, and reuse images and files across all your posts from one central library.</value></data>
+  <data name="Index.Features.Markdown.Title" xml:space="preserve"><value>Markdown-friendly Content</value></data>
+  <data name="Index.Features.Markdown.Description" xml:space="preserve"><value>Write in Markdown or use the visual editor — Blogify supports both so you stay in flow.</value></data>
+  <data name="Index.HowItWorks.Heading" xml:space="preserve"><value>How it works</value></data>
+  <data name="Index.HowItWorks.Step1.Title" xml:space="preserve"><value>Create your account</value></data>
+  <data name="Index.HowItWorks.Step1.Description" xml:space="preserve"><value>Sign up in seconds with just your email and a password. No credit card needed.</value></data>
+  <data name="Index.HowItWorks.Step2.Title" xml:space="preserve"><value>Name your blog and pick a subdomain</value></data>
+  <data name="Index.HowItWorks.Step2.Description" xml:space="preserve"><value>Choose a unique subdomain and give your blog a title that reflects your voice.</value></data>
+  <data name="Index.HowItWorks.Step3.Title" xml:space="preserve"><value>Start writing and publishing</value></data>
+  <data name="Index.HowItWorks.Step3.Description" xml:space="preserve"><value>Head straight to your admin panel and publish your first post to the world.</value></data>
+  <data name="Index.Stats.JoinPrefix" xml:space="preserve"><value>Join</value></data>
+  <data name="Index.Stats.BlogSingular" xml:space="preserve"><value>blog already on the platform!</value></data>
+  <data name="Index.Stats.BlogPlural" xml:space="preserve"><value>blogs already on the platform!</value></data>
+  <data name="Index.Stats.BeFirst" xml:space="preserve"><value>Be the first to create a blog on Blogify!</value></data>
+  <data name="Index.CTA.Heading" xml:space="preserve"><value>Ready to share your story?</value></data>
+  <data name="Index.CTA.Description" xml:space="preserve"><value>Create your free blog today and be part of a growing community of writers, creators, and thinkers.</value></data>
+  <data name="Index.CTA.Button" xml:space="preserve"><value>Get Started — It&#x2019;s Free</value></data>
 </root>
