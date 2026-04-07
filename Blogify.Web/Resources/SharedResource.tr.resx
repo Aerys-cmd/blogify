@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Labels -->
+  <data name="Label.Email" xml:space="preserve"><value>E-posta adresi</value></data>
+  <data name="Label.Password" xml:space="preserve"><value>Şifre</value></data>
+  <data name="Label.ConfirmPassword" xml:space="preserve"><value>Şifre onayı</value></data>
+  <data name="Label.Title" xml:space="preserve"><value>Başlık</value></data>
+  <data name="Label.Subdomain" xml:space="preserve"><value>Alt alan adı</value></data>
+  <data name="Label.Name" xml:space="preserve"><value>Ad</value></data>
+  <data name="Label.Slug" xml:space="preserve"><value>Kısa ad (slug)</value></data>
+  <data name="Label.Excerpt" xml:space="preserve"><value>Özet</value></data>
+  <data name="Label.Content" xml:space="preserve"><value>İçerik</value></data>
+  <data name="Label.Owner" xml:space="preserve"><value>Sahip</value></data>
+  <data name="Label.Role" xml:space="preserve"><value>Rol</value></data>
+  <data name="Label.Username" xml:space="preserve"><value>Kullanıcı adı</value></data>
+  <data name="Label.BlogMembership" xml:space="preserve"><value>Blog üyeliği</value></data>
+
+  <!-- Actions -->
+  <data name="Action.Save" xml:space="preserve"><value>Kaydet</value></data>
+  <data name="Action.Delete" xml:space="preserve"><value>Sil</value></data>
+  <data name="Action.Cancel" xml:space="preserve"><value>İptal</value></data>
+  <data name="Action.Publish" xml:space="preserve"><value>Yayımla</value></data>
+  <data name="Action.Unpublish" xml:space="preserve"><value>Yayımdan kaldır</value></data>
+  <data name="Action.Create" xml:space="preserve"><value>Oluştur</value></data>
+  <data name="Action.Edit" xml:space="preserve"><value>Düzenle</value></data>
+  <data name="Action.Back" xml:space="preserve"><value>Geri</value></data>
+  <data name="Action.Search" xml:space="preserve"><value>Ara</value></data>
+  <data name="Action.SignIn" xml:space="preserve"><value>Giriş yap</value></data>
+  <data name="Action.GetStarted" xml:space="preserve"><value>Başla</value></data>
+
+  <!-- Validation -->
+  <data name="Validation.Required" xml:space="preserve"><value>Bu alan zorunludur.</value></data>
+  <data name="Validation.EmailInvalid" xml:space="preserve"><value>Geçerli bir e-posta adresi giriniz.</value></data>
+  <data name="Validation.MaxLength" xml:space="preserve"><value>Bu alan maksimum uzunluğu aşıyor.</value></data>
+  <data name="Validation.MinLength" xml:space="preserve"><value>Bu alan çok kısa.</value></data>
+  <data name="Validation.PasswordMismatch" xml:space="preserve"><value>Şifre ve onay şifresi eşleşmiyor.</value></data>
+  <data name="Validation.SubdomainFormat" xml:space="preserve"><value>Alt alan adı yalnızca harf, rakam ve kısa çizgi içerebilir.</value></data>
+
+  <!-- Page Titles -->
+  <data name="Page.Title.SuperAdmin.Dashboard" xml:space="preserve"><value>Pano — Süper Yönetici</value></data>
+  <data name="Page.Title.SuperAdmin.Blogs" xml:space="preserve"><value>Bloglar — Süper Yönetici</value></data>
+  <data name="Page.Title.SuperAdmin.NewBlog" xml:space="preserve"><value>Yeni Blog — Süper Yönetici</value></data>
+  <data name="Page.Title.SuperAdmin.EditBlog" xml:space="preserve"><value>Blog Düzenle — Süper Yönetici</value></data>
+  <data name="Page.Title.SuperAdmin.DeleteBlog" xml:space="preserve"><value>Blog Sil — Süper Yönetici</value></data>
+  <data name="Page.Title.SuperAdmin.Users" xml:space="preserve"><value>Kullanıcılar — Süper Yönetici</value></data>
+  <data name="Page.Title.SuperAdmin.NewUser" xml:space="preserve"><value>Yeni Kullanıcı — Süper Yönetici</value></data>
+  <data name="Page.Title.SuperAdmin.EditUser" xml:space="preserve"><value>Kullanıcı Düzenle — Süper Yönetici</value></data>
+  <data name="Page.Title.SuperAdmin.DeleteUser" xml:space="preserve"><value>Kullanıcı Sil — Süper Yönetici</value></data>
+  <data name="Page.Title.BlogAdmin.Dashboard" xml:space="preserve"><value>Blog Yönetimi</value></data>
+  <data name="Page.Title.BlogAdmin.Posts" xml:space="preserve"><value>Yazılar</value></data>
+  <data name="Page.Title.BlogAdmin.NewPost" xml:space="preserve"><value>Yeni Yazı</value></data>
+  <data name="Page.Title.BlogAdmin.EditPost" xml:space="preserve"><value>Yazı Düzenle</value></data>
+  <data name="Page.Title.BlogAdmin.Categories" xml:space="preserve"><value>Kategoriler</value></data>
+  <data name="Page.Title.BlogAdmin.NewCategory" xml:space="preserve"><value>Yeni Kategori</value></data>
+  <data name="Page.Title.BlogAdmin.EditCategory" xml:space="preserve"><value>Kategori Düzenle</value></data>
+  <data name="Page.Title.BlogAdmin.DeleteCategory" xml:space="preserve"><value>Kategori Sil</value></data>
+  <data name="Page.Title.BlogAdmin.Media" xml:space="preserve"><value>Medya Kitaplığı</value></data>
+  <data name="Page.Title.BlogAdmin.Analytics" xml:space="preserve"><value>Analitik</value></data>
+  <data name="Page.Title.BlogAdmin.Themes" xml:space="preserve"><value>Temalar</value></data>
+  <data name="Page.Title.Blog.Home" xml:space="preserve"><value>Ana Sayfa</value></data>
+  <data name="Page.Title.Landing.Home" xml:space="preserve"><value>Blogify — Hikâyeni anlat. Blogun olsun.</value></data>
+  <data name="Page.Title.Landing.GetStarted" xml:space="preserve"><value>Başla</value></data>
+  <data name="Page.Title.Landing.Privacy" xml:space="preserve"><value>Gizlilik Politikası</value></data>
+  <data name="Page.Title.Landing.Error" xml:space="preserve"><value>Hata</value></data>
+
+  <!-- Messages -->
+  <data name="Message.SaveSuccess" xml:space="preserve"><value>Değişiklikler başarıyla kaydedildi.</value></data>
+  <data name="Message.DeleteSuccess" xml:space="preserve"><value>Başarıyla silindi.</value></data>
+  <data name="Message.NotFound" xml:space="preserve"><value>İstenen kaynak bulunamadı.</value></data>
+  <data name="Message.AccessDenied" xml:space="preserve"><value>Erişim engellendi.</value></data>
+  <data name="Message.WelcomeBack" xml:space="preserve"><value>Tekrar hoş geldiniz!</value></data>
+  <data name="Message.SlugTaken" xml:space="preserve"><value>Bu kısa ad bu blog için zaten kullanılıyor.</value></data>
+  <data name="Message.SubdomainTaken" xml:space="preserve"><value>Bu alt alan adı zaten alınmış. Lütfen başka birini seçin.</value></data>
+  <data name="Message.CategorySlugTaken" xml:space="preserve"><value>Bu kısa ada sahip bir kategori zaten mevcut.</value></data>
+  <data name="Message.CategoryNameTaken" xml:space="preserve"><value>Bu ada sahip bir kategori zaten mevcut.</value></data>
+  <data name="Message.UnableToDetermineUser" xml:space="preserve"><value>Mevcut kullanıcı belirlenemiyor. Lütfen tekrar giriş yapın.</value></data>
+  <data name="Message.CannotDeleteOwnAccount" xml:space="preserve"><value>Kendi hesabınızı silemezsiniz.</value></data>
+  <data name="Message.InvalidTenant" xml:space="preserve"><value>Seçilen kiracı geçersiz.</value></data>
+
+  <!-- Nav -->
+  <data name="Nav.Posts" xml:space="preserve"><value>Yazılar</value></data>
+  <data name="Nav.Categories" xml:space="preserve"><value>Kategoriler</value></data>
+  <data name="Nav.Media" xml:space="preserve"><value>Medya</value></data>
+  <data name="Nav.Analytics" xml:space="preserve"><value>Analitik</value></data>
+  <data name="Nav.Themes" xml:space="preserve"><value>Temalar</value></data>
+  <data name="Nav.Users" xml:space="preserve"><value>Kullanıcılar</value></data>
+  <data name="Nav.Blogs" xml:space="preserve"><value>Bloglar</value></data>
+  <data name="Nav.Dashboard" xml:space="preserve"><value>Pano</value></data>
+  <data name="Nav.SignOut" xml:space="preserve"><value>Çıkış yap</value></data>
+  <data name="Nav.Home" xml:space="preserve"><value>Ana Sayfa</value></data>
+  <data name="Nav.Privacy" xml:space="preserve"><value>Gizlilik</value></data>
+
+  <!-- Identity errors -->
+  <data name="Identity.DefaultError" xml:space="preserve"><value>Bilinmeyen bir hata oluştu.</value></data>
+  <data name="Identity.ConcurrencyFailure" xml:space="preserve"><value>Eşzamanlılık hatası: nesne değiştirilmiş.</value></data>
+  <data name="Identity.PasswordMismatch" xml:space="preserve"><value>Hatalı şifre.</value></data>
+  <data name="Identity.InvalidToken" xml:space="preserve"><value>Geçersiz token.</value></data>
+  <data name="Identity.LoginAlreadyAssociated" xml:space="preserve"><value>Bu giriş bilgisiyle zaten bir kullanıcı mevcut.</value></data>
+  <data name="Identity.InvalidUserName" xml:space="preserve"><value>'{0}' kullanıcı adı geçersiz; yalnızca harf veya rakam içerebilir.</value></data>
+  <data name="Identity.InvalidEmail" xml:space="preserve"><value>'{0}' e-postası geçersiz.</value></data>
+  <data name="Identity.DuplicateUserName" xml:space="preserve"><value>'{0}' kullanıcı adı zaten alınmış.</value></data>
+  <data name="Identity.DuplicateEmail" xml:space="preserve"><value>'{0}' e-postası zaten kullanılıyor.</value></data>
+  <data name="Identity.InvalidRoleName" xml:space="preserve"><value>'{0}' rol adı geçersiz.</value></data>
+  <data name="Identity.DuplicateRoleName" xml:space="preserve"><value>'{0}' rol adı zaten alınmış.</value></data>
+  <data name="Identity.UserAlreadyHasPassword" xml:space="preserve"><value>Kullanıcının zaten bir şifresi var.</value></data>
+  <data name="Identity.UserLockoutNotEnabled" xml:space="preserve"><value>Bu kullanıcı için kilitleme etkin değil.</value></data>
+  <data name="Identity.UserAlreadyInRole" xml:space="preserve"><value>Kullanıcı zaten '{0}' rolünde.</value></data>
+  <data name="Identity.UserNotInRole" xml:space="preserve"><value>Kullanıcı '{0}' rolünde değil.</value></data>
+  <data name="Identity.PasswordTooShort" xml:space="preserve"><value>Şifreler en az {0} karakter olmalıdır.</value></data>
+  <data name="Identity.PasswordRequiresNonAlphanumeric" xml:space="preserve"><value>Şifreler en az bir alfanümerik olmayan karakter içermelidir.</value></data>
+  <data name="Identity.PasswordRequiresDigit" xml:space="preserve"><value>Şifreler en az bir rakam ('0'-'9') içermelidir.</value></data>
+  <data name="Identity.PasswordRequiresLower" xml:space="preserve"><value>Şifreler en az bir küçük harf ('a'-'z') içermelidir.</value></data>
+  <data name="Identity.PasswordRequiresUpper" xml:space="preserve"><value>Şifreler en az bir büyük harf ('A'-'Z') içermelidir.</value></data>
+  <data name="Identity.PasswordRequiresUniqueChars" xml:space="preserve"><value>Şifreler en az {0} farklı karakter kullanmalıdır.</value></data>
+
+  <!-- Language switcher -->
+  <data name="Lang.English" xml:space="preserve"><value>İngilizce</value></data>
+  <data name="Lang.Turkish" xml:space="preserve"><value>Türkçe</value></data>
+</root>

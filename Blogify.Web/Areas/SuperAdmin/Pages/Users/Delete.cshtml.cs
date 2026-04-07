@@ -1,14 +1,16 @@
 using System.Security.Claims;
 using Blogify.Web.Models;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.SuperAdmin.Pages.Users;
 
 [Authorize(Roles = "SuperAdmin")]
-public sealed class DeleteModel(UserManager<ApplicationUser> userManager) : PageModel
+public sealed class DeleteModel(UserManager<ApplicationUser> userManager, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public string Id { get; set; } = string.Empty;
@@ -39,7 +41,7 @@ public sealed class DeleteModel(UserManager<ApplicationUser> userManager) : Page
         if (currentUserId == user.Id)
         {
             UserEmail = user.Email ?? user.UserName ?? Id;
-            ModelState.AddModelError(string.Empty, "You cannot delete your own account.");
+            ModelState.AddModelError(string.Empty, localizer["Message.CannotDeleteOwnAccount"]);
             return Page();
         }
 

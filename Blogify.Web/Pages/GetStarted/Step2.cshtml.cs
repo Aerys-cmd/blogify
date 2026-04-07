@@ -1,11 +1,13 @@
 using Blogify.Web.Data;
 using Blogify.Web.Models;
 using Blogify.Web.Models.Exceptions;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
 
 namespace Blogify.Web.Pages.GetStarted;
@@ -13,7 +15,8 @@ namespace Blogify.Web.Pages.GetStarted;
 [Authorize(Roles = "BlogAdmin")]
 public sealed class Step2Model(
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager) : PageModel
+    UserManager<ApplicationUser> userManager,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty]
     public required Step2Input Input { get; set; } = new()
@@ -73,7 +76,7 @@ public sealed class Step2Model(
 
         if (subdomainTaken)
         {
-            ModelState.AddModelError(nameof(Input.Subdomain), "This subdomain is already taken. Please choose another.");
+            ModelState.AddModelError(nameof(Input.Subdomain), localizer["Message.SubdomainTaken"]);
             return Page();
         }
 
@@ -97,7 +100,7 @@ public sealed class Step2Model(
         {
             // The subdomain unique index was violated by a concurrent request between
             // the AnyAsync check above and SaveChangesAsync.
-            ModelState.AddModelError(nameof(Input.Subdomain), "This subdomain is already taken. Please choose another.");
+            ModelState.AddModelError(nameof(Input.Subdomain), localizer["Message.SubdomainTaken"]);
             return Page();
         }
 

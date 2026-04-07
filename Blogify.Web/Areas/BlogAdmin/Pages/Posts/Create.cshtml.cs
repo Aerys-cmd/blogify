@@ -8,11 +8,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext, FeedService feedService) : PageModel
+public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext, FeedService feedService, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty]
     public CreatePostInput Input { get; set; } = new();
@@ -39,7 +40,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         string? authorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrWhiteSpace(authorId))
         {
-            ModelState.AddModelError(string.Empty, "Unable to determine the current user. Please sign in again.");
+            ModelState.AddModelError(string.Empty, localizer["Message.UnableToDetermineUser"]);
             await LoadAvailableCategoriesAsync(ct);
             return Page();
         }
@@ -50,7 +51,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         if (slugTaken)
         {
-            ModelState.AddModelError(nameof(Input.Slug), "This slug is already in use for this blog.");
+            ModelState.AddModelError(nameof(Input.Slug), localizer["Message.SlugTaken"]);
             await LoadAvailableCategoriesAsync(ct);
             return Page();
         }
