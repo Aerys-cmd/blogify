@@ -46,10 +46,19 @@ Set **Proxy status** to **DNS only** (grey cloud) for all four records — Traef
    scp traefik/traefik.yml ubuntu@<VPS_IP>:/opt/blogify/traefik/
    ```
 
-3. **Create the `.env` file** on the VPS from the example:
+3. **Create the `.env` file** manually on the VPS:
    ```bash
-   cp .env.example /opt/blogify/.env
-   # Edit /opt/blogify/.env with real production values
+   cat >/opt/blogify/.env <<'EOF'
+   POSTGRES_PASSWORD=<replace-with-strong-password>
+   POSTGRES_USER=<replace-with-postgres-user>
+   POSTGRES_DB=<replace-with-postgres-db>
+   IP_HASH_SALT=<replace-with-random-string>
+   PGADMIN_DEFAULT_EMAIL=<replace-with-pgadmin-email>
+   PGADMIN_DEFAULT_PASSWORD=<replace-with-strong-password>
+   CF_DNS_API_TOKEN=<replace-with-cloudflare-token>
+   GHCR_READ_TOKEN=<replace-with-ghcr-read-token>
+   EOF
+   # Edit /opt/blogify/.env and replace all placeholder values before starting the stack
    ```
 
 4. **Start the stack** for the first time:
