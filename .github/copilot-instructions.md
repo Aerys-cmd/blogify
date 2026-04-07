@@ -85,6 +85,20 @@
 
 ---
 
+## Localization
+
+- Supported cultures: `en` (default), `tr`. Configured via `app.UseRequestLocalization` in `Program.cs`.
+- All translations live in two files: `Resources/SharedResource.resx` (English) and `Resources/SharedResource.tr.resx` (Turkish).
+- The `SharedResource` marker class is in the `Blogify.Web` namespace (`Services/SharedResource.cs`). Never move it to a sub-namespace — ASP.NET Core derives the resource file path from the type namespace.
+- `IHtmlLocalizer<SharedResource>` is injected as `@Localizer` in `Pages/_ViewImports.cshtml` and is available in every view and partial.
+- `IStringLocalizer<SharedResource>` is injected into PageModels and services that need localised strings in C# code.
+- **Never hard-code user-visible strings in `.cshtml` files.** Always use `@Localizer["Key"]`.
+- Every new key must be added to **both** resx files simultaneously.
+- Key naming follows the `Section.Subsection.Name` pattern. See `.github/instructions/translation.instructions.md` for the full convention table and anti-patterns.
+- Culture switching is handled by `POST /culture` (`CultureEndpoints`) which sets a `.AspNetCore.Culture` cookie. `app.UseAntiforgery()` must be registered after `app.UseAuthorization()` for this endpoint to work.
+
+---
+
 ## Themes System
 
 - Each blog selects a theme via `Tenant.ActiveTheme` (stored in the `Blogs` table). Valid themes: `default`, `minimal`, `aurora`.
