@@ -133,11 +133,11 @@ public sealed class EditModel(
 
 public sealed record EditUserInput
 {
-    [Required(ErrorMessage = "Email is required.")]
-    [EmailAddress(ErrorMessage = "Enter a valid email address.")]
+    [Required]
+    [EmailAddress]
     public string Email { get; init; } = string.Empty;
 
-    [Required(ErrorMessage = "Username is required.")]
+    [Required]
     public string UserName { get; init; } = string.Empty;
 
     public string Role { get; init; } = string.Empty;

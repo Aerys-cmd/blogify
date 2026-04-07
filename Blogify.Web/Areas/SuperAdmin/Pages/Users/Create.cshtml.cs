@@ -55,20 +55,20 @@ public sealed class CreateModel(UserManager<ApplicationUser> userManager) : Page
 
 public sealed record CreateUserInput
 {
-    [Required(ErrorMessage = "Email is required.")]
-    [EmailAddress(ErrorMessage = "Enter a valid email address.")]
+    [Required]
+    [EmailAddress]
     public string Email { get; init; } = string.Empty;
 
-    [Required(ErrorMessage = "Password is required.")]
+    [Required]
     [DataType(DataType.Password)]
-    [MinLength(8, ErrorMessage = "Password must be at least 8 characters.")]
+    [MinLength(8)]
     public string Password { get; init; } = string.Empty;
 
-    [Required(ErrorMessage = "Please confirm your password.")]
+    [Required]
     [DataType(DataType.Password)]
-    [Compare(nameof(Password), ErrorMessage = "Passwords do not match.")]
+    [Compare(nameof(Password))]
     public string ConfirmPassword { get; init; } = string.Empty;
 
-    [Required(ErrorMessage = "Role is required.")]
+    [Required]
     public string Role { get; init; } = string.Empty;
 }

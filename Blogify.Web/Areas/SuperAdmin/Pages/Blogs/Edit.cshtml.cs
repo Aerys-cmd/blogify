@@ -75,10 +75,10 @@ public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<S
 
 public sealed record EditBlogInput
 {
-    [Required(ErrorMessage = "Title is required."), MaxLength(200)]
+    [Required, MaxLength(200)]
     public string Title { get; init; } = string.Empty;
 
-    [Required(ErrorMessage = "Subdomain is required."), MaxLength(63)]
-    [RegularExpression(@"^[a-z0-9-]+$", ErrorMessage = "Subdomain may only contain lowercase letters, digits, and hyphens.")]
+    [Required, MaxLength(63)]
+    [RegularExpression(@"^[a-z0-9-]+$")]
     public string Subdomain { get; init; } = string.Empty;
 }
