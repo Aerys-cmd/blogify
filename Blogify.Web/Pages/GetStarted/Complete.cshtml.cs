@@ -42,7 +42,9 @@ public sealed class CompleteModel(
         // The Complete page is only reachable on the root domain (LandingAccessMiddleware
         // blocks it on tenant subdomains), so Request.Host.Host is already the root domain.
         string portSuffix = Request.Host.Port.HasValue ? $":{Request.Host.Port}" : string.Empty;
-        AdminUrl = $"{scheme}://{tenant.Subdomain}.{Request.Host.Host}{portSuffix}/admin";
+        // Route through AdminRedirect so the user is signed in on the subdomain via
+        // a one-time cross-auth token before landing on the admin panel.
+        AdminUrl = $"{scheme}://{Request.Host.Host}{portSuffix}/GetStarted/AdminRedirect?subdomain={tenant.Subdomain}";
         BlogUrl = $"{scheme}://{tenant.Subdomain}.{Request.Host.Host}{portSuffix}";
 
         return Page();
