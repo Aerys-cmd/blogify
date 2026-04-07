@@ -176,4 +176,56 @@
   <!-- Language switcher -->
   <data name="Lang.English" xml:space="preserve"><value>İngilizce</value></data>
   <data name="Lang.Turkish" xml:space="preserve"><value>Türkçe</value></data>
+
+  <!-- GetStarted -->
+  <data name="GetStarted.Step1.StepBadge" xml:space="preserve"><value>Adım 1 / 2</value></data>
+  <data name="GetStarted.Step1.Heading" xml:space="preserve"><value>Hesabınızı oluşturun</value></data>
+  <data name="GetStarted.Step1.AlreadyHaveAccount" xml:space="preserve"><value>Zaten hesabınız var mı?</value></data>
+  <data name="GetStarted.Step1.Submit" xml:space="preserve"><value>Sonraki: Blogunuzu Kurun &#x2192;</value></data>
+  <data name="GetStarted.Step2.StepBadge" xml:space="preserve"><value>Adım 2 / 2</value></data>
+  <data name="GetStarted.Step2.Heading" xml:space="preserve"><value>Blogunuzu kurun</value></data>
+  <data name="GetStarted.Step2.Subheading" xml:space="preserve"><value>Blogunuza bir ad ve internet adresi verin.</value></data>
+  <data name="GetStarted.Step2.TitleLabel" xml:space="preserve"><value>Blog başlığı</value></data>
+  <data name="GetStarted.Step2.DomainPreview" xml:space="preserve"><value>Blogunuzun adresi:</value></data>
+  <data name="GetStarted.Step2.Submit" xml:space="preserve"><value>Blogumu Başlat &#x2192;</value></data>
+  <data name="GetStarted.Complete.Heading" xml:space="preserve"><value>Blogunuz yayında!</value></data>
+  <data name="GetStarted.Complete.ReadyMessage" xml:space="preserve"><value>hazır, ilk yazınızı bekliyoruz.</value></data>
+  <data name="GetStarted.Complete.OpenAdmin" xml:space="preserve"><value>Blog Yönetimini Aç</value></data>
+  <data name="GetStarted.Complete.ViewBlog" xml:space="preserve"><value>Blogu Görüntüle</value></data>
+  <data name="GetStarted.Complete.Note" xml:space="preserve"><value>Not:</value></data>
+  <data name="GetStarted.Complete.LocalNote" xml:space="preserve"><value>Blogunuz yerel ortamda</value></data>
+  <data name="GetStarted.Complete.LocalNoteSuffix" xml:space="preserve"><value>adresinde kullanılabilir. Üretim ortamında</value></data>
+
+  <!-- Index (Landing) -->
+  <data name="Index.Hero.Heading" xml:space="preserve"><value>Hikâyeni anlat. Blogun olsun. Kendi yolunla.</value></data>
+  <data name="Index.Hero.Subheading" xml:space="preserve"><value>Blogify, ücretsiz çok kiracılı bir blog platformudur. Özel bir alt alan adında blogunuzu oluşturun, temanızı seçin ve yayınlamaya başlayın — teknik kurulum gerektirmez.</value></data>
+  <data name="Index.Hero.PrimaryButton" xml:space="preserve"><value>Blogunu Başlat — Ücretsiz</value></data>
+  <data name="Index.Hero.SecondaryButton" xml:space="preserve"><value>Demo gör</value></data>
+  <data name="Index.Features.Heading" xml:space="preserve"><value>Blog için ihtiyacın olan her şey</value></data>
+  <data name="Index.Features.Subdomain.Title" xml:space="preserve"><value>Özel Alt Alan Adı</value></data>
+  <data name="Index.Features.Subdomain.Description" xml:space="preserve"><value>Kendi alt alan adınızı (örn. myblog.blogify.com) anında alın. Blogunuz, adresiniz.</value></data>
+  <data name="Index.Features.Themes.Title" xml:space="preserve"><value>Tema Seçici</value></data>
+  <data name="Index.Features.Themes.Description" xml:space="preserve"><value>Üç şık temadan birini seçin — Varsayılan, Minimal ve Aurora — ve istediğiniz zaman değiştirin.</value></data>
+  <data name="Index.Features.Categories.Title" xml:space="preserve"><value>Kategori Yönetimi</value></data>
+  <data name="Index.Features.Categories.Description" xml:space="preserve"><value>Yazılarınızı özel kategorilerle düzenleyerek okuyucularınızın sevdiklerini bulmasına yardımcı olun.</value></data>
+  <data name="Index.Features.Editor.Title" xml:space="preserve"><value>Zengin Yazı Editörü</value></data>
+  <data name="Index.Features.Editor.Description" xml:space="preserve"><value>Biçimlendirme, görsel ve gömülü içerikleri destekleyen tam özellikli editörle güzelce yazın.</value></data>
+  <data name="Index.Features.Media.Title" xml:space="preserve"><value>Medya Kitaplığı</value></data>
+  <data name="Index.Features.Media.Description" xml:space="preserve"><value>Görselleri ve dosyaları tek bir merkezi kitaplıktan tüm yazılarınızda yükleyin, yönetin ve yeniden kullanın.</value></data>
+  <data name="Index.Features.Markdown.Title" xml:space="preserve"><value>Markdown Uyumlu İçerik</value></data>
+  <data name="Index.Features.Markdown.Description" xml:space="preserve"><value>Markdown ile yazın ya da görsel editörü kullanın — Blogify her ikisini de destekler, akışınızı bozmaz.</value></data>
+  <data name="Index.HowItWorks.Heading" xml:space="preserve"><value>Nasıl çalışır</value></data>
+  <data name="Index.HowItWorks.Step1.Title" xml:space="preserve"><value>Hesabınızı oluşturun</value></data>
+  <data name="Index.HowItWorks.Step1.Description" xml:space="preserve"><value>Sadece e-posta ve şifrenizle saniyeler içinde kaydolun. Kredi kartı gerekmez.</value></data>
+  <data name="Index.HowItWorks.Step2.Title" xml:space="preserve"><value>Blogunuzu adlandırın ve alt alan adı seçin</value></data>
+  <data name="Index.HowItWorks.Step2.Description" xml:space="preserve"><value>Benzersiz bir alt alan adı seçin ve blogunuza sesinizi yansıtan bir başlık verin.</value></data>
+  <data name="Index.HowItWorks.Step3.Title" xml:space="preserve"><value>Yazmaya ve yayımlamaya başlayın</value></data>
+  <data name="Index.HowItWorks.Step3.Description" xml:space="preserve"><value>Doğrudan yönetim panelinize gidin ve ilk yazınızı dünyayla paylaşın.</value></data>
+  <data name="Index.Stats.JoinPrefix" xml:space="preserve"><value>Platformdaki</value></data>
+  <data name="Index.Stats.BlogSingular" xml:space="preserve"><value>bloga katılın!</value></data>
+  <data name="Index.Stats.BlogPlural" xml:space="preserve"><value>bloga katılın!</value></data>
+  <data name="Index.Stats.BeFirst" xml:space="preserve"><value>Blogify'da ilk blogu oluşturan siz olun!</value></data>
+  <data name="Index.CTA.Heading" xml:space="preserve"><value>Hikâyenizi paylaşmaya hazır mısınız?</value></data>
+  <data name="Index.CTA.Description" xml:space="preserve"><value>Bugün ücretsiz blogunuzu oluşturun ve büyüyen bir yazar, içerik üretici ve düşünür topluluğunun parçası olun.</value></data>
+  <data name="Index.CTA.Button" xml:space="preserve"><value>Başla — Ücretsiz</value></data>
 </root>

@@ -1,2 +1,2 @@
-namespace Blogify.Web.Services;
+namespace Blogify.Web;
 public sealed class SharedResource { }
