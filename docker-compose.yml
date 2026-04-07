@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
 
   blogify-web:
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/blogify-web:${IMAGE_TAG}
+    image: ghcr.io/${OWNER}/blogify-web:${IMAGE_TAG}
     depends_on:
       - postgres
     networks:
