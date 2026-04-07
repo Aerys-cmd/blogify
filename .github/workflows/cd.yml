@@ -22,6 +22,9 @@ jobs:
           dotnet-version: "10.0.x"
           dotnet-quality: preview
 
+      - name: Set lowercase owner
+        run: echo "OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -35,8 +38,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/blogify-web:${{ github.ref_name }}
-            ghcr.io/${{ github.repository_owner }}/blogify-web:latest
+            ghcr.io/${{ env.OWNER }}/blogify-web:${{ github.ref_name }}
+            ghcr.io/${{ env.OWNER }}/blogify-web:latest
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1
