@@ -10,9 +10,17 @@ apt-get update && apt-get upgrade -y
 echo "==> Installing Docker..."
 curl -fsSL https://get.docker.com | sh
 
-echo "==> Adding current user to the docker group..."
-usermod -aG docker "$USER"
+TARGET_USER="${1:-${SUDO_USER:-${USER:-}}}"
+if [ -z "$TARGET_USER" ] || [ "$TARGET_USER" = "root" ]; then
+  echo "ERROR: Unable to determine the non-root user to add to the docker group."
+  echo "Re-run this script with the deploy username as the first argument, for example:"
+  echo "  sudo ./scripts/setup-vps.sh myuser"
+  exit 1
+fi
 
+echo "==> Adding '$TARGET_USER' to the docker group..."
+usermod -aG docker "$TARGET_USER"
+echo "NOTE: Group membership changes require a new login/session before Docker can be used without sudo."
 echo "==> Creating deployment directory..."
 mkdir -p /opt/blogify/traefik
 
