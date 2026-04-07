@@ -36,6 +36,19 @@
 
 ---
 
+## Minimal API Endpoints
+
+- All minimal API endpoints live in `Blogify.Web/Endpoints/`.
+- Each file is a `public static class` named `{Feature}Endpoints` and exposes exactly one extension method: `public static IEndpointRouteBuilder Map{Feature}Endpoints(this IEndpointRouteBuilder app)`.
+- The extension method returns `app` so it can be chained if needed.
+- Register every endpoint file in `Program.cs` by calling `app.Map{Feature}Endpoints()` — never inline `app.MapGet/Post/…` calls directly in `Program.cs`.
+- Existing endpoints:
+  - `CrossAuthEndpoints` → `/crossauth` — cross-subdomain authentication handshake (one-time token, not inside BlogAdmin area).
+  - `FeedEndpoints` → `/sitemap.xml`, `/rss.xml` — tenant-scoped XML feeds.
+- Tenant-scoped endpoints must check `tenantContext.IsTenantResolved` and return `Results.NotFound()` when the tenant is absent.
+
+---
+
 ## Data Access — DbContext Direct Usage
 
 - There are no repository interfaces or implementations. PageModels inject `ApplicationDbContext` directly.

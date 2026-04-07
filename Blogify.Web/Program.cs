@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Blogify.Web.Data;
+using Blogify.Web.Endpoints;
 using Blogify.Web.Models;
 using Blogify.Web.Services;
 using Blogify.Web.Middleware;
@@ -147,80 +148,11 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-// Cross-subdomain authentication handshake.
-// AdminRedirect (root domain) mints a one-time token tied to the current user and
-// redirects here. This endpoint validates the token, signs the user in on the
-// subdomain, discards the token, then redirects to the admin panel.
-// It is intentionally NOT inside the BlogAdmin area so BlogAdminAccessMiddleware
-// does not intercept it before the sign-in has been completed.
-app.MapGet("/crossauth", async (
-    string? token,
-    IMemoryCache cache,
-    UserManager<ApplicationUser> userManager,
-    SignInManager<ApplicationUser> signInManager,
-    TenantContext tenantContext,
-    HttpContext httpContext) =>
-{
-    if (string.IsNullOrWhiteSpace(token))
-        return Results.BadRequest("Missing token.");
-
-    string cacheKey = $"crossauth:{token}";
-
-    if (!cache.TryGetValue(cacheKey, out string? userId) || string.IsNullOrEmpty(userId))
-        return Results.BadRequest("Token is invalid or has expired.");
-
-    // Consume immediately — one-time use only.
-    cache.Remove(cacheKey);
-
-    if (!tenantContext.IsTenantResolved)
-        return Results.NotFound("Blog not found.");
-
-    ApplicationUser? user = await userManager.FindByIdAsync(userId);
-    if (user is null)
-        return Results.BadRequest("User not found.");
-
-    // Verify the user is the tenant owner or a member to prevent token misuse.
-    bool isOwner = string.Equals(tenantContext.RequiredTenant.OwnerId, user.Id, StringComparison.Ordinal);
-    bool isMember = user.TenantId == tenantContext.RequiredTenant.Id;
-    if (!isOwner && !isMember)
-        return Results.Forbid();
-
-    await signInManager.SignInAsync(user, isPersistent: false);
-
-    return Results.Redirect("/admin");
-});
+app.MapCrossAuthEndpoints();
+app.MapFeedEndpoints();
 
 app.MapRazorPages()
    .WithStaticAssets();
 
-app.MapGet("/sitemap.xml", async (
-    TenantContext tenantContext,
-    FeedService feedService,
-    HttpContext httpContext,
-    CancellationToken ct) =>
-{
-    if (!tenantContext.IsTenantResolved)
-        return Results.NotFound();
-
-    Guid tenantId = tenantContext.RequiredTenant.Id;
-    string baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}{httpContext.Request.PathBase}";
-    string xml = await feedService.GetSitemapAsync(tenantId, baseUrl, ct);
-    return Results.Content(xml, "application/xml; charset=utf-8");
-});
-
-app.MapGet("/rss.xml", async (
-    TenantContext tenantContext,
-    FeedService feedService,
-    HttpContext httpContext,
-    CancellationToken ct) =>
-{
-    if (!tenantContext.IsTenantResolved)
-        return Results.NotFound();
-
-    Tenant tenant = tenantContext.RequiredTenant;
-    string baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}{httpContext.Request.PathBase}";
-    string xml = await feedService.GetRssAsync(tenant.Id, tenant.Title, baseUrl, ct);
-    return Results.Content(xml, "application/rss+xml; charset=utf-8");
-});
 
 app.Run();
