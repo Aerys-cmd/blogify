@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedService) : PageModel
+public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedService, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -106,7 +107,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
 
         if (slugTaken)
         {
-            ModelState.AddModelError(nameof(Input.Slug), "This slug is already in use for this blog.");
+            ModelState.AddModelError(nameof(Input.Slug), localizer["Message.SlugTaken"]);
             await LoadAvailableCategoriesAsync(ct);
             return Page();
         }
@@ -173,19 +174,19 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
 
 public sealed class EditPostInput
 {
-    [Required(ErrorMessage = "Title is required.")]
-    [MaxLength(500, ErrorMessage = "Title must not exceed 500 characters.")]
+    [Required]
+    [MaxLength(500)]
     public string Title { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Slug is required.")]
-    [MaxLength(300, ErrorMessage = "Slug must not exceed 300 characters.")]
-    [RegularExpression(@"^[a-z0-9-]+$", ErrorMessage = "Slug may only contain lowercase letters, digits, and hyphens.")]
+    [Required]
+    [MaxLength(300)]
+    [RegularExpression(@"^[a-z0-9-]+$")]
     public string Slug { get; set; } = string.Empty;
 
-    [MaxLength(500, ErrorMessage = "Excerpt must not exceed 500 characters.")]
+    [MaxLength(500)]
     public string? Excerpt { get; set; }
 
-    [Required(ErrorMessage = "Content is required.")]
+    [Required]
     public string Content { get; set; } = string.Empty;
 
     public Guid? CoverImageId { get; set; }

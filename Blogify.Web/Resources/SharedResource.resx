@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Labels -->
+  <data name="Label.Email" xml:space="preserve"><value>Email address</value></data>
+  <data name="Label.Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Label.ConfirmPassword" xml:space="preserve"><value>Confirm password</value></data>
+  <data name="Label.Title" xml:space="preserve"><value>Title</value></data>
+  <data name="Label.Subdomain" xml:space="preserve"><value>Subdomain</value></data>
+  <data name="Label.Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Label.Slug" xml:space="preserve"><value>Slug</value></data>
+  <data name="Label.Excerpt" xml:space="preserve"><value>Excerpt</value></data>
+  <data name="Label.Content" xml:space="preserve"><value>Content</value></data>
+  <data name="Label.Owner" xml:space="preserve"><value>Owner</value></data>
+  <data name="Label.Role" xml:space="preserve"><value>Role</value></data>
+  <data name="Label.Username" xml:space="preserve"><value>Username</value></data>
+  <data name="Label.BlogMembership" xml:space="preserve"><value>Blog Membership</value></data>
+
+  <!-- Actions -->
+  <data name="Action.Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Action.Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Action.Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Action.Publish" xml:space="preserve"><value>Publish</value></data>
+  <data name="Action.Unpublish" xml:space="preserve"><value>Unpublish</value></data>
+  <data name="Action.Create" xml:space="preserve"><value>Create</value></data>
+  <data name="Action.Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Action.Back" xml:space="preserve"><value>Back</value></data>
+  <data name="Action.Search" xml:space="preserve"><value>Search</value></data>
+  <data name="Action.SignIn" xml:space="preserve"><value>Sign In</value></data>
+  <data name="Action.GetStarted" xml:space="preserve"><value>Get Started</value></data>
+  <data name="Action.GoToBlogAdmin" xml:space="preserve"><value>Go to Blog Admin</value></data>
+
+  <!-- Validation -->
+  <data name="Validation.Required" xml:space="preserve"><value>This field is required.</value></data>
+  <data name="Validation.EmailInvalid" xml:space="preserve"><value>Enter a valid email address.</value></data>
+  <data name="Validation.MaxLength" xml:space="preserve"><value>This field exceeds the maximum length.</value></data>
+  <data name="Validation.MinLength" xml:space="preserve"><value>This field is too short.</value></data>
+  <data name="Validation.PasswordMismatch" xml:space="preserve"><value>The password and confirmation password do not match.</value></data>
+  <data name="Validation.SubdomainFormat" xml:space="preserve"><value>Subdomain may only contain letters, digits, and hyphens.</value></data>
+
+  <!-- Page Titles -->
+  <data name="Page.Title.SuperAdmin.Dashboard" xml:space="preserve"><value>Dashboard — Super Admin</value></data>
+  <data name="Page.Title.SuperAdmin.Blogs" xml:space="preserve"><value>Blogs — Super Admin</value></data>
+  <data name="Page.Title.SuperAdmin.NewBlog" xml:space="preserve"><value>New Blog — Super Admin</value></data>
+  <data name="Page.Title.SuperAdmin.EditBlog" xml:space="preserve"><value>Edit Blog — Super Admin</value></data>
+  <data name="Page.Title.SuperAdmin.DeleteBlog" xml:space="preserve"><value>Delete Blog — Super Admin</value></data>
+  <data name="Page.Title.SuperAdmin.Users" xml:space="preserve"><value>Users — Super Admin</value></data>
+  <data name="Page.Title.SuperAdmin.NewUser" xml:space="preserve"><value>New User — Super Admin</value></data>
+  <data name="Page.Title.SuperAdmin.EditUser" xml:space="preserve"><value>Edit User — Super Admin</value></data>
+  <data name="Page.Title.SuperAdmin.DeleteUser" xml:space="preserve"><value>Delete User — Super Admin</value></data>
+  <data name="Page.Title.BlogAdmin.Dashboard" xml:space="preserve"><value>Blog Admin</value></data>
+  <data name="Page.Title.BlogAdmin.Posts" xml:space="preserve"><value>Posts</value></data>
+  <data name="Page.Title.BlogAdmin.NewPost" xml:space="preserve"><value>New Post</value></data>
+  <data name="Page.Title.BlogAdmin.EditPost" xml:space="preserve"><value>Edit Post</value></data>
+  <data name="Page.Title.BlogAdmin.Categories" xml:space="preserve"><value>Categories</value></data>
+  <data name="Page.Title.BlogAdmin.NewCategory" xml:space="preserve"><value>New Category</value></data>
+  <data name="Page.Title.BlogAdmin.EditCategory" xml:space="preserve"><value>Edit Category</value></data>
+  <data name="Page.Title.BlogAdmin.DeleteCategory" xml:space="preserve"><value>Delete Category</value></data>
+  <data name="Page.Title.BlogAdmin.Media" xml:space="preserve"><value>Media Library</value></data>
+  <data name="Page.Title.BlogAdmin.Analytics" xml:space="preserve"><value>Analytics</value></data>
+  <data name="Page.Title.BlogAdmin.Themes" xml:space="preserve"><value>Themes</value></data>
+  <data name="Page.Title.Blog.Home" xml:space="preserve"><value>Home</value></data>
+  <data name="Page.Title.Landing.Home" xml:space="preserve"><value>Blogify — Your story. Your blog. Your way.</value></data>
+  <data name="Page.Title.Landing.GetStarted" xml:space="preserve"><value>Get Started</value></data>
+  <data name="Page.Title.Landing.Privacy" xml:space="preserve"><value>Privacy Policy</value></data>
+  <data name="Page.Title.Landing.Error" xml:space="preserve"><value>Error</value></data>
+
+  <!-- Messages -->
+  <data name="Message.SaveSuccess" xml:space="preserve"><value>Changes saved successfully.</value></data>
+  <data name="Message.DeleteSuccess" xml:space="preserve"><value>Deleted successfully.</value></data>
+  <data name="Message.NotFound" xml:space="preserve"><value>The requested resource was not found.</value></data>
+  <data name="Message.AccessDenied" xml:space="preserve"><value>Access denied.</value></data>
+  <data name="Message.WelcomeBack" xml:space="preserve"><value>Welcome back!</value></data>
+  <data name="Message.SlugTaken" xml:space="preserve"><value>This slug is already in use for this blog.</value></data>
+  <data name="Message.SubdomainTaken" xml:space="preserve"><value>This subdomain is already taken. Please choose another.</value></data>
+  <data name="Message.CategorySlugTaken" xml:space="preserve"><value>A category with this slug already exists for this blog.</value></data>
+  <data name="Message.CategoryNameTaken" xml:space="preserve"><value>A category with this name already exists for this blog.</value></data>
+  <data name="Message.UnableToDetermineUser" xml:space="preserve"><value>Unable to determine the current user. Please sign in again.</value></data>
+  <data name="Message.CannotDeleteOwnAccount" xml:space="preserve"><value>You cannot delete your own account.</value></data>
+  <data name="Message.InvalidTenant" xml:space="preserve"><value>The selected tenant is invalid.</value></data>
+
+  <!-- Nav -->
+  <data name="Nav.Posts" xml:space="preserve"><value>Posts</value></data>
+  <data name="Nav.Categories" xml:space="preserve"><value>Categories</value></data>
+  <data name="Nav.Media" xml:space="preserve"><value>Media</value></data>
+  <data name="Nav.Analytics" xml:space="preserve"><value>Analytics</value></data>
+  <data name="Nav.Themes" xml:space="preserve"><value>Themes</value></data>
+  <data name="Nav.Users" xml:space="preserve"><value>Users</value></data>
+  <data name="Nav.Blogs" xml:space="preserve"><value>Blogs</value></data>
+  <data name="Nav.Dashboard" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="Nav.SignOut" xml:space="preserve"><value>Sign Out</value></data>
+  <data name="Nav.Home" xml:space="preserve"><value>Home</value></data>
+  <data name="Nav.Privacy" xml:space="preserve"><value>Privacy</value></data>
+
+  <!-- Identity errors -->
+  <data name="Identity.DefaultError" xml:space="preserve"><value>An unknown error occurred.</value></data>
+  <data name="Identity.ConcurrencyFailure" xml:space="preserve"><value>Optimistic concurrency failure: the object has been modified.</value></data>
+  <data name="Identity.PasswordMismatch" xml:space="preserve"><value>Incorrect password.</value></data>
+  <data name="Identity.InvalidToken" xml:space="preserve"><value>Invalid token.</value></data>
+  <data name="Identity.LoginAlreadyAssociated" xml:space="preserve"><value>A user with this login already exists.</value></data>
+  <data name="Identity.InvalidUserName" xml:space="preserve"><value>User name '{0}' is invalid; it may only contain letters or digits.</value></data>
+  <data name="Identity.InvalidEmail" xml:space="preserve"><value>Email '{0}' is invalid.</value></data>
+  <data name="Identity.DuplicateUserName" xml:space="preserve"><value>User name '{0}' is already taken.</value></data>
+  <data name="Identity.DuplicateEmail" xml:space="preserve"><value>Email '{0}' is already taken.</value></data>
+  <data name="Identity.InvalidRoleName" xml:space="preserve"><value>Role name '{0}' is invalid.</value></data>
+  <data name="Identity.DuplicateRoleName" xml:space="preserve"><value>Role name '{0}' is already taken.</value></data>
+  <data name="Identity.UserAlreadyHasPassword" xml:space="preserve"><value>User already has a password set.</value></data>
+  <data name="Identity.UserLockoutNotEnabled" xml:space="preserve"><value>Lockout is not enabled for this user.</value></data>
+  <data name="Identity.UserAlreadyInRole" xml:space="preserve"><value>User is already in role '{0}'.</value></data>
+  <data name="Identity.UserNotInRole" xml:space="preserve"><value>User is not in role '{0}'.</value></data>
+  <data name="Identity.PasswordTooShort" xml:space="preserve"><value>Passwords must be at least {0} characters.</value></data>
+  <data name="Identity.PasswordRequiresNonAlphanumeric" xml:space="preserve"><value>Passwords must have at least one non-alphanumeric character.</value></data>
+  <data name="Identity.PasswordRequiresDigit" xml:space="preserve"><value>Passwords must have at least one digit ('0'-'9').</value></data>
+  <data name="Identity.PasswordRequiresLower" xml:space="preserve"><value>Passwords must have at least one lowercase ('a'-'z').</value></data>
+  <data name="Identity.PasswordRequiresUpper" xml:space="preserve"><value>Passwords must have at least one uppercase ('A'-'Z').</value></data>
+  <data name="Identity.PasswordRequiresUniqueChars" xml:space="preserve"><value>Passwords must use at least {0} different characters.</value></data>
+
+  <!-- Language switcher -->
+  <data name="Lang.English" xml:space="preserve"><value>English</value></data>
+  <data name="Lang.Turkish" xml:space="preserve"><value>Turkish</value></data>
+</root>

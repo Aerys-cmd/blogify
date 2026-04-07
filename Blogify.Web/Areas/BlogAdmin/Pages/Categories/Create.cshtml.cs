@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Categories;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty]
     public CategoryInputModel Input { get; set; } = new();
@@ -37,7 +38,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         if (slugTaken)
         {
-            ModelState.AddModelError(nameof(Input.Slug), "A category with this slug already exists for this blog.");
+            ModelState.AddModelError(nameof(Input.Slug), localizer["Message.CategorySlugTaken"]);
             return Page();
         }
 
@@ -47,7 +48,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         if (nameTaken)
         {
-            ModelState.AddModelError(nameof(Input.Name), "A category with this name already exists for this blog.");
+            ModelState.AddModelError(nameof(Input.Name), localizer["Message.CategoryNameTaken"]);
             return Page();
         }
 
@@ -70,12 +71,12 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
 public sealed class CategoryInputModel
 {
-    [Required(ErrorMessage = "Name is required.")]
-    [MaxLength(100, ErrorMessage = "Name must not exceed 100 characters.")]
+    [Required]
+    [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 
-    [MaxLength(100, ErrorMessage = "Slug must not exceed 100 characters.")]
-    [RegularExpression(@"^[a-z0-9-]*$", ErrorMessage = "Slug may only contain lowercase letters, digits, and hyphens.")]
+    [MaxLength(100)]
+    [RegularExpression(@"^[a-z0-9-]*$")]
     public string? Slug { get; set; }
 }
 

@@ -2,15 +2,17 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Categories;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
+public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -66,7 +68,7 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
 
         if (slugTaken)
         {
-            ModelState.AddModelError(nameof(Input.Slug), "A category with this slug already exists for this blog.");
+            ModelState.AddModelError(nameof(Input.Slug), localizer["Message.CategorySlugTaken"]);
             CategoryName = category.Name;
             return Page();
         }
@@ -77,7 +79,7 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
 
         if (nameTaken)
         {
-            ModelState.AddModelError(nameof(Input.Name), "A category with this name already exists for this blog.");
+            ModelState.AddModelError(nameof(Input.Name), localizer["Message.CategoryNameTaken"]);
             CategoryName = category.Name;
             return Page();
         }
@@ -100,12 +102,12 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
 
 public sealed class CategoryEditInput
 {
-    [Required(ErrorMessage = "Name is required.")]
-    [MaxLength(100, ErrorMessage = "Name must not exceed 100 characters.")]
+    [Required]
+    [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 
-    [MaxLength(100, ErrorMessage = "Slug must not exceed 100 characters.")]
-    [RegularExpression(@"^[a-z0-9-]*$", ErrorMessage = "Slug may only contain lowercase letters, digits, and hyphens.")]
+    [MaxLength(100)]
+    [RegularExpression(@"^[a-z0-9-]*$")]
     public string? Slug { get; set; }
 }
 
