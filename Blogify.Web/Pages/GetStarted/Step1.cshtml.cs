@@ -79,7 +79,7 @@ public sealed class Step1Model(
 
         [Required]
         [DataType(DataType.Password)]
-        [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
+        [Compare(nameof(Password))]
         public required string ConfirmPassword { get; init; }
     }
 }

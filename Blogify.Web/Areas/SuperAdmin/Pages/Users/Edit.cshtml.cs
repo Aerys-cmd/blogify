@@ -1,18 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.SuperAdmin.Pages.Users;
 
 [Authorize(Roles = "SuperAdmin")]
 public sealed class EditModel(
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager) : PageModel
+    UserManager<ApplicationUser> userManager,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public string Id { get; set; } = string.Empty;
@@ -75,7 +78,7 @@ public sealed class EditModel(
         }
         else
         {
-            ModelState.AddModelError($"{nameof(Input)}.{nameof(Input.TenantId)}", "The selected tenant is invalid.");
+            ModelState.AddModelError($"{nameof(Input)}.{nameof(Input.TenantId)}", localizer["Message.InvalidTenant"]);
             return Page();
         }
         IdentityResult updateResult = await userManager.UpdateAsync(user);
@@ -130,11 +133,11 @@ public sealed class EditModel(
 
 public sealed record EditUserInput
 {
-    [Required(ErrorMessage = "Email is required.")]
-    [EmailAddress(ErrorMessage = "Enter a valid email address.")]
+    [Required]
+    [EmailAddress]
     public string Email { get; init; } = string.Empty;
 
-    [Required(ErrorMessage = "Username is required.")]
+    [Required]
     public string UserName { get; init; } = string.Empty;
 
     public string Role { get; init; } = string.Empty;

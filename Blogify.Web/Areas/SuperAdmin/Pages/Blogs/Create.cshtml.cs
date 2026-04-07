@@ -1,16 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.SuperAdmin.Pages.Blogs;
 
 [Authorize(Roles = "SuperAdmin")]
-public sealed class CreateModel(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager) : PageModel
+public sealed class CreateModel(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty]
     public CreateBlogInput Input { get; set; } = new();
@@ -38,7 +40,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, UserManager<Appl
 
         if (subdomainExists)
         {
-            ModelState.AddModelError(nameof(Input.Subdomain), "This subdomain is already taken.");
+            ModelState.AddModelError(nameof(Input.Subdomain), localizer["Message.SubdomainTaken"]);
             return Page();
         }
 
@@ -64,14 +66,14 @@ public sealed class CreateModel(ApplicationDbContext dbContext, UserManager<Appl
 
 public sealed record CreateBlogInput
 {
-    [Required(ErrorMessage = "Title is required."), MaxLength(200)]
+    [Required, MaxLength(200)]
     public string Title { get; init; } = string.Empty;
 
-    [Required(ErrorMessage = "Subdomain is required."), MaxLength(63)]
-    [RegularExpression(@"^[a-z0-9-]+$", ErrorMessage = "Subdomain may only contain lowercase letters, digits, and hyphens.")]
+    [Required, MaxLength(63)]
+    [RegularExpression(@"^[a-z0-9-]+$")]
     public string Subdomain { get; init; } = string.Empty;
 
-    [Required(ErrorMessage = "Owner is required.")]
+    [Required]
     public string OwnerId { get; init; } = string.Empty;
 }
 

@@ -14,12 +14,15 @@ builder.AddServiceDefaults();
 
 builder.AddNpgsqlDbContext<ApplicationDbContext>("blogdb");
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
 builder.Services
     .AddDefaultIdentity<ApplicationUser>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
     })
     .AddRoles<IdentityRole>()
+    .AddErrorDescriber<LocalizedIdentityErrorDescriber>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<TenantContext>();
@@ -39,8 +42,9 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
 });
 
 // Add services to the container.
-builder.Services.AddRazorPages(options =>
-{
+builder.Services
+    .AddRazorPages(options =>
+    {
     // Map the BlogAdmin area under the /admin route prefix instead of /BlogAdmin.
     options.Conventions.AddAreaFolderRouteModelConvention(
         areaName: "BlogAdmin",
@@ -90,7 +94,11 @@ builder.Services.AddRazorPages(options =>
                 }
             }
         });
-});
+    })
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization(options =>
+        options.DataAnnotationLocalizerProvider = (_, factory) =>
+            factory.Create(typeof(SharedResource)));
 
 var app = builder.Build();
 
@@ -110,6 +118,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+string[] supportedCultures = ["en", "tr"];
+app.UseRequestLocalization(new RequestLocalizationOptions()
+    .SetDefaultCulture("en")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures));
 
 app.UseStaticFiles();
 
@@ -150,6 +164,7 @@ app.MapStaticAssets();
 
 app.MapCrossAuthEndpoints();
 app.MapFeedEndpoints();
+app.MapCultureEndpoints();
 
 app.MapRazorPages()
    .WithStaticAssets();
