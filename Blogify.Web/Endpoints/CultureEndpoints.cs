@@ -24,7 +24,7 @@ public static class CultureEndpoints
                 {
                     Path = "/",
                     SameSite = SameSiteMode.Lax,
-                    HttpOnly = true
+                    HttpOnly = false
                 });
 
             string destination = string.IsNullOrEmpty(redirectUri) ? "/" : redirectUri;
