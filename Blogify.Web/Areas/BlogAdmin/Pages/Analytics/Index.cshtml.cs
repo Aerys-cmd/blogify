@@ -46,13 +46,15 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
             .Distinct()
             .CountAsync(ct);
 
-        List<TopPostRow> topPostRows = await tenantEvents
-            .Where(e => e.Timestamp >= cutoff30 && e.PostId.HasValue)
+        List<TopPostRow> topPostRows = (await tenantEvents
+            .Where(e => e.Timestamp >= cutoff30 && e.PostId != null)
             .GroupBy(e => e.PostId!.Value)
-            .Select(g => new TopPostRow(g.Key, g.Count()))
-            .OrderByDescending(r => r.Views)
+            .Select(g => new { PostId = g.Key, Views = g.Count() })
+            .OrderByDescending(g => g.Views)
             .Take(5)
-            .ToListAsync(ct);
+            .ToListAsync(ct))
+            .Select(g => new TopPostRow(g.PostId, g.Views))
+            .ToList();
 
         if (topPostRows.Count > 0)
         {
@@ -72,14 +74,15 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
                 .ToList();
         }
 
-        TopReferrers = await tenantEvents
+        TopReferrers = (await tenantEvents
             .Where(e => e.Timestamp >= cutoff30 && e.Referrer != null)
-            .Select(e => e.Referrer ?? string.Empty)
-            .GroupBy(referrer => referrer)
-            .Select(g => new TopReferrerViewModel(g.Key, g.Count()))
-            .OrderByDescending(r => r.Views)
+            .GroupBy(e => e.Referrer)
+            .Select(g => new { Referrer = g.Key, Views = g.Count() })
+            .OrderByDescending(g => g.Views)
             .Take(10)
-            .ToListAsync(ct);
+            .ToListAsync(ct))
+            .Select(g => new TopReferrerViewModel(g.Referrer ?? string.Empty, g.Views))
+            .ToList();
     }
 
     private sealed record TopPostRow(Guid PostId, int Views);

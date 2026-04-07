@@ -57,23 +57,18 @@ public sealed class IndexModel(ApplicationDbContext dbContext) : PageModel
 
         List<string> userIds = pageUsers.Select(u => u.Id).ToList();
 
-        Task<Dictionary<Guid, string>> blogTitlesTask = dbContext.Blogs
+        var blogTitles = await dbContext.Blogs
             .AsNoTracking()
             .Where(t => tenantIds.Contains(t.Id))
             .ToDictionaryAsync(t => t.Id, t => t.Title, ct);
 
-        Task<Dictionary<string, List<string>>> rolesTask = (
+        var rolesByUserId = await (
             from ur in dbContext.UserRoles.AsNoTracking()
             join r in dbContext.Roles.AsNoTracking() on ur.RoleId equals r.Id
             where userIds.Contains(ur.UserId) && r.Name != null
             select new { ur.UserId, r.Name }
         ).GroupBy(x => x.UserId)
          .ToDictionaryAsync(g => g.Key, g => g.Select(x => x.Name!).ToList(), ct);
-
-        await Task.WhenAll(blogTitlesTask, rolesTask);
-
-        Dictionary<Guid, string> blogTitles = blogTitlesTask.Result;
-        Dictionary<string, List<string>> rolesByUserId = rolesTask.Result;
 
         List<UserListItem> items = pageUsers.Select(user =>
         {
