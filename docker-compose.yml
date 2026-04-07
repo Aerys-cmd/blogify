@@ -62,7 +62,6 @@ services:
       # Tenant subdomains router
       - "traefik.http.routers.blogify-tenants.entrypoints=websecure"
       - "traefik.http.routers.blogify-tenants.rule=HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
-      - "traefik.http.routers.blogify-tenants.priority=1000"
       - "traefik.http.routers.blogify-tenants.tls=true"
       - "traefik.http.routers.blogify-tenants.tls.certresolver=letsencrypt"
       - "traefik.http.routers.blogify-tenants.tls.domains[0].main=blog.lunavex.com"
@@ -87,7 +86,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.pgadmin.entrypoints=websecure"
       - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.blog.lunavex.com`)"
-      - "traefik.http.routers.pgadmin.priority=2000"
       - "traefik.http.routers.pgadmin.tls=true"
       - "traefik.http.routers.pgadmin.tls.certresolver=letsencrypt"
       - "traefik.http.routers.pgadmin.service=pgadmin-svc"
