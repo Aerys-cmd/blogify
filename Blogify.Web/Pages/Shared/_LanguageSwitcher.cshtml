@@ -4,6 +4,7 @@
     string returnUrl = Context.Request.Path + Context.Request.QueryString;
 }
 <form method="post" action="/culture" class="d-inline-flex gap-1 align-items-center">
+    @Html.AntiForgeryToken()
     <input type="hidden" name="redirectUri" value="@returnUrl" />
     <button type="submit" name="culture" value="en"
             class="btn btn-sm @(currentCulture == "en" ? "btn-primary" : "btn-outline-secondary")"
