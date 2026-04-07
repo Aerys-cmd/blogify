@@ -88,6 +88,7 @@ services:
       - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.blog.lunavex.com`)"
       - "traefik.http.routers.pgadmin.tls=true"
       - "traefik.http.routers.pgadmin.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.pgadmin.service=pgadmin-svc"
       - "traefik.http.services.pgadmin-svc.loadbalancer.server.port=80"
     restart: unless-stopped
 
