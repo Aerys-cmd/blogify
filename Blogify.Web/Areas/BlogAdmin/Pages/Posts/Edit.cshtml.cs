@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedService) : PageModel
+public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedService, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -106,7 +107,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
 
         if (slugTaken)
         {
-            ModelState.AddModelError(nameof(Input.Slug), "This slug is already in use for this blog.");
+            ModelState.AddModelError(nameof(Input.Slug), localizer["Message.SlugTaken"]);
             await LoadAvailableCategoriesAsync(ct);
             return Page();
         }

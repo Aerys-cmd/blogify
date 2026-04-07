@@ -13,6 +13,7 @@
             <a asp-area="Blog" asp-page="/Index" class="no-underline text-stone-900">
                 <h1 class="text-xl font-semibold tracking-tight">@TenantContext.CurrentTenant?.Title</h1>
             </a>
+            <partial name="_LanguageSwitcher" />
         </div>
     </header>
 

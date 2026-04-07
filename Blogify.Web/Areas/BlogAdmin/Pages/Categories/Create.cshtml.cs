@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Categories;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty]
     public CategoryInputModel Input { get; set; } = new();
@@ -37,7 +38,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         if (slugTaken)
         {
-            ModelState.AddModelError(nameof(Input.Slug), "A category with this slug already exists for this blog.");
+            ModelState.AddModelError(nameof(Input.Slug), localizer["Message.CategorySlugTaken"]);
             return Page();
         }
 
@@ -47,7 +48,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         if (nameTaken)
         {
-            ModelState.AddModelError(nameof(Input.Name), "A category with this name already exists for this blog.");
+            ModelState.AddModelError(nameof(Input.Name), localizer["Message.CategoryNameTaken"]);
             return Page();
         }
 

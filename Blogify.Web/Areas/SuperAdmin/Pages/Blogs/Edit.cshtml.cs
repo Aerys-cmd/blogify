@@ -1,15 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.SuperAdmin.Pages.Blogs;
 
 [Authorize(Roles = "SuperAdmin")]
-public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
+public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -59,7 +61,7 @@ public sealed class EditModel(ApplicationDbContext dbContext) : PageModel
 
         if (subdomainExists)
         {
-            ModelState.AddModelError(nameof(Input.Subdomain), "This subdomain is already taken.");
+            ModelState.AddModelError(nameof(Input.Subdomain), localizer["Message.SubdomainTaken"]);
             return Page();
         }
 
