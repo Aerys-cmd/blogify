@@ -48,6 +48,7 @@ services:
       - "traefik.http.routers.blogify-http.entrypoints=web"
       - "traefik.http.routers.blogify-http.rule=HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`) || Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`)"
       - "traefik.http.routers.blogify-http.middlewares=redirect-to-https"
+      - "traefik.http.routers.blogify-http.service=noop@internal"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
 
