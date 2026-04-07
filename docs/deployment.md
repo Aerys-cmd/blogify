@@ -73,6 +73,6 @@ Set **Proxy status** to **DNS only** (grey cloud) for all four records — Traef
 
 ## Post-Deploy Security
 
-- **Change the default SuperAdmin password immediately** — log in at `https://blog.lunavex.com/sa` using the seeded credentials (`superadmin@blogify.com` / `SuperAdmin123A+`) and change the password before exposing the site publicly.
+- **Change the initial SuperAdmin password immediately** — log in at `https://blog.lunavex.com/sa` with the seeded email (`superadmin@blogify.com`) and the password defined by your secure seeding/deployment configuration, then change it before exposing the site publicly.
 - Rotate `POSTGRES_PASSWORD`, `PGADMIN_DEFAULT_PASSWORD`, and `IP_HASH_SALT` before going live.
 - Ensure `CF_DNS_API_TOKEN` is scoped only to `Zone:DNS:Edit` on `lunavex.com` — no broader permissions needed.
