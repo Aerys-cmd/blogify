@@ -71,12 +71,12 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
 public sealed class CategoryInputModel
 {
-    [Required(ErrorMessage = "Name is required.")]
-    [MaxLength(100, ErrorMessage = "Name must not exceed 100 characters.")]
+    [Required]
+    [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 
-    [MaxLength(100, ErrorMessage = "Slug must not exceed 100 characters.")]
-    [RegularExpression(@"^[a-z0-9-]*$", ErrorMessage = "Slug may only contain lowercase letters, digits, and hyphens.")]
+    [MaxLength(100)]
+    [RegularExpression(@"^[a-z0-9-]*$")]
     public string? Slug { get; set; }
 }
 

@@ -21,10 +21,10 @@ public sealed class LocalizedIdentityErrorDescriber(IStringLocalizer<SharedResou
         => new() { Code = nameof(LoginAlreadyAssociated), Description = localizer["Identity.LoginAlreadyAssociated"].Value };
 
     public override IdentityError InvalidUserName(string? userName)
-        => new() { Code = nameof(InvalidUserName), Description = localizer["Identity.InvalidUserName", userName!].Value };
+        => new() { Code = nameof(InvalidUserName), Description = localizer["Identity.InvalidUserName", userName ?? string.Empty].Value };
 
     public override IdentityError InvalidEmail(string? email)
-        => new() { Code = nameof(InvalidEmail), Description = localizer["Identity.InvalidEmail", email!].Value };
+        => new() { Code = nameof(InvalidEmail), Description = localizer["Identity.InvalidEmail", email ?? string.Empty].Value };
 
     public override IdentityError DuplicateUserName(string userName)
         => new() { Code = nameof(DuplicateUserName), Description = localizer["Identity.DuplicateUserName", userName].Value };
@@ -33,7 +33,7 @@ public sealed class LocalizedIdentityErrorDescriber(IStringLocalizer<SharedResou
         => new() { Code = nameof(DuplicateEmail), Description = localizer["Identity.DuplicateEmail", email].Value };
 
     public override IdentityError InvalidRoleName(string? role)
-        => new() { Code = nameof(InvalidRoleName), Description = localizer["Identity.InvalidRoleName", role!].Value };
+        => new() { Code = nameof(InvalidRoleName), Description = localizer["Identity.InvalidRoleName", role ?? string.Empty].Value };
 
     public override IdentityError DuplicateRoleName(string role)
         => new() { Code = nameof(DuplicateRoleName), Description = localizer["Identity.DuplicateRoleName", role].Value };

@@ -86,6 +86,7 @@
   <data name="Action.Search" xml:space="preserve"><value>Search</value></data>
   <data name="Action.SignIn" xml:space="preserve"><value>Sign In</value></data>
   <data name="Action.GetStarted" xml:space="preserve"><value>Get Started</value></data>
+  <data name="Action.GoToBlogAdmin" xml:space="preserve"><value>Go to Blog Admin</value></data>
 
   <!-- Validation -->
   <data name="Validation.Required" xml:space="preserve"><value>This field is required.</value></data>

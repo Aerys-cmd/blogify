@@ -115,7 +115,7 @@ public sealed class Step2Model(
 
         [Required]
         [StringLength(63, MinimumLength = 2)]
-        [RegularExpression(@"^[A-Za-z0-9-]+$", ErrorMessage = "Subdomain may only contain letters, digits, and hyphens.")]
+        [RegularExpression(@"^[A-Za-z0-9-]+$")]
         public required string Subdomain { get; init; }
     }
 }

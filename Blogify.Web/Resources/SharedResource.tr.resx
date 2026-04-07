@@ -86,6 +86,7 @@
   <data name="Action.Search" xml:space="preserve"><value>Ara</value></data>
   <data name="Action.SignIn" xml:space="preserve"><value>Giriş yap</value></data>
   <data name="Action.GetStarted" xml:space="preserve"><value>Başla</value></data>
+  <data name="Action.GoToBlogAdmin" xml:space="preserve"><value>Blog Yönetimine Git</value></data>
 
   <!-- Validation -->
   <data name="Validation.Required" xml:space="preserve"><value>Bu alan zorunludur.</value></data>
