@@ -8,6 +8,9 @@ using Blogify.Web.Models;
 using Blogify.Web.Services;
 using Blogify.Web.Middleware;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.IO;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +39,24 @@ builder.Services.AddScoped<FeedService>();
 builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
 builder.Services.AddSingleton<AnalyticsChannel>();
 builder.Services.AddHostedService<AnalyticsWriterService>();
+
+builder.Services.Configure<TenantOptions>(
+    builder.Configuration.GetSection("Tenant"));
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto |
+        ForwardedHeaders.XForwardedHost;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(
+        builder.Configuration["DataProtection:KeysPath"] ?? "/app/keys"))
+    .SetApplicationName("Blogify");
 
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
@@ -117,6 +138,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+app.UseForwardedHeaders();
 
 app.UseHttpsRedirection();
 
