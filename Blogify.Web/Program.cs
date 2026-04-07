@@ -53,9 +53,13 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Clear();
 });
 
+string dataProtectionKeysPath = builder.Configuration["DataProtection:KeysPath"]
+    ?? (builder.Environment.IsDevelopment()
+        ? Path.Combine(builder.Environment.ContentRootPath, "keys")
+        : "/app/keys");
+
 builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(
-        builder.Configuration["DataProtection:KeysPath"] ?? "/app/keys"))
+    .PersistKeysToFileSystem(new DirectoryInfo(dataProtectionKeysPath))
     .SetApplicationName("Blogify");
 
 builder.Services.Configure<RazorViewEngineOptions>(options =>
