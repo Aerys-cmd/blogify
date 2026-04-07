@@ -1,0 +1,10 @@
+**/bin
+**/obj
+**/.git
+**/node_modules
+.env
+.env.*
+docker-compose*.yml
+traefik/
+scripts/
+Blogify.AppHost/
