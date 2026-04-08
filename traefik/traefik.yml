@@ -18,6 +18,7 @@ certificatesResolvers:
 providers:
   docker:
     exposedByDefault: false
+    network: web
 
 api:
   dashboard: false
