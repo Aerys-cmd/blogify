@@ -78,15 +78,15 @@ Blogify is a SaaS multi-tenant blogging platform. Each tenant is a blog, accesse
 HTTP Request
     │
     ▼
+AuthenticationMiddleware
+    │  ── validates cookie/bearer token
+    │  ── populates ClaimsPrincipal
+    │
+    ▼
 TenantResolutionMiddleware
     │  ── reads Host header
     │  ── queries Blogs table by subdomain
     │  ── sets scoped TenantContext
-    │
-    ▼
-AuthenticationMiddleware
-    │  ── validates cookie/bearer token
-    │  ── populates ClaimsPrincipal
     │
     ▼
 AccessControlMiddleware  (single unified middleware in Blogify.Web/Middleware/)

@@ -44,10 +44,7 @@ public sealed class AccessControlMiddleware
         _endpointSources = endpointSources;
     }
 
-    public async Task InvokeAsync(
-        HttpContext context,
-        TenantContext tenantContext,
-        UserManager<ApplicationUser> userManager)
+    public async Task InvokeAsync(HttpContext context, TenantContext tenantContext)
     {
         string? area = context.GetRouteValue("area")?.ToString();
         bool tenantResolved = tenantContext.IsTenantResolved;
@@ -149,6 +146,11 @@ public sealed class AccessControlMiddleware
 
             // Membership check: non-owner users are allowed only when their TenantId
             // matches the currently resolved tenant.
+            // UserManager is resolved lazily here because it is only needed on this
+            // branch; injecting it as an InvokeAsync parameter would add unnecessary
+            // DI overhead to every request (public Blog, health checks, feeds, etc.).
+            UserManager<ApplicationUser> userManager =
+                context.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
             ApplicationUser? user = await userManager.FindByIdAsync(userId);
             if (user?.TenantId == tenantContext.RequiredTenant.Id)
             {
