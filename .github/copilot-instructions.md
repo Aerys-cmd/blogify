@@ -26,6 +26,7 @@
   - `Areas/SuperAdmin/` — route prefix `/sa`
   - `Areas/BlogAdmin/` — route prefix `/admin`
   - `Areas/Blog/` — public blog, subdomain-resolved
+- The landing page lives in `Pages/Index.cshtml` (`@page "/Index"`). On the root domain, `AccessControlMiddleware` replaces the matched Blog area endpoint with the landing page endpoint so the browser URL stays at `/` without a redirect.
 - PageModel classes use primary constructor injection.
 - `OnGetAsync` / `OnPostAsync` orchestrate: load aggregate → call domain method → call `SaveChangesAsync` → return result.
 - No separate application service layer. All orchestration lives in the PageModel.
