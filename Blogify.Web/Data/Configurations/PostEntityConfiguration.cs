@@ -28,6 +28,12 @@ public sealed class PostEntityConfiguration : IEntityTypeConfiguration<Post>
         builder.Property(p => p.Excerpt)
             .HasMaxLength(500);
 
+        builder.Property(p => p.MetaTitle)
+            .HasMaxLength(60);
+
+        builder.Property(p => p.MetaDescription)
+            .HasMaxLength(160);
+
         builder.Property(p => p.CoverImageId);
 
         builder.HasOne<Media>()

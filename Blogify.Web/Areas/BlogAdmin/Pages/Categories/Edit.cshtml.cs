@@ -36,7 +36,9 @@ public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<S
         Input = new CategoryEditInput
         {
             Name = category.Name,
-            Slug = category.Slug
+            Slug = category.Slug,
+            MetaTitle = category.MetaTitle,
+            MetaDescription = category.MetaDescription
         };
 
         return Page();
@@ -85,6 +87,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<S
         }
 
         category.Update(name, slug);
+        category.UpdateSeoMetadata(Input.MetaTitle, Input.MetaDescription);
         await dbContext.SaveChangesAsync(ct);
 
         return RedirectToPage("/Categories/Index", new { area = "BlogAdmin" });
@@ -109,6 +112,12 @@ public sealed class CategoryEditInput
     [MaxLength(100)]
     [RegularExpression(@"^[a-z0-9-]*$")]
     public string? Slug { get; set; }
+
+    [MaxLength(60)]
+    public string? MetaTitle { get; set; }
+
+    [MaxLength(160)]
+    public string? MetaDescription { get; set; }
 }
 
 

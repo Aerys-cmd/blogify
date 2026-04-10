@@ -28,6 +28,8 @@ public sealed class Category
     public Guid BlogId { get; private init; }
     public string Name { get; private set; } = string.Empty;
     public string Slug { get; private set; } = string.Empty;
+    public string? MetaTitle { get; private set; }
+    public string? MetaDescription { get; private set; }
     public DateTimeOffset CreatedAt { get; private init; }
     public DateTimeOffset? DeletedAt { get; private set; }
 
@@ -77,6 +79,39 @@ public sealed class Category
     {
         Rename(name);
         ChangeSlug(slug);
+    }
+
+    public void UpdateSeoMetadata(string? metaTitle, string? metaDescription)
+    {
+        if (metaTitle is not null)
+        {
+            string trimmedTitle = metaTitle.Trim();
+            if (trimmedTitle.Length > 60)
+            {
+                throw new ArgumentException("Meta title must not exceed 60 characters.", nameof(metaTitle));
+            }
+
+            MetaTitle = string.IsNullOrEmpty(trimmedTitle) ? null : trimmedTitle;
+        }
+        else
+        {
+            MetaTitle = null;
+        }
+
+        if (metaDescription is not null)
+        {
+            string trimmedDesc = metaDescription.Trim();
+            if (trimmedDesc.Length > 160)
+            {
+                throw new ArgumentException("Meta description must not exceed 160 characters.", nameof(metaDescription));
+            }
+
+            MetaDescription = string.IsNullOrEmpty(trimmedDesc) ? null : trimmedDesc;
+        }
+        else
+        {
+            MetaDescription = null;
+        }
     }
 
     public void SoftDelete()

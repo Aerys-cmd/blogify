@@ -41,6 +41,26 @@
                         <span asp-validation-for="Input.Slug" class="text-danger small"></span>
                     </div>
 
+                    <hr class="my-3" />
+
+                    <p class="fw-semibold small text-muted text-uppercase mb-2">@Localizer["Label.Seo"]</p>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.MetaTitle" class="form-label fw-semibold">@Localizer["Label.MetaTitle"]</label>
+                        <input asp-for="Input.MetaTitle" class="form-control"
+                               placeholder="Custom SEO title (optional)…" autocomplete="off" />
+                        <div class="form-text">Max 60 characters. Defaults to category name if left blank.</div>
+                        <span asp-validation-for="Input.MetaTitle" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
+                        <textarea asp-for="Input.MetaDescription" class="form-control" rows="3"
+                                  placeholder="A short description for search engines (optional)…"></textarea>
+                        <div class="form-text">Max 160 characters.</div>
+                        <span asp-validation-for="Input.MetaDescription" class="text-danger small"></span>
+                    </div>
+
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                         <a asp-area="BlogAdmin" asp-page="/Categories/Index" class="btn btn-outline-secondary">Cancel</a>

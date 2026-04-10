@@ -73,6 +73,9 @@
   <data name="Label.Role" xml:space="preserve"><value>Role</value></data>
   <data name="Label.Username" xml:space="preserve"><value>Username</value></data>
   <data name="Label.BlogMembership" xml:space="preserve"><value>Blog Membership</value></data>
+  <data name="Label.MetaTitle" xml:space="preserve"><value>Meta Title</value></data>
+  <data name="Label.MetaDescription" xml:space="preserve"><value>Meta Description</value></data>
+  <data name="Label.Seo" xml:space="preserve"><value>SEO</value></data>
 
   <!-- Actions -->
   <data name="Action.Save" xml:space="preserve"><value>Save</value></data>
@@ -117,6 +120,7 @@
   <data name="Page.Title.BlogAdmin.Media" xml:space="preserve"><value>Media Library</value></data>
   <data name="Page.Title.BlogAdmin.Analytics" xml:space="preserve"><value>Analytics</value></data>
   <data name="Page.Title.BlogAdmin.Themes" xml:space="preserve"><value>Themes</value></data>
+  <data name="Page.Title.BlogAdmin.Settings" xml:space="preserve"><value>Blog Settings</value></data>
   <data name="Page.Title.Blog.Home" xml:space="preserve"><value>Home</value></data>
   <data name="Page.Title.Landing.Home" xml:space="preserve"><value>Blogify — Your story. Your blog. Your way.</value></data>
   <data name="Page.Title.Landing.GetStarted" xml:space="preserve"><value>Get Started</value></data>
@@ -148,6 +152,7 @@
   <data name="Nav.Blogs" xml:space="preserve"><value>Blogs</value></data>
   <data name="Nav.Dashboard" xml:space="preserve"><value>Dashboard</value></data>
   <data name="Nav.SignOut" xml:space="preserve"><value>Sign Out</value></data>
+  <data name="Nav.Settings" xml:space="preserve"><value>Settings</value></data>
   <data name="Nav.Home" xml:space="preserve"><value>Home</value></data>
   <data name="Nav.Privacy" xml:space="preserve"><value>Privacy</value></data>
 
