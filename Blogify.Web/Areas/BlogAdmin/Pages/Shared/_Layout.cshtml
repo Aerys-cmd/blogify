@@ -67,7 +67,7 @@
             function finish() {
                 loader.classList.remove('ba-loader-running');
                 loader.classList.add('ba-loader-done');
-                // 450 ms = CSS transition: transform 0.15s + opacity 0.3s delay 0.15s
+                // 450ms = transform 0.15s (150ms) + opacity 0.3s delayed 0.15s (300ms total)
                 setTimeout(function () { loader.classList.remove('ba-loader-done'); }, 450);
             }
 
@@ -81,8 +81,8 @@
 
             // Delete confirmation via data-confirm-message attribute (event delegation)
             document.addEventListener('submit', function (e) {
-                var form = e.target.closest('form[data-confirm-message]');
-                if (!form) return;
+                var form = e.target;
+                if (!form || !form.dataset.confirmMessage) return;
                 if (!window.confirm(form.dataset.confirmMessage)) {
                     e.preventDefault();
                 }
