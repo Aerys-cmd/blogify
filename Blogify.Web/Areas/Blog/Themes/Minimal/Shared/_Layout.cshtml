@@ -4,7 +4,46 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] — @TenantContext.CurrentTenant?.Title</title>
+    @{
+        string blogTitle = TenantContext.CurrentTenant?.Title ?? string.Empty;
+        string pageTitle = ViewData["Title"] as string ?? blogTitle;
+        string? metaTitle = ViewData["MetaTitle"] as string ?? pageTitle;
+        string? metaDescription = ViewData["MetaDescription"] as string ?? TenantContext.CurrentTenant?.MetaDescription;
+        string? ogImage = ViewData["OgImage"] as string;
+        string? ogType = ViewData["OgType"] as string ?? "website";
+        string? canonicalUrl = ViewData["CanonicalUrl"] as string;
+    }
+    <title>@pageTitle — @blogTitle</title>
+    @if (!string.IsNullOrEmpty(metaDescription))
+    {
+        <meta name="description" content="@metaDescription" />
+    }
+    <meta property="og:title" content="@metaTitle" />
+    <meta property="og:site_name" content="@blogTitle" />
+    <meta property="og:type" content="@ogType" />
+    @if (!string.IsNullOrEmpty(metaDescription))
+    {
+        <meta property="og:description" content="@metaDescription" />
+    }
+    @if (!string.IsNullOrEmpty(ogImage))
+    {
+        <meta property="og:image" content="@ogImage" />
+    }
+    @if (!string.IsNullOrEmpty(canonicalUrl))
+    {
+        <link rel="canonical" href="@canonicalUrl" />
+        <meta property="og:url" content="@canonicalUrl" />
+    }
+    <meta name="twitter:card" content="@(string.IsNullOrEmpty(ogImage) ? "summary" : "summary_large_image")" />
+    <meta name="twitter:title" content="@metaTitle" />
+    @if (!string.IsNullOrEmpty(metaDescription))
+    {
+        <meta name="twitter:description" content="@metaDescription" />
+    }
+    @if (!string.IsNullOrEmpty(ogImage))
+    {
+        <meta name="twitter:image" content="@ogImage" />
+    }
     <link rel="stylesheet" href="~/css/themes/minimal.css" asp-append-version="true" />
 </head>
 <body class="bg-white text-stone-800 antialiased">

@@ -28,6 +28,9 @@ public sealed class CategoryModel(ApplicationDbContext dbContext, TenantContext 
         CategoryName = category.Name;
         CategorySlug = category.Slug;
 
+        ViewData["MetaTitle"] = category.MetaTitle ?? category.Name;
+        ViewData["MetaDescription"] = category.MetaDescription;
+
         List<CategoryLinkViewModel> sidebarCategories = await dbContext.Categories
             .AsNoTracking()
             .OrderBy(c => c.Name)

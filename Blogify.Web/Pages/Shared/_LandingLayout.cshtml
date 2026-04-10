@@ -3,7 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blogify — Your story. Your blog. Your way.</title>
+    <title>@Localizer["Page.Title.Landing.Home"]</title>
+    <meta name="description" content="@Localizer["Page.Meta.Landing.Description"].Value" />
+    <meta property="og:title" content="@Localizer["Page.Title.Landing.Home"].Value" />
+    <meta property="og:description" content="@Localizer["Page.Meta.Landing.Description"].Value" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@Localizer["Page.Title.Landing.Home"].Value" />
+    <meta name="twitter:description" content="@Localizer["Page.Meta.Landing.Description"].Value" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>

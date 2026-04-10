@@ -44,6 +44,8 @@ public sealed class Post
     public Guid? CoverImageId { get; private set; }
     public PostStatus Status { get; private set; }
     public Guid? PublishedRevisionId { get; private set; }
+    public string? MetaTitle { get; private set; }
+    public string? MetaDescription { get; private set; }
     public DateTimeOffset CreatedAt { get; private init; }
     public DateTimeOffset? DeletedAt { get; private set; }
     public IReadOnlyList<PostRevision> Revisions => _revisions.AsReadOnly();
@@ -145,6 +147,39 @@ public sealed class Post
         }
 
         Slug = trimmed;
+    }
+
+    public void UpdateSeoMetadata(string? metaTitle, string? metaDescription)
+    {
+        if (metaTitle is not null)
+        {
+            string trimmedTitle = metaTitle.Trim();
+            if (trimmedTitle.Length > 60)
+            {
+                throw new ArgumentException("Meta title must not exceed 60 characters.", nameof(metaTitle));
+            }
+
+            MetaTitle = string.IsNullOrEmpty(trimmedTitle) ? null : trimmedTitle;
+        }
+        else
+        {
+            MetaTitle = null;
+        }
+
+        if (metaDescription is not null)
+        {
+            string trimmedDesc = metaDescription.Trim();
+            if (trimmedDesc.Length > 160)
+            {
+                throw new ArgumentException("Meta description must not exceed 160 characters.", nameof(metaDescription));
+            }
+
+            MetaDescription = string.IsNullOrEmpty(trimmedDesc) ? null : trimmedDesc;
+        }
+        else
+        {
+            MetaDescription = null;
+        }
     }
 
     public void SoftDelete()

@@ -32,6 +32,7 @@ public sealed class Tenant
     public string Subdomain { get; private set; } = string.Empty;
     public string OwnerId { get; private set; } = string.Empty;
     public string ActiveTheme { get; private set; } = "default";
+    public string? MetaDescription { get; private set; }
     public DateTimeOffset CreatedAt { get; private init; }
     public DateTimeOffset? DeletedAt { get; private set; }
 
@@ -97,5 +98,23 @@ public sealed class Tenant
             throw new DomainException($"'{normalized}' is not a recognised theme.");
 
         ActiveTheme = normalized;
+    }
+
+    public void UpdateSeoMetadata(string? metaDescription)
+    {
+        if (metaDescription is not null)
+        {
+            string trimmed = metaDescription.Trim();
+            if (trimmed.Length > 160)
+            {
+                throw new ArgumentException("Meta description must not exceed 160 characters.", nameof(metaDescription));
+            }
+
+            MetaDescription = string.IsNullOrEmpty(trimmed) ? null : trimmed;
+        }
+        else
+        {
+            MetaDescription = null;
+        }
     }
 }

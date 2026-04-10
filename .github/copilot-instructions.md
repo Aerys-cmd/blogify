@@ -111,6 +111,24 @@
 
 ---
 
+## SEO System
+
+- `Post`, `Category`, and `Tenant` all carry SEO metadata fields:
+  - `Post.MetaTitle` (string?, max 60) and `Post.MetaDescription` (string?, max 160) — updated via `post.UpdateSeoMetadata(metaTitle, metaDescription)`.
+  - `Category.MetaTitle` (string?, max 60) and `Category.MetaDescription` (string?, max 160) — updated via `category.UpdateSeoMetadata(metaTitle, metaDescription)`.
+  - `Tenant.MetaDescription` (string?, max 160) — updated via `tenant.UpdateSeoMetadata(metaDescription)`.
+- Blog-level SEO is managed by BlogAdmins at `Areas/BlogAdmin/Pages/Settings/Index.cshtml`.
+- Post and Category SEO fields are managed in their respective Create/Edit pages.
+- All three blog theme layouts (Default, Aurora, Minimal) render `<meta name="description">`, Open Graph (`og:*`), and Twitter Card tags using `ViewData` keys:
+  - `ViewData["MetaTitle"]` — overrides page title for SEO (defaults to `ViewData["Title"]`).
+  - `ViewData["MetaDescription"]` — meta description; falls back to `Tenant.MetaDescription`.
+  - `ViewData["OgImage"]` — Open Graph and Twitter Card image URL.
+  - `ViewData["OgType"]` — Open Graph type (`"website"` or `"article"`).
+  - `ViewData["CanonicalUrl"]` — canonical link and `og:url`.
+- Blog page models populate the SEO `ViewData` keys in `OnGetAsync` / `LoadPostDataAsync`. Theme layout `.cshtml` files should only render the `<meta>` and related SEO tags from those keys; do not hard-code or compute SEO metadata directly in the theme files.
+
+---
+
 ## Code Quality Rules
 
 - No `var` where type is not obvious from the right-hand side.

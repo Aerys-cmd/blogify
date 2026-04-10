@@ -35,6 +35,9 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<Tenant>
             .HasMaxLength(50)
             .HasDefaultValue("default");
 
+        builder.Property(t => t.MetaDescription)
+            .HasMaxLength(160);
+
         builder.HasIndex(t => t.Subdomain).IsUnique();
 
         builder.HasQueryFilter(t => t.DeletedAt == null);
