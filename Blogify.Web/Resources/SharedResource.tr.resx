@@ -136,6 +136,7 @@
   <data name="Message.UnableToDetermineUser" xml:space="preserve"><value>Mevcut kullanıcı belirlenemiyor. Lütfen tekrar giriş yapın.</value></data>
   <data name="Message.CannotDeleteOwnAccount" xml:space="preserve"><value>Kendi hesabınızı silemezsiniz.</value></data>
   <data name="Message.InvalidTenant" xml:space="preserve"><value>Seçilen kiracı geçersiz.</value></data>
+  <data name="Message.PostDeleteConfirm" xml:space="preserve"><value>'{0}' silinsin mi? Bu işlem geri alınamaz.</value></data>
 
   <!-- Nav -->
   <data name="Nav.Posts" xml:space="preserve"><value>Yazılar</value></data>

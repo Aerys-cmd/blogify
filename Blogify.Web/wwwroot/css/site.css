@@ -128,3 +128,20 @@ body {
 .ba-main > main {
   animation: ba-fade-in 0.18s ease-out;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .ba-main > main {
+    animation: none;
+  }
+
+  #ba-loader,
+  #ba-loader.ba-loader-running,
+  #ba-loader.ba-loader-done {
+    transition: none;
+  }
+
+  #ba-loader {
+    opacity: 0;
+    transform: none;
+  }
+}
