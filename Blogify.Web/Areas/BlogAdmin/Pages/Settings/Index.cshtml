@@ -1,0 +1,49 @@
+@page
+@model Blogify.Web.Areas.BlogAdmin.Pages.Settings.IndexModel
+@{
+    ViewData["Title"] = @Localizer["Page.Title.BlogAdmin.Settings"].Value;
+}
+
+<div class="mb-4">
+    <h1 class="h3 mb-0">@Localizer["Page.Title.BlogAdmin.Settings"]</h1>
+</div>
+
+@if (TempData["SuccessMessage"] is string success)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @success
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header fw-semibold">@Localizer["Label.Seo"]</div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    @if (!Model.ModelState.IsValid)
+                    {
+                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+                    }
+
+                    <div class="mb-4">
+                        <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
+                        <textarea asp-for="Input.MetaDescription" class="form-control" rows="3"
+                                  placeholder="@Localizer["Label.MetaDescription.Blog.Placeholder"].Value"></textarea>
+                        <div class="form-text">@Localizer["Label.MetaDescription.Help.Blog"]</div>
+                        <span asp-validation-for="Input.MetaDescription" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">@Localizer["Action.Save"]</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

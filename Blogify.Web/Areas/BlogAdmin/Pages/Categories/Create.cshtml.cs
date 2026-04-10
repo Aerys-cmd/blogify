@@ -53,6 +53,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         }
 
         Category category = Category.Create(blogId, name, slug);
+        category.UpdateSeoMetadata(Input.MetaTitle, Input.MetaDescription);
         dbContext.Categories.Add(category);
         await dbContext.SaveChangesAsync(ct);
 
@@ -78,5 +79,11 @@ public sealed class CategoryInputModel
     [MaxLength(100)]
     [RegularExpression(@"^[a-z0-9-]*$")]
     public string? Slug { get; set; }
+
+    [MaxLength(60)]
+    public string? MetaTitle { get; set; }
+
+    [MaxLength(160)]
+    public string? MetaDescription { get; set; }
 }
 

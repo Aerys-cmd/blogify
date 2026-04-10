@@ -157,6 +157,12 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
         LoginUrl = Url.Page("/Account/Login", pageHandler: null, values: new { area = "Identity", returnUrl })
             ?? "/Identity/Account/Login";
 
+        ViewData["MetaTitle"] = post.MetaTitle ?? publishedRevision.Title;
+        ViewData["MetaDescription"] = post.MetaDescription ?? post.Excerpt;
+        ViewData["OgImage"] = CoverImageUrl;
+        ViewData["OgType"] = "article";
+        ViewData["CanonicalUrl"] = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{Request.Path}";
+
         return null;
     }
 

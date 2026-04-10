@@ -1,4 +1,5 @@
 using Blogify.Web.Data;
+using Blogify.Web.Models;
 using Blogify.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,7 +15,11 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct)
     {
-        BlogTitle = tenantContext.RequiredTenant.Title;
+        Tenant tenant = tenantContext.RequiredTenant;
+        BlogTitle = tenant.Title;
+
+        ViewData["MetaDescription"] = tenant.MetaDescription;
+        ViewData["OgType"] = "website";
 
         List<CategoryLinkViewModel> sidebarCategories = await dbContext.Categories
             .AsNoTracking()
