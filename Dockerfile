@@ -1,11 +1,8 @@
 # Stage 1: Build
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 
-# Install Node.js 20 for Tailwind CSS build
-RUN apt-get update && apt-get install -y ca-certificates curl gnupg \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
+# Install Node.js for Tailwind CSS build
+RUN apk add --no-cache nodejs npm
 
 WORKDIR /src
 
@@ -23,15 +20,20 @@ RUN npm install --prefix Blogify.Web
 # Copy remaining source
 COPY . .
 
-# Publish with Tailwind build enabled
+# Publish with Tailwind build enabled; strip debug symbols to reduce output size
 RUN dotnet publish Blogify.Web/Blogify.Web.csproj \
     -c Release \
     -o /app/publish \
     -p:EnableTailwindBuild=true \
+    -p:DebugType=none \
     --no-restore
 
 # Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS runtime
+
+# Install ICU libraries to enable full globalization support (required for tr/en cultures)
+RUN apk add --no-cache icu-libs
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 WORKDIR /app
 

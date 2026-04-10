@@ -8,3 +8,12 @@ docker-compose*.yml
 traefik/
 scripts/
 Blogify.AppHost/
+docs/
+logs/
+**/*.log
+*.md
+.github/
+.vs/
+.vscode/
+*.user
+*.suo
