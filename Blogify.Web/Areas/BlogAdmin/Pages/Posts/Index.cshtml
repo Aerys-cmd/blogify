@@ -22,95 +22,104 @@
 
 @if (Model.Posts.Count == 0)
 {
-    <div class="alert alert-info">
-        No posts yet. <a asp-area="BlogAdmin" asp-page="/Posts/Create">Create your first post</a>.
+    <div id="posts-content">
+        <div class="alert alert-info">
+            No posts yet. <a asp-area="BlogAdmin" asp-page="/Posts/Create">Create your first post</a>.
+        </div>
     </div>
 }
 else
 {
-    <div class="card shadow-sm">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">Title</th>
-                        <th scope="col">Slug</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Author</th>
-                        <th scope="col">Created</th>
-                        <th scope="col" class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Blogify.Web.Areas.BlogAdmin.Pages.Posts.PostRow post in Model.Posts)
-                    {
+    <div id="posts-content">
+        <div class="card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
                         <tr>
-                            <td class="fw-semibold">@post.Title</td>
-                            <td><code class="text-muted">@post.Slug</code></td>
-                            <td>
-                                @if (post.Status == Blogify.Web.Models.Posts.PostStatus.Published)
-                                {
-                                    <span class="badge bg-success">Published</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">Draft</span>
-                                }
-                            </td>
-                            <td class="text-muted small">@post.AuthorId</td>
-                            <td class="text-muted small">@post.CreatedAt.ToString("MMM d, yyyy")</td>
-                            <td class="text-end">
-                                <a asp-area="BlogAdmin" asp-page="/Posts/Edit"
-                                   asp-route-id="@post.Id"
-                                   class="btn btn-sm btn-outline-secondary me-1">Edit</a>
-                                <form method="post" asp-page-handler="Delete"
-                                      asp-route-id="@post.Id"
-                                      class="d-inline"
-                                      onsubmit="return confirm('Delete \'@post.Title\'? This cannot be undone.');">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                                </form>
-                            </td>
+                            <th scope="col">Title</th>
+                            <th scope="col">Slug</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Created</th>
+                            <th scope="col" class="text-end">Actions</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (Blogify.Web.Areas.BlogAdmin.Pages.Posts.PostRow post in Model.Posts)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@post.Title</td>
+                                <td><code class="text-muted">@post.Slug</code></td>
+                                <td>
+                                    @if (post.Status == Blogify.Web.Models.Posts.PostStatus.Published)
+                                    {
+                                        <span class="badge bg-success">Published</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Draft</span>
+                                    }
+                                </td>
+                                <td class="text-muted small">@post.AuthorId</td>
+                                <td class="text-muted small">@post.CreatedAt.ToString("MMM d, yyyy")</td>
+                                <td class="text-end">
+                                    <a asp-area="BlogAdmin" asp-page="/Posts/Edit"
+                                       asp-route-id="@post.Id"
+                                       class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                                    <form method="post" asp-page-handler="Delete"
+                                          asp-route-id="@post.Id"
+                                          class="d-inline"
+                                          data-confirm-message="@Localizer["Message.PostDeleteConfirm", post.Title].Value">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    @if (Model.TotalPages > 1)
-    {
-        <nav aria-label="Post list pagination" class="mt-4">
-            <ul class="pagination justify-content-center">
-                <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : "")">
-                    <a class="page-link"
-                       asp-area="BlogAdmin" asp-page="/Posts/Index"
-                       asp-route-page="@(Model.CurrentPage - 1)"
-                       aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-
-                @for (int p = 1; p <= Model.TotalPages; p++)
-                {
-                    int pageNum = p;
-                    <li class="page-item @(pageNum == Model.CurrentPage ? "active" : "")">
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Post list pagination" class="mt-4"
+                 hx-boost="true"
+                 hx-target="#posts-content"
+                 hx-select="#posts-content"
+                 hx-swap="outerHTML"
+                 hx-push-url="true">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : "")">
                         <a class="page-link"
                            asp-area="BlogAdmin" asp-page="/Posts/Index"
-                           asp-route-page="@pageNum">@pageNum</a>
+                           asp-route-page="@(Model.CurrentPage - 1)"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
                     </li>
-                }
 
-                <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : "")">
-                    <a class="page-link"
-                       asp-area="BlogAdmin" asp-page="/Posts/Index"
-                       asp-route-page="@(Model.CurrentPage + 1)"
-                       aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    }
+                    @for (int p = 1; p <= Model.TotalPages; p++)
+                    {
+                        int pageNum = p;
+                        <li class="page-item @(pageNum == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link"
+                               asp-area="BlogAdmin" asp-page="/Posts/Index"
+                               asp-route-page="@pageNum">@pageNum</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-area="BlogAdmin" asp-page="/Posts/Index"
+                           asp-route-page="@(Model.CurrentPage + 1)"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
 }
 
