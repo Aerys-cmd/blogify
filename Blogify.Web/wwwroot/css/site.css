@@ -89,3 +89,59 @@ body {
 .ba-sidebar-username {
   color: rgba(255, 255, 255, 0.6);
 }
+
+/* ── BlogAdmin page loading indicator ─────────────────────────────── */
+
+#ba-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--bs-primary);
+  z-index: 10000;
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#ba-loader.ba-loader-running {
+  opacity: 1;
+  transform: scaleX(0.7);
+  transition: transform 2s ease-out, opacity 0s;
+}
+
+#ba-loader.ba-loader-done {
+  opacity: 0;
+  transform: scaleX(1);
+  transition: transform 0.15s ease, opacity 0.3s ease 0.15s;
+}
+
+/* ── BlogAdmin main content fade-in ───────────────────────────────── */
+
+@keyframes ba-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ba-main > main {
+  animation: ba-fade-in 0.18s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ba-main > main {
+    animation: none;
+  }
+
+  #ba-loader,
+  #ba-loader.ba-loader-running,
+  #ba-loader.ba-loader-done {
+    transition: none;
+  }
+
+  #ba-loader {
+    opacity: 0;
+    transform: none;
+  }
+}

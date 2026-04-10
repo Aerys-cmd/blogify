@@ -13,6 +13,8 @@
 <body class="ba-layout bg-light"
       hx-headers='{"RequestVerificationToken": "@Antiforgery.GetAndStoreTokens(Context).RequestToken"}'>
 
+    <div id="ba-loader" aria-hidden="true"></div>
+
     <div class="d-flex">
         <partial name="_Sidebar" />
 
@@ -52,6 +54,7 @@
     <script type="module" src="~/js/media-picker.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/blogadmin-layout.js" asp-append-version="true"></script>
 </body>
 </html>
 
