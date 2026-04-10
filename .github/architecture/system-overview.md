@@ -78,15 +78,28 @@ Blogify is a SaaS multi-tenant blogging platform. Each tenant is a blog, accesse
 HTTP Request
     │
     ▼
+AuthenticationMiddleware
+    │  ── validates cookie/bearer token
+    │  ── populates ClaimsPrincipal
+    │
+    ▼
 TenantResolutionMiddleware
     │  ── reads Host header
     │  ── queries Blogs table by subdomain
     │  ── sets scoped TenantContext
     │
     ▼
-AuthenticationMiddleware
-    │  ── validates cookie/bearer token
-    │  ── populates ClaimsPrincipal
+AccessControlMiddleware  (single unified middleware in Blogify.Web/Middleware/)
+    │  ── Rule 1: no-area Razor Pages blocked on tenant subdomains (404)
+    │  ── Rule 2: Blog area on root domain → endpoint replacement serves
+    │  │          landing page at "/" (SuperAdmin → /sa redirect)
+    │  ── Rule 3: Blog area on tenant subdomain → pass through (public)
+    │  ── Rule 4: BlogAdmin area → tenant + auth + ownership/membership check
+    │  ── Rule 5: all other areas (SuperAdmin, Identity, …) → pass through
+    │
+    ▼
+AnalyticsTrackingMiddleware
+    │  ── fire-and-forget page view recording for Blog area
     │
     ▼
 AuthorizationMiddleware
