@@ -148,15 +148,15 @@
                     <div class="mb-3">
                         <label asp-for="Input.MetaTitle" class="form-label fw-semibold">@Localizer["Label.MetaTitle"]</label>
                         <input asp-for="Input.MetaTitle" class="form-control"
-                               placeholder="Custom SEO title (optional)…" autocomplete="off" />
-                        <div class="form-text">Max 60 characters. Defaults to post title if left blank.</div>
+                               placeholder="@Localizer["Label.MetaTitle.Placeholder"].Value" autocomplete="off" />
+                        <div class="form-text">@Localizer["Label.MetaTitle.Help.Post"]</div>
                         <span asp-validation-for="Input.MetaTitle" class="text-danger small"></span>
                     </div>
                     <div class="mb-0">
                         <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
                         <textarea asp-for="Input.MetaDescription" class="form-control" rows="3"
-                                  placeholder="A short description for search engines (optional)…"></textarea>
-                        <div class="form-text">Max 160 characters. Defaults to excerpt if left blank.</div>
+                                  placeholder="@Localizer["Label.MetaDescription.Placeholder"].Value"></textarea>
+                        <div class="form-text">@Localizer["Label.MetaDescription.Help.Post"]</div>
                         <span asp-validation-for="Input.MetaDescription" class="text-danger small"></span>
                     </div>
                 </div>

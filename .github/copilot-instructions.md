@@ -125,7 +125,7 @@
   - `ViewData["OgImage"]` — Open Graph and Twitter Card image URL.
   - `ViewData["OgType"]` — Open Graph type (`"website"` or `"article"`).
   - `ViewData["CanonicalUrl"]` — canonical link and `og:url`.
-- Blog page models populate the SEO `ViewData` keys in `OnGetAsync` / `LoadPostDataAsync`. Never set SEO tags in `.cshtml` theme files directly.
+- Blog page models populate the SEO `ViewData` keys in `OnGetAsync` / `LoadPostDataAsync`. Theme layout `.cshtml` files should only render the `<meta>` and related SEO tags from those keys; do not hard-code or compute SEO metadata directly in the theme files.
 
 ---
 

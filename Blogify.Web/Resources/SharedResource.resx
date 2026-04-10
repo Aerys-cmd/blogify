@@ -74,7 +74,15 @@
   <data name="Label.Username" xml:space="preserve"><value>Username</value></data>
   <data name="Label.BlogMembership" xml:space="preserve"><value>Blog Membership</value></data>
   <data name="Label.MetaTitle" xml:space="preserve"><value>Meta Title</value></data>
+  <data name="Label.MetaTitle.Placeholder" xml:space="preserve"><value>Custom SEO title (optional)…</value></data>
+  <data name="Label.MetaTitle.Help.Post" xml:space="preserve"><value>Max 60 characters. Defaults to post title if left blank.</value></data>
+  <data name="Label.MetaTitle.Help.Category" xml:space="preserve"><value>Max 60 characters. Defaults to category name if left blank.</value></data>
   <data name="Label.MetaDescription" xml:space="preserve"><value>Meta Description</value></data>
+  <data name="Label.MetaDescription.Placeholder" xml:space="preserve"><value>A short description for search engines (optional)…</value></data>
+  <data name="Label.MetaDescription.Help.Post" xml:space="preserve"><value>Max 160 characters. Defaults to excerpt if left blank.</value></data>
+  <data name="Label.MetaDescription.Help.Category" xml:space="preserve"><value>Max 160 characters.</value></data>
+  <data name="Label.MetaDescription.Help.Blog" xml:space="preserve"><value>Max 160 characters. Used in search engine results.</value></data>
+  <data name="Label.MetaDescription.Blog.Placeholder" xml:space="preserve"><value>A short description of your blog for search engines…</value></data>
   <data name="Label.Seo" xml:space="preserve"><value>SEO</value></data>
 
   <!-- Actions -->
