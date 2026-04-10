@@ -18,24 +18,17 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
     public string BlogTitle { get; private set; } = string.Empty;
 
-    public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
+    public Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
         Tenant tenant = tenantContext.RequiredTenant;
-        Tenant? tracked = await dbContext.Blogs
-            .FirstOrDefaultAsync(t => t.Id == tenant.Id, ct);
 
-        if (tracked is null)
-        {
-            return NotFound();
-        }
-
-        BlogTitle = tracked.Title;
+        BlogTitle = tenant.Title;
         Input = new BlogSettingsInput
         {
-            MetaDescription = tracked.MetaDescription
+            MetaDescription = tenant.MetaDescription
         };
 
-        return Page();
+        return Task.FromResult<IActionResult>(Page());
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken ct = default)

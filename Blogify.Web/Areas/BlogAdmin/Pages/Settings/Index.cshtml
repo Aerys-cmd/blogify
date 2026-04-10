@@ -30,8 +30,8 @@
                     <div class="mb-4">
                         <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
                         <textarea asp-for="Input.MetaDescription" class="form-control" rows="3"
-                                  placeholder="A short description of your blog for search engines…"></textarea>
-                        <div class="form-text">Max 160 characters. Used in search engine results.</div>
+                                  placeholder="@Localizer["Label.MetaDescription.Blog.Placeholder"].Value"></textarea>
+                        <div class="form-text">@Localizer["Label.MetaDescription.Help.Blog"]</div>
                         <span asp-validation-for="Input.MetaDescription" class="text-danger small"></span>
                     </div>
 

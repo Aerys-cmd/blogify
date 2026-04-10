@@ -74,7 +74,15 @@
   <data name="Label.Username" xml:space="preserve"><value>Kullanıcı adı</value></data>
   <data name="Label.BlogMembership" xml:space="preserve"><value>Blog üyeliği</value></data>
   <data name="Label.MetaTitle" xml:space="preserve"><value>Meta Başlık</value></data>
+  <data name="Label.MetaTitle.Placeholder" xml:space="preserve"><value>Özel SEO başlığı (isteğe bağlı)…</value></data>
+  <data name="Label.MetaTitle.Help.Post" xml:space="preserve"><value>Maksimum 60 karakter. Boş bırakılırsa yazı başlığı kullanılır.</value></data>
+  <data name="Label.MetaTitle.Help.Category" xml:space="preserve"><value>Maksimum 60 karakter. Boş bırakılırsa kategori adı kullanılır.</value></data>
   <data name="Label.MetaDescription" xml:space="preserve"><value>Meta Açıklama</value></data>
+  <data name="Label.MetaDescription.Placeholder" xml:space="preserve"><value>Arama motorları için kısa bir açıklama (isteğe bağlı)…</value></data>
+  <data name="Label.MetaDescription.Help.Post" xml:space="preserve"><value>Maksimum 160 karakter. Boş bırakılırsa özet kullanılır.</value></data>
+  <data name="Label.MetaDescription.Help.Category" xml:space="preserve"><value>Maksimum 160 karakter.</value></data>
+  <data name="Label.MetaDescription.Help.Blog" xml:space="preserve"><value>Maksimum 160 karakter. Arama motoru sonuçlarında kullanılır.</value></data>
+  <data name="Label.MetaDescription.Blog.Placeholder" xml:space="preserve"><value>Arama motorları için blogunuzun kısa açıklaması…</value></data>
   <data name="Label.Seo" xml:space="preserve"><value>SEO</value></data>
 
   <!-- Actions -->
