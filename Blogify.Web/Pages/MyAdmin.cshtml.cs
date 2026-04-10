@@ -1,10 +1,12 @@
 using Blogify.Web.Data;
 using Blogify.Web.Models;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Blogify.Web.Pages;
 
@@ -16,7 +18,8 @@ namespace Blogify.Web.Pages;
 [Authorize(Roles = "BlogAdmin")]
 public sealed class MyAdminModel(
     ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager) : PageModel
+    UserManager<ApplicationUser> userManager,
+    IOptions<TenantOptions> tenantOptions) : PageModel
 {
     public async Task<IActionResult> OnGetAsync(CancellationToken ct)
     {
@@ -39,20 +42,49 @@ public sealed class MyAdminModel(
 
         HostString currentHost = Request.Host;
         string scheme = Request.Scheme;
+        string baseHost = ResolveBaseHost(currentHost.Host, tenantOptions.Value.PlatformHosts);
 
-        // Extract the root domain by stripping any leading subdomain segment.
-        // e.g. "myblog.localhost" → "localhost", "localhost" → "localhost",
-        //      "myblog.example.com" → "example.com"
-        string hostName = currentHost.Host;
-        int dotIndex = hostName.IndexOf('.');
-        string rootDomain = dotIndex >= 0 ? hostName[(dotIndex + 1)..] : hostName;
+        // Prefix the tenant label onto the resolved platform host
+        // (e.g. lunavex + blog.lunavex.com => lunavex.blog.lunavex.com).
+        string tenantHost = baseHost.StartsWith(
+            tenant.Subdomain + ".",
+            StringComparison.OrdinalIgnoreCase)
+            ? baseHost
+            : $"{tenant.Subdomain}.{baseHost}";
 
-        // Build the tenant admin URL: {scheme}://{subdomain}.{rootDomain}/admin
+        // Build the tenant admin URL: {scheme}://{tenantHost}/admin
         // preserving any non-standard port (e.g. myblog.localhost:5001/admin in dev).
         string adminUrl = currentHost.Port.HasValue
-            ? $"{scheme}://{tenant.Subdomain}.{rootDomain}:{currentHost.Port}/admin"
-            : $"{scheme}://{tenant.Subdomain}.{rootDomain}/admin";
+            ? $"{scheme}://{tenantHost}:{currentHost.Port}/admin"
+            : $"{scheme}://{tenantHost}/admin";
 
         return Redirect(adminUrl);
+    }
+
+    private static string ResolveBaseHost(string currentHost, IReadOnlyList<string> platformHosts)
+    {
+        List<string> normalizedPlatformHosts = platformHosts
+            .Where(h => !string.IsNullOrWhiteSpace(h))
+            .Select(h => h.Trim().ToLowerInvariant())
+            .Distinct()
+            .ToList();
+
+        string? matchedHost = normalizedPlatformHosts
+            .Where(h => currentHost.Equals(h, StringComparison.OrdinalIgnoreCase)
+                        || currentHost.EndsWith($".{h}", StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(h => h.Length)
+            .FirstOrDefault();
+
+        if (matchedHost is not null)
+        {
+            return matchedHost;
+        }
+
+        string? preferredPlatformHost = normalizedPlatformHosts
+            .Where(h => !h.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(h => h.Length)
+            .FirstOrDefault();
+
+        return preferredPlatformHost ?? currentHost;
     }
 }
