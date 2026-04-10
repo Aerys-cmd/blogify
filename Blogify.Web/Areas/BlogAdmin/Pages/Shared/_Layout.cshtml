@@ -13,6 +13,8 @@
 <body class="ba-layout bg-light"
       hx-headers='{"RequestVerificationToken": "@Antiforgery.GetAndStoreTokens(Context).RequestToken"}'>
 
+    <div id="ba-loader" aria-hidden="true"></div>
+
     <div class="d-flex">
         <partial name="_Sidebar" />
 
@@ -52,6 +54,41 @@
     <script type="module" src="~/js/media-picker.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        (function () {
+            var loader = document.getElementById('ba-loader');
+            if (!loader) return;
+
+            function start() {
+                loader.classList.remove('ba-loader-done');
+                loader.classList.add('ba-loader-running');
+            }
+
+            function finish() {
+                loader.classList.remove('ba-loader-running');
+                loader.classList.add('ba-loader-done');
+                // 450 ms = CSS transition: transform 0.15s + opacity 0.3s delay 0.15s
+                setTimeout(function () { loader.classList.remove('ba-loader-done'); }, 450);
+            }
+
+            document.addEventListener('htmx:beforeRequest', start);
+            document.addEventListener('htmx:afterRequest', finish);
+
+            window.addEventListener('beforeunload', start);
+            window.addEventListener('pageshow', function (e) {
+                if (e.persisted) { finish(); }
+            });
+
+            // Delete confirmation via data-confirm-message attribute (event delegation)
+            document.addEventListener('submit', function (e) {
+                var form = e.target.closest('form[data-confirm-message]');
+                if (!form) return;
+                if (!window.confirm(form.dataset.confirmMessage)) {
+                    e.preventDefault();
+                }
+            });
+        }());
+    </script>
 </body>
 </html>
 
