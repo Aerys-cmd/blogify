@@ -123,6 +123,7 @@
   <data name="Page.Title.BlogAdmin.Settings" xml:space="preserve"><value>Blog Settings</value></data>
   <data name="Page.Title.Blog.Home" xml:space="preserve"><value>Home</value></data>
   <data name="Page.Title.Landing.Home" xml:space="preserve"><value>Blogify — Your story. Your blog. Your way.</value></data>
+  <data name="Page.Meta.Landing.Description" xml:space="preserve"><value>Blogify is a free multi-tenant blogging platform. Create your own blog on a custom subdomain, pick your theme, and start publishing — no technical setup required.</value></data>
   <data name="Page.Title.Landing.GetStarted" xml:space="preserve"><value>Get Started</value></data>
   <data name="Page.Title.Landing.Privacy" xml:space="preserve"><value>Privacy Policy</value></data>
   <data name="Page.Title.Landing.Error" xml:space="preserve"><value>Error</value></data>

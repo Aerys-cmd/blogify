@@ -123,6 +123,7 @@
   <data name="Page.Title.BlogAdmin.Settings" xml:space="preserve"><value>Blog Ayarları</value></data>
   <data name="Page.Title.Blog.Home" xml:space="preserve"><value>Ana Sayfa</value></data>
   <data name="Page.Title.Landing.Home" xml:space="preserve"><value>Blogify — Hikâyeni anlat. Blogun olsun.</value></data>
+  <data name="Page.Meta.Landing.Description" xml:space="preserve"><value>Blogify, ücretsiz çok kiracılı bir blog platformudur. Özel bir alt alan adında blogunuzu oluşturun, temanızı seçin ve yayınlamaya başlayın — teknik kurulum gerektirmez.</value></data>
   <data name="Page.Title.Landing.GetStarted" xml:space="preserve"><value>Başla</value></data>
   <data name="Page.Title.Landing.Privacy" xml:space="preserve"><value>Gizlilik Politikası</value></data>
   <data name="Page.Title.Landing.Error" xml:space="preserve"><value>Hata</value></data>
