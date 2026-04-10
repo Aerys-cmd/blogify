@@ -1,11 +1,12 @@
-# Stage 1: Build
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+# Stage 1: npm dependency install with pinned Node 20
+FROM node:20-alpine AS npm-deps
 
-# Install Node.js 20 for Tailwind CSS build
-RUN apt-get update && apt-get install -y ca-certificates curl gnupg \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
+WORKDIR /src/Blogify.Web
+COPY Blogify.Web/package*.json ./
+RUN npm ci
+
+# Stage 2: Build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 
 WORKDIR /src
 
@@ -16,22 +17,27 @@ COPY Blogify.ServiceDefaults/Blogify.ServiceDefaults.csproj Blogify.ServiceDefau
 
 RUN dotnet restore Blogify.Web/Blogify.Web.csproj
 
-# Install npm dependencies for Tailwind
-COPY Blogify.Web/package*.json Blogify.Web/
-RUN npm install --prefix Blogify.Web
+# Copy Node.js runtime from pinned image and pre-built npm packages
+COPY --from=npm-deps /usr/local/bin/node /usr/local/bin/node
+COPY --from=npm-deps /src/Blogify.Web/node_modules Blogify.Web/node_modules
 
 # Copy remaining source
 COPY . .
 
-# Publish with Tailwind build enabled
+# Publish with Tailwind build enabled; keep portable debug symbols for production diagnostics
 RUN dotnet publish Blogify.Web/Blogify.Web.csproj \
     -c Release \
     -o /app/publish \
     -p:EnableTailwindBuild=true \
+    -p:DebugType=portable \
     --no-restore
 
 # Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS runtime
+
+# Install ICU libraries to enable full globalization support (required for tr/en cultures)
+RUN apk add --no-cache icu-libs
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 WORKDIR /app
 
