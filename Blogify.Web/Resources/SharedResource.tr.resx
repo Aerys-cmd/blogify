@@ -73,6 +73,9 @@
   <data name="Label.Role" xml:space="preserve"><value>Rol</value></data>
   <data name="Label.Username" xml:space="preserve"><value>Kullanıcı adı</value></data>
   <data name="Label.BlogMembership" xml:space="preserve"><value>Blog üyeliği</value></data>
+  <data name="Label.MetaTitle" xml:space="preserve"><value>Meta Başlık</value></data>
+  <data name="Label.MetaDescription" xml:space="preserve"><value>Meta Açıklama</value></data>
+  <data name="Label.Seo" xml:space="preserve"><value>SEO</value></data>
 
   <!-- Actions -->
   <data name="Action.Save" xml:space="preserve"><value>Kaydet</value></data>
@@ -117,6 +120,7 @@
   <data name="Page.Title.BlogAdmin.Media" xml:space="preserve"><value>Medya Kitaplığı</value></data>
   <data name="Page.Title.BlogAdmin.Analytics" xml:space="preserve"><value>Analitik</value></data>
   <data name="Page.Title.BlogAdmin.Themes" xml:space="preserve"><value>Temalar</value></data>
+  <data name="Page.Title.BlogAdmin.Settings" xml:space="preserve"><value>Blog Ayarları</value></data>
   <data name="Page.Title.Blog.Home" xml:space="preserve"><value>Ana Sayfa</value></data>
   <data name="Page.Title.Landing.Home" xml:space="preserve"><value>Blogify — Hikâyeni anlat. Blogun olsun.</value></data>
   <data name="Page.Title.Landing.GetStarted" xml:space="preserve"><value>Başla</value></data>
@@ -148,6 +152,7 @@
   <data name="Nav.Blogs" xml:space="preserve"><value>Bloglar</value></data>
   <data name="Nav.Dashboard" xml:space="preserve"><value>Pano</value></data>
   <data name="Nav.SignOut" xml:space="preserve"><value>Çıkış yap</value></data>
+  <data name="Nav.Settings" xml:space="preserve"><value>Ayarlar</value></data>
   <data name="Nav.Home" xml:space="preserve"><value>Ana Sayfa</value></data>
   <data name="Nav.Privacy" xml:space="preserve"><value>Gizlilik</value></data>
 

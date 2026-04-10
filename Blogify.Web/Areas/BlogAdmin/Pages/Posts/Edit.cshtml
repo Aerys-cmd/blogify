@@ -141,6 +141,26 @@
                              model="@(new MediaPickerFieldVm("coverImageId", "Input.CoverImageId", Model.Input.CoverImageId, Model.CoverImagePreviewUrl, "mediaPickerModal"))" />
                 </div>
             </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-semibold">@Localizer["Label.Seo"]</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Input.MetaTitle" class="form-label fw-semibold">@Localizer["Label.MetaTitle"]</label>
+                        <input asp-for="Input.MetaTitle" class="form-control"
+                               placeholder="Custom SEO title (optional)…" autocomplete="off" />
+                        <div class="form-text">Max 60 characters. Defaults to post title if left blank.</div>
+                        <span asp-validation-for="Input.MetaTitle" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-0">
+                        <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
+                        <textarea asp-for="Input.MetaDescription" class="form-control" rows="3"
+                                  placeholder="A short description for search engines (optional)…"></textarea>
+                        <div class="form-text">Max 160 characters. Defaults to excerpt if left blank.</div>
+                        <span asp-validation-for="Input.MetaDescription" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <partial name="_EditorImagePickerModal" model='"editorImageInsert"' />

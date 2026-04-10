@@ -24,6 +24,12 @@ public sealed class CategoryEntityConfiguration : IEntityTypeConfiguration<Categ
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.Property(c => c.MetaTitle)
+            .HasMaxLength(60);
+
+        builder.Property(c => c.MetaDescription)
+            .HasMaxLength(160);
+
         builder.Property(c => c.CreatedAt).IsRequired();
 
         builder.Property(c => c.DeletedAt);

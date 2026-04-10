@@ -69,6 +69,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         post.UpdateExcerpt(Input.Excerpt);
         post.SetCoverImage(Input.CoverImageId);
         post.SetCategories(SelectedCategoryIds);
+        post.UpdateSeoMetadata(Input.MetaTitle, Input.MetaDescription);
 
         if (Input.Publish)
         {
@@ -120,6 +121,12 @@ public sealed class CreatePostInput
     public Guid? CoverImageId { get; set; }
 
     public bool Publish { get; set; }
+
+    [MaxLength(60)]
+    public string? MetaTitle { get; set; }
+
+    [MaxLength(160)]
+    public string? MetaDescription { get; set; }
 }
 
 public sealed record CategorySelectItem(Guid Id, string Name, bool IsSelected);

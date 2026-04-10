@@ -74,7 +74,9 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
             Excerpt = post.Excerpt,
             Content = latestRevision.Content,
             CoverImageId = post.CoverImageId,
-            IsPublished = post.Status == PostStatus.Published
+            IsPublished = post.Status == PostStatus.Published,
+            MetaTitle = post.MetaTitle,
+            MetaDescription = post.MetaDescription
         };
 
         await LoadAvailableCategoriesAsync(ct);
@@ -132,6 +134,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
         post.UpdateExcerpt(Input.Excerpt);
         post.SetCoverImage(Input.CoverImageId);
         post.SetCategories(SelectedCategoryIds);
+        post.UpdateSeoMetadata(Input.MetaTitle, Input.MetaDescription);
 
         bool currentlyPublished = post.Status == PostStatus.Published;
 
@@ -192,4 +195,10 @@ public sealed class EditPostInput
     public Guid? CoverImageId { get; set; }
 
     public bool IsPublished { get; set; }
+
+    [MaxLength(60)]
+    public string? MetaTitle { get; set; }
+
+    [MaxLength(160)]
+    public string? MetaDescription { get; set; }
 }
