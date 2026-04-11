@@ -119,7 +119,7 @@ function handleFiles(files, queue, gridContainerId) {
 }
 
 // Auto-initialise — element IDs align with the WordPress-style upload zone in Index.cshtml
-const dropZone = document.getElementById('wp-upload-zone');
+const dropZone = document.getElementById('media-upload-zone');
 const queue = document.getElementById('upload-queue');
 const fileInput = document.getElementById('upload-file-input');
 const GRID_CONTAINER_ID = 'media-items-row';

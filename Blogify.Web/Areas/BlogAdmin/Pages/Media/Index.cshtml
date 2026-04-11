@@ -17,9 +17,9 @@
     <button type="button"
             class="btn btn-primary btn-sm"
             data-bs-toggle="collapse"
-            data-bs-target="#wp-upload-collapse"
+            data-bs-target="#media-upload-collapse"
             aria-expanded="false"
-            aria-controls="wp-upload-collapse">
+            aria-controls="media-upload-collapse">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
              class="me-1" viewBox="0 0 16 16" aria-hidden="true">
             <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
@@ -29,8 +29,8 @@
 </div>
 
 @* Upload zone (collapsed by default — expands when Add New Media is clicked) *@
-<div class="collapse mb-3" id="wp-upload-collapse">
-    <div id="wp-upload-zone"
+<div class="collapse mb-3" id="media-upload-collapse">
+    <div id="media-upload-zone"
          class="border rounded text-center"
          style="border-style: dashed !important; cursor: pointer;">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
@@ -52,7 +52,7 @@
 </div>
 
 @* Toolbar *@
-<div class="wp-media-toolbar mb-3">
+<div class="media-toolbar mb-3">
     @* View mode toggle *@
     <div class="btn-group btn-group-sm me-1" role="group" aria-label="View mode">
         <button type="button"
@@ -150,8 +150,8 @@
 </div>
 
 @* Media browser — grid + inline attachment details *@
-<div id="wp-media-browser">
-    <div id="wp-media-grid-col">
+<div id="media-browser">
+    <div id="media-grid-col">
         <div id="media-content">
             <partial name="_MediaGrid" model="Model" />
         </div>

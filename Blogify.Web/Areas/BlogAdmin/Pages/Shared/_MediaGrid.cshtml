@@ -18,7 +18,7 @@ else if (Model.ViewMode == "list")
 }
 else
 {
-    <ul class="wp-media-attachments" id="media-items-row" aria-label="Media attachments">
+    <ul class="media-attachments" id="media-items-row" aria-label="Media attachments">
         @foreach (MediaItemVm item in Model.Items)
         {
             <partial name="_MediaCard" model="item" />

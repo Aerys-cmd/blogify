@@ -1,15 +1,15 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaItemVm
 
-<li class="wp-attachment" data-media-id="@Model.Id">
+<li class="media-attachment" data-media-id="@Model.Id">
     @* Bulk-select checkbox (top-left, visible on hover / when selected) *@
     <input type="checkbox"
-           class="wp-attachment-bulk-check media-check"
+           class="media-attachment-bulk-check media-check"
            data-media-id="@Model.Id"
            aria-label="Select @Model.FileName" />
 
     @* Thumbnail button — opens inline attachment details panel *@
     <button type="button"
-            class="wp-attachment-btn"
+            class="media-attachment-btn"
             hx-get="?handler=MediaDetail&id=@Model.Id"
             hx-target="#attachment-details-content"
             hx-swap="innerHTML"
@@ -18,11 +18,11 @@
         {
             <img src="@(Model.ThumbnailUrl ?? Model.Url)"
                  alt="@(Model.AltText ?? Model.FileName)"
-                 class="wp-attachment-thumb" />
+                 class="media-attachment-thumb" />
         }
         else
         {
-            <span class="wp-attachment-icon" aria-hidden="true">
+            <span class="media-attachment-icon" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
                      viewBox="0 0 16 16">
                     <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 4.5z"/>
@@ -31,7 +31,7 @@
         }
 
         @* Checkmark badge (top-right, blue when selected) *@
-        <span class="wp-attachment-check" aria-hidden="true">
+        <span class="media-attachment-check" aria-hidden="true">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                  viewBox="0 0 16 16">
                 <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
@@ -39,7 +39,7 @@
         </span>
 
         @* Filename caption (bottom, visible on hover) *@
-        <span class="wp-attachment-caption">@Model.FileName</span>
+        <span class="media-attachment-caption">@Model.FileName</span>
     </button>
 </li>
 
