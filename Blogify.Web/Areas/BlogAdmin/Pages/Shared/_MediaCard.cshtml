@@ -5,7 +5,7 @@
     <input type="checkbox"
            class="media-attachment-bulk-check media-check"
            data-media-id="@Model.Id"
-           aria-label="Select @Model.FileName" />
+           aria-label="@Localizer["Aria.SelectMedia", Model.FileName].Value" />
 
     @* Thumbnail button — opens inline attachment details panel *@
     <button type="button"
@@ -13,7 +13,7 @@
             hx-get="?handler=MediaDetail&id=@Model.Id"
             hx-target="#attachment-details-content"
             hx-swap="innerHTML"
-            aria-label="View details for @Model.FileName">
+            aria-label="@Localizer["Aria.ViewMediaDetails", Model.FileName].Value">
         @if (Model.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
         {
             <img src="@(Model.ThumbnailUrl ?? Model.Url)"

@@ -11,13 +11,13 @@
             <tr>
                 <th style="width: 36px;">
                     <input type="checkbox" class="form-check-input" id="select-all-check"
-                           aria-label="Select all on this page" />
+                           aria-label="@Localizer["Aria.SelectAll"].Value" />
                 </th>
                 <th style="width: 52px;"></th>
-                <th>Name</th>
-                <th class="d-none d-md-table-cell">Type</th>
-                <th>Size</th>
-                <th class="d-none d-sm-table-cell">Uploaded</th>
+                <th>@Localizer["Label.Name"]</th>
+                <th class="d-none d-md-table-cell">@Localizer["Label.Type"]</th>
+                <th>@Localizer["Label.Size"]</th>
+                <th class="d-none d-sm-table-cell">@Localizer["Label.Uploaded"]</th>
                 <th style="width: 48px;"></th>
             </tr>
         </thead>
@@ -27,7 +27,7 @@
                 <tr data-media-id="@item.Id">
                     <td>
                         <input type="checkbox" class="form-check-input media-check"
-                               data-media-id="@item.Id" aria-label="Select @item.FileName" />
+                               data-media-id="@item.Id" aria-label="@Localizer["Aria.SelectMedia", item.FileName].Value" />
                     </td>
                     <td>
                         <button type="button"
@@ -36,7 +36,7 @@
                                 hx-get="?handler=MediaDetail&id=@item.Id"
                                 hx-target="#attachment-details-content"
                                 hx-swap="innerHTML"
-                                aria-label="View details for @item.FileName">
+                                aria-label="@Localizer["Aria.ViewMediaDetails", item.FileName].Value">
                             @if (item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
                             {
                                 <img src="@(item.ThumbnailUrl ?? item.Url)" alt="@(item.AltText ?? item.FileName)"
@@ -77,7 +77,7 @@
                         <button type="button"
                                 class="btn btn-outline-danger btn-sm py-0 px-2"
                                 hx-post="?handler=Delete&id=@item.Id"
-                                hx-confirm="Delete this file?"
+                                hx-confirm="@Localizer["Message.ConfirmDeleteFile"].Value"
                                 hx-target="closest tr"
                                 hx-swap="outerHTML">
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
@@ -100,7 +100,7 @@
                 hx-get="?cursor=@Model.Pager.NextCursor&q=@Model.SearchQuery&type=@Model.TypeFilter&month=@Model.MonthFilter&view=list"
                 hx-target="#media-content"
                 hx-swap="innerHTML">
-            Load more
+            @Localizer["Action.LoadMore"]
         </button>
     </div>
 }

@@ -1,7 +1,7 @@
 @page
 @model Blogify.Web.Areas.BlogAdmin.Pages.Media.IndexModel
 @{
-    ViewData["Title"] = "Media Library";
+    ViewData["Title"] = Localizer["Page.Title.BlogAdmin.Media"].Value;
 }
 
 @* Page header *@
@@ -9,10 +9,10 @@
     <div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-1">
-                <li class="breadcrumb-item active" aria-current="page">Media Library</li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer["Page.Title.BlogAdmin.Media"]</li>
             </ol>
         </nav>
-        <h1 class="h3 mb-0">Media Library</h1>
+        <h1 class="h3 mb-0">@Localizer["Page.Title.BlogAdmin.Media"]</h1>
     </div>
     <button type="button"
             class="btn btn-primary btn-sm"
@@ -31,8 +31,7 @@
 @* Upload zone (collapsed by default — expands when Add New Media is clicked) *@
 <div class="collapse mb-3" id="media-upload-collapse">
     <div id="media-upload-zone"
-         class="border rounded text-center"
-         style="border-style: dashed !important; cursor: pointer;">
+         class="text-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
              class="mb-2 text-secondary" viewBox="0 0 16 16" aria-hidden="true">
             <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"/>
@@ -54,7 +53,7 @@
 @* Toolbar *@
 <div class="media-toolbar mb-3">
     @* View mode toggle *@
-    <div class="btn-group btn-group-sm me-1" role="group" aria-label="View mode">
+    <div class="btn-group btn-group-sm me-1" role="group" aria-label="@Localizer["Aria.ViewMode"].Value">
         <button type="button"
                 class="btn btn-outline-secondary @(Model.ViewMode == "grid" ? "active" : "")"
                 id="view-grid-btn"
@@ -62,7 +61,7 @@
                 hx-target="#media-content"
                 hx-swap="innerHTML"
                 hx-include="[name='q'],[name='type'],[name='month']"
-                aria-label="Grid view" aria-pressed="@(Model.ViewMode == "grid" ? "true" : "false")">
+                aria-label="@Localizer["Aria.GridView"].Value" aria-pressed="@(Model.ViewMode == "grid" ? "true" : "false")">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                  viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5z"/>
@@ -75,7 +74,7 @@
                 hx-target="#media-content"
                 hx-swap="innerHTML"
                 hx-include="[name='q'],[name='type'],[name='month']"
-                aria-label="List view" aria-pressed="@(Model.ViewMode == "list" ? "true" : "false")">
+                aria-label="@Localizer["Aria.ListView"].Value" aria-pressed="@(Model.ViewMode == "list" ? "true" : "false")">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                  viewBox="0 0 16 16" aria-hidden="true">
                 <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
@@ -91,7 +90,7 @@
             hx-swap="innerHTML"
             hx-include="[name='q'],[name='month'],[name='view']"
             hx-trigger="change"
-            aria-label="Filter by type">
+            aria-label="@Localizer["Aria.FilterByType"].Value">
         <option value="" selected="@(string.IsNullOrEmpty(Model.TypeFilter) ? "selected" : null)">@Localizer["Label.AllMediaTypes"]</option>
         <option value="image" selected="@(Model.TypeFilter == "image" ? "selected" : null)">@Localizer["Label.Images"]</option>
         <option value="document" selected="@(Model.TypeFilter == "document" ? "selected" : null)">@Localizer["Label.Documents"]</option>
@@ -105,7 +104,7 @@
             hx-swap="innerHTML"
             hx-include="[name='q'],[name='type'],[name='view']"
             hx-trigger="change"
-            aria-label="Filter by date">
+            aria-label="@Localizer["Aria.FilterByDate"].Value">
         <option value="" selected="@(string.IsNullOrEmpty(Model.MonthFilter) ? "selected" : null)">@Localizer["Label.AllDates"]</option>
         @foreach (MonthBucketVm bucket in Model.AvailableMonths)
         {
@@ -126,13 +125,15 @@
            hx-swap="innerHTML"
            hx-include="[name='type'],[name='month'],[name='view']"
            hx-trigger="input changed delay:400ms, search"
-           aria-label="Search media by filename" />
+           aria-label="@Localizer["Aria.SearchMedia"].Value" />
 </div>
 
 @* Bulk actions toolbar *@
 <div id="bulk-toolbar" class="alert alert-secondary d-flex align-items-center gap-3 mb-3 d-none"
-     role="toolbar" aria-label="Bulk actions">
-    <span id="bulk-count-label" class="fw-semibold small">0 items selected</span>
+     role="toolbar" aria-label="@Localizer["Aria.BulkActions"].Value">
+    <span id="bulk-count-label" class="fw-semibold small"
+          data-label-one="@Localizer["Media.ItemsSelectedOne"].Value"
+          data-label-many="@Localizer["Media.ItemsSelectedMany"].Value">@Localizer["Media.ItemsSelectedOne"]</span>
     <form method="post" asp-page-handler="BulkDelete" id="bulk-delete-form" class="d-inline">
         <div id="bulk-ids-container"></div>
         <button type="submit" class="btn btn-danger btn-sm">
@@ -141,11 +142,11 @@
                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                 <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
             </svg>
-            Delete Selected
+            @Localizer["Action.DeleteSelected"]
         </button>
     </form>
     <button type="button" class="btn btn-link btn-sm p-0 text-secondary" id="clear-selection">
-        Clear selection
+        @Localizer["Action.ClearSelection"]
     </button>
 </div>
 
