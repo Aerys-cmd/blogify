@@ -2,6 +2,14 @@
 // Handles: click-to-select attachments, inline attachment details panel,
 // view-mode persistence across filter changes, and panel close behaviour.
 
+function escapeHtml(s) {
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
 const panel = document.getElementById('attachment-details');
 const panelContent = document.getElementById('attachment-details-content');
 const activeViewInput = document.getElementById('active-view');
@@ -59,10 +67,11 @@ function closeAttachmentPanel() {
     if (!panel) return;
     panel.classList.add('closed');
     deselectAll();
-    // Reset panel content to the placeholder
+    // Reset panel content to the server-rendered placeholder (localised)
     if (panelContent) {
+        const placeholderText = panel.dataset.placeholder ?? '';
         panelContent.innerHTML =
-            '<div class="p-4 text-center text-muted"><p class="small mb-0">Select a file to view its details.</p></div>';
+            `<div class="p-4 text-center text-muted"><p class="small mb-0">${escapeHtml(placeholderText)}</p></div>`;
     }
 }
 

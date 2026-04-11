@@ -7,7 +7,7 @@
 
 @* Panel header *@
 <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-light">
-    <span class="small fw-semibold text-truncate me-2" title="@Model.FileName">Attachment Details</span>
+    <span class="small fw-semibold text-truncate me-2" title="@Model.FileName">@Localizer["Label.AttachmentDetails"]</span>
     <button type="button" class="btn-close btn-sm flex-shrink-0"
             id="close-attachment-details" aria-label="Close details panel"></button>
 </div>
@@ -67,13 +67,13 @@ else
 
     @* File info *@
     <dl class="row small mb-3">
-        <dt class="col-5 text-muted fw-normal">File</dt>
+        <dt class="col-5 text-muted fw-normal">@Localizer["Label.File"]</dt>
         <dd class="col-7 text-truncate mb-1 fw-semibold" title="@Model.FileName">@Model.FileName</dd>
 
-        <dt class="col-5 text-muted fw-normal">Type</dt>
+        <dt class="col-5 text-muted fw-normal">@Localizer["Label.Type"]</dt>
         <dd class="col-7 mb-1">@Model.ContentType</dd>
 
-        <dt class="col-5 text-muted fw-normal">Size</dt>
+        <dt class="col-5 text-muted fw-normal">@Localizer["Label.Size"]</dt>
         <dd class="col-7 mb-1">@FormatFileSize(Model.SizeBytes)</dd>
 
         @if (Model.WidthPx.HasValue && Model.HeightPx.HasValue)
@@ -82,13 +82,13 @@ else
             <dd class="col-7 mb-1">@Model.WidthPx × @Model.HeightPx px</dd>
         }
 
-        <dt class="col-5 text-muted fw-normal">Uploaded</dt>
+        <dt class="col-5 text-muted fw-normal">@Localizer["Label.Uploaded"]</dt>
         <dd class="col-7 mb-1">@Model.UploadedAt.LocalDateTime.ToString("dd MMM yyyy HH:mm")</dd>
     </dl>
 
     @* URL copy *@
     <div class="mb-3">
-        <label class="form-label small fw-semibold mb-1">File URL</label>
+        <label class="form-label small fw-semibold mb-1">@Localizer["Label.FileUrl"]</label>
         <div class="input-group input-group-sm">
             <input type="text" class="form-control font-monospace small"
                    id="detail-url-@Model.Id" value="@Model.Url" readonly />
@@ -122,7 +122,7 @@ else
                 hx-target="[data-media-id='@Model.Id']"
                 hx-swap="outerHTML"
                 hx-on:htmx:after-request="if(event.detail.successful) { window.closeAttachmentPanel && window.closeAttachmentPanel(); }">
-            Delete Permanently
+            @Localizer["Action.DeletePermanently"]
         </button>
     </div>
 </div>

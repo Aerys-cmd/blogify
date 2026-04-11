@@ -243,4 +243,24 @@
   <data name="Index.CTA.Heading" xml:space="preserve"><value>Hikâyenizi paylaşmaya hazır mısınız?</value></data>
   <data name="Index.CTA.Description" xml:space="preserve"><value>Bugün ücretsiz blogunuzu oluşturun ve büyüyen bir yazar, içerik üretici ve düşünür topluluğunun parçası olun.</value></data>
   <data name="Index.CTA.Button" xml:space="preserve"><value>Başla — Ücretsiz</value></data>
+  <data name="Action.AddNewMedia" xml:space="preserve"><value>Yeni Medya Ekle</value></data>
+  <data name="Action.SelectFiles" xml:space="preserve"><value>Dosya Seç</value></data>
+  <data name="Action.DeletePermanently" xml:space="preserve"><value>Kalıcı Olarak Sil</value></data>
+  <data name="Label.AllMediaTypes" xml:space="preserve"><value>Tüm medya türleri</value></data>
+  <data name="Label.Images" xml:space="preserve"><value>Görseller</value></data>
+  <data name="Label.Documents" xml:space="preserve"><value>Belgeler</value></data>
+  <data name="Label.AllDates" xml:space="preserve"><value>Tüm tarihler</value></data>
+  <data name="Label.File" xml:space="preserve"><value>Dosya</value></data>
+  <data name="Label.Type" xml:space="preserve"><value>Tür</value></data>
+  <data name="Label.Size" xml:space="preserve"><value>Boyut</value></data>
+  <data name="Label.Uploaded" xml:space="preserve"><value>Yüklendi</value></data>
+  <data name="Label.FileUrl" xml:space="preserve"><value>Dosya URL'si</value></data>
+  <data name="Label.Or" xml:space="preserve"><value>veya</value></data>
+  <data name="Label.AttachmentDetails" xml:space="preserve"><value>Ek Ayrıntıları</value></data>
+  <data name="Message.DropFilesToUpload" xml:space="preserve"><value>Yüklemek için dosyaları sürükleyin</value></data>
+  <data name="Message.UploadConstraints" xml:space="preserve"><value>JPEG, PNG, GIF, WebP · dosya başına max 10 MB</value></data>
+  <data name="Message.NoMediaFiles" xml:space="preserve"><value>Medya dosyası bulunamadı.</value></data>
+  <data name="Message.UploadFirstFile" xml:space="preserve"><value>Yukarıdaki Yeni Medya Ekle düğmesiyle ilk dosyanızı yükleyin.</value></data>
+  <data name="Message.SelectFileForDetails" xml:space="preserve"><value>Ayrıntılarını görmek için bir dosya seçin.</value></data>
+  <data name="Placeholder.SearchMedia" xml:space="preserve"><value>Medya ara…</value></data>
 </root>

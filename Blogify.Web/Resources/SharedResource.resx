@@ -243,4 +243,24 @@
   <data name="Index.CTA.Heading" xml:space="preserve"><value>Ready to share your story?</value></data>
   <data name="Index.CTA.Description" xml:space="preserve"><value>Create your free blog today and be part of a growing community of writers, creators, and thinkers.</value></data>
   <data name="Index.CTA.Button" xml:space="preserve"><value>Get Started — It&#x2019;s Free</value></data>
+  <data name="Action.AddNewMedia" xml:space="preserve"><value>Add New Media</value></data>
+  <data name="Action.SelectFiles" xml:space="preserve"><value>Select Files</value></data>
+  <data name="Action.DeletePermanently" xml:space="preserve"><value>Delete Permanently</value></data>
+  <data name="Label.AllMediaTypes" xml:space="preserve"><value>All media types</value></data>
+  <data name="Label.Images" xml:space="preserve"><value>Images</value></data>
+  <data name="Label.Documents" xml:space="preserve"><value>Documents</value></data>
+  <data name="Label.AllDates" xml:space="preserve"><value>All dates</value></data>
+  <data name="Label.File" xml:space="preserve"><value>File</value></data>
+  <data name="Label.Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Label.Size" xml:space="preserve"><value>Size</value></data>
+  <data name="Label.Uploaded" xml:space="preserve"><value>Uploaded</value></data>
+  <data name="Label.FileUrl" xml:space="preserve"><value>File URL</value></data>
+  <data name="Label.Or" xml:space="preserve"><value>or</value></data>
+  <data name="Label.AttachmentDetails" xml:space="preserve"><value>Attachment Details</value></data>
+  <data name="Message.DropFilesToUpload" xml:space="preserve"><value>Drop files to upload</value></data>
+  <data name="Message.UploadConstraints" xml:space="preserve"><value>JPEG, PNG, GIF, WebP · max 10 MB per file</value></data>
+  <data name="Message.NoMediaFiles" xml:space="preserve"><value>No media files found.</value></data>
+  <data name="Message.UploadFirstFile" xml:space="preserve"><value>Upload your first file using the Add New Media button above.</value></data>
+  <data name="Message.SelectFileForDetails" xml:space="preserve"><value>Select a file to view its details.</value></data>
+  <data name="Placeholder.SearchMedia" xml:space="preserve"><value>Search media…</value></data>
 </root>
