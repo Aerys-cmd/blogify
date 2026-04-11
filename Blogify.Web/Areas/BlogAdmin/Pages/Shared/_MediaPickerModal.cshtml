@@ -53,7 +53,7 @@
                                 data-alt-text="@(item.AltText ?? item.FileName)"
                                 data-target="@Model.TargetInputId"
                                 data-modal-id="@Model.ModalId"
-                                aria-label="Select @item.FileName">
+                                aria-label="@Localizer["Aria.SelectMedia", item.FileName].Value">
                             @if (item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
                             {
                                 <img src="@(item.ThumbnailUrl ?? item.Url)"
