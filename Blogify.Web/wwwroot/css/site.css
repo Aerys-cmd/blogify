@@ -230,12 +230,14 @@ body {
   background: rgba(0, 0, 0, 0.1);
 }
 
-.media-attachment.selected::before {
+.media-attachment.selected::before,
+.media-attachment.active::before {
   background: rgba(34, 113, 177, 0.08);
 }
 
-/* Selected state — blue border */
-.media-attachment.selected::after {
+/* Selected / active state — blue border */
+.media-attachment.selected::after,
+.media-attachment.active::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -268,7 +270,8 @@ body {
   opacity: 1;
 }
 
-.media-attachment.selected .media-attachment-check {
+.media-attachment.selected .media-attachment-check,
+.media-attachment.active .media-attachment-check {
   opacity: 1;
   background: #2271b1;
   color: #fff;
@@ -291,7 +294,8 @@ body {
 }
 
 .media-attachment:hover .media-attachment-bulk-check,
-.media-attachment.selected .media-attachment-bulk-check {
+.media-attachment.selected .media-attachment-bulk-check,
+.media-attachment.active .media-attachment-bulk-check {
   opacity: 1;
 }
 

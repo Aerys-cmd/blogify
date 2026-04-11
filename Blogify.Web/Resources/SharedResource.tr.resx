@@ -263,4 +263,36 @@
   <data name="Message.UploadFirstFile" xml:space="preserve"><value>Yukarıdaki Yeni Medya Ekle düğmesiyle ilk dosyanızı yükleyin.</value></data>
   <data name="Message.SelectFileForDetails" xml:space="preserve"><value>Ayrıntılarını görmek için bir dosya seçin.</value></data>
   <data name="Placeholder.SearchMedia" xml:space="preserve"><value>Medya ara…</value></data>
+  <!-- Media Library — Aria labels -->
+  <data name="Aria.ViewMode" xml:space="preserve"><value>Görünüm modu</value></data>
+  <data name="Aria.GridView" xml:space="preserve"><value>Kılavuz görünümü</value></data>
+  <data name="Aria.ListView" xml:space="preserve"><value>Liste görünümü</value></data>
+  <data name="Aria.FilterByType" xml:space="preserve"><value>Türe göre filtrele</value></data>
+  <data name="Aria.FilterByDate" xml:space="preserve"><value>Tarihe göre filtrele</value></data>
+  <data name="Aria.SearchMedia" xml:space="preserve"><value>Dosya adına göre medya ara</value></data>
+  <data name="Aria.BulkActions" xml:space="preserve"><value>Toplu işlemler</value></data>
+  <data name="Aria.SelectAll" xml:space="preserve"><value>Bu sayfadaki tümünü seç</value></data>
+  <data name="Aria.SelectMedia" xml:space="preserve"><value>{0} öğesini seç</value></data>
+  <data name="Aria.ViewMediaDetails" xml:space="preserve"><value>{0} için ayrıntıları göster</value></data>
+  <data name="Aria.CloseDetailsPanel" xml:space="preserve"><value>Ayrıntılar panelini kapat</value></data>
+  <!-- Media Library — Labels -->
+  <data name="Label.AltText" xml:space="preserve"><value>Alternatif Metin</value></data>
+  <data name="Label.Description" xml:space="preserve"><value>Açıklama</value></data>
+  <data name="Label.Dimensions" xml:space="preserve"><value>Boyutlar</value></data>
+  <!-- Media Library — Placeholders -->
+  <data name="Placeholder.AltText" xml:space="preserve"><value>Ekran okuyucular için bu görseli açıklayın…</value></data>
+  <data name="Placeholder.MediaTitle" xml:space="preserve"><value>İsteğe bağlı görüntüleme başlığı…</value></data>
+  <data name="Placeholder.MediaDescription" xml:space="preserve"><value>İsteğe bağlı açıklama…</value></data>
+  <!-- Media Library — Actions -->
+  <data name="Action.DeleteSelected" xml:space="preserve"><value>Seçilenleri Sil</value></data>
+  <data name="Action.ClearSelection" xml:space="preserve"><value>Seçimi temizle</value></data>
+  <data name="Action.Copy" xml:space="preserve"><value>Kopyala</value></data>
+  <data name="Action.LoadMore" xml:space="preserve"><value>Daha fazla yükle</value></data>
+  <!-- Media Library — Bulk count label -->
+  <data name="Media.ItemsSelectedOne" xml:space="preserve"><value>1 öğe seçildi</value></data>
+  <data name="Media.ItemsSelectedMany" xml:space="preserve"><value>{0} öğe seçildi</value></data>
+  <!-- Media Library — Messages -->
+  <data name="Media.UsedAsCoverIn" xml:space="preserve"><value>Kapak olarak kullanıldığı yerler:</value></data>
+  <data name="Message.ConfirmDeleteFile" xml:space="preserve"><value>Bu dosyayı sil?</value></data>
+  <data name="Message.ConfirmDeleteMediaDetail" xml:space="preserve"><value>&apos;{0}&apos; silinsin mi? Bunu kapak görseli olarak kullanan gönderiler kapak görselini kaybedecek.</value></data>
 </root>
