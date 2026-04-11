@@ -19,23 +19,23 @@ const viewListBtn = document.getElementById('view-list-btn');
 // ── Attachment selection ────────────────────────────────────────────
 
 function selectAttachment(item) {
-    document.querySelectorAll('.wp-attachment.selected').forEach(function (el) {
+    document.querySelectorAll('.media-attachment.selected').forEach(function (el) {
         el.classList.remove('selected');
     });
     item.classList.add('selected');
 }
 
 function deselectAll() {
-    document.querySelectorAll('.wp-attachment.selected').forEach(function (el) {
+    document.querySelectorAll('.media-attachment.selected').forEach(function (el) {
         el.classList.remove('selected');
     });
 }
 
 // Click on attachment button → select it and open details panel
 document.addEventListener('click', function (e) {
-    const btn = e.target.closest('.wp-attachment-btn');
+    const btn = e.target.closest('.media-attachment-btn');
     if (!btn) return;
-    const item = btn.closest('.wp-attachment');
+    const item = btn.closest('.media-attachment');
     if (!item) return;
     selectAttachment(item);
     // HTMX will load the detail content; openAttachmentPanel is called
@@ -44,9 +44,9 @@ document.addEventListener('click', function (e) {
 
 // Bulk-select checkbox click — toggle selection without opening detail
 document.addEventListener('change', function (e) {
-    const cb = e.target.closest('.wp-attachment-bulk-check');
+    const cb = e.target.closest('.media-attachment-bulk-check');
     if (!cb) return;
-    const item = cb.closest('.wp-attachment');
+    const item = cb.closest('.media-attachment');
     if (!item) return;
     if (cb.checked) {
         item.classList.add('selected');
