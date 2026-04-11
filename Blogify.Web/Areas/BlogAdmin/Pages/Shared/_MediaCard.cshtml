@@ -17,7 +17,7 @@
         @if (Model.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
         {
             <img src="@(Model.ThumbnailUrl ?? Model.Url)"
-                 alt=""
+                 alt="@(Model.AltText ?? Model.FileName)"
                  class="wp-attachment-thumb" />
         }
         else

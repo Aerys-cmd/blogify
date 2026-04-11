@@ -172,28 +172,7 @@
 <input type="hidden" name="view" id="active-view" value="@Model.ViewMode" />
 
 @* Select-all checkbox sync for list view *@
-<script>
-    document.addEventListener('change', function (e) {
-        if (e.target.id !== 'select-all-check') return;
-        document.querySelectorAll('.media-check').forEach(function (cb) {
-            cb.checked = e.target.checked;
-            cb.dispatchEvent(new Event('change', { bubbles: true }));
-        });
-    });
-
-    // Copy-to-clipboard (event delegation for dynamically loaded detail panel)
-    document.addEventListener('click', function (e) {
-        const btn = e.target.closest('[data-copy-target]');
-        if (!btn) return;
-        const input = document.getElementById(btn.dataset.copyTarget);
-        if (!input) return;
-        navigator.clipboard.writeText(input.value).then(function () {
-            const orig = btn.textContent.trim();
-            btn.textContent = '✓';
-            setTimeout(function () { btn.textContent = orig; }, 1500);
-        });
-    });
-</script>
+@* Select-all checkbox sync and copy-to-clipboard are handled by media-library.js *@
 
 @section Scripts {
     <script type="module" src="~/js/media-upload.js" asp-append-version="true"></script>

@@ -99,7 +99,29 @@ document.addEventListener('htmx:afterSwap', function (e) {
     }
 });
 
-// ── View-mode hidden input — keeps view state across filter changes ─
+// ── Select-all (list view header checkbox) ──────────────────────────
+
+document.addEventListener('change', function (e) {
+    if (e.target.id !== 'select-all-check') return;
+    document.querySelectorAll('.media-check').forEach(function (cb) {
+        cb.checked = e.target.checked;
+        cb.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+});
+
+// ── Copy-to-clipboard (event delegation for dynamically loaded content) ─
+
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('[data-copy-target]');
+    if (!btn) return;
+    const input = document.getElementById(btn.dataset.copyTarget);
+    if (!input) return;
+    navigator.clipboard.writeText(input.value).then(function () {
+        const orig = btn.textContent.trim();
+        btn.textContent = '✓';
+        setTimeout(function () { btn.textContent = orig; }, 1500);
+    });
+});
 
 if (viewGridBtn && activeViewInput) {
     viewGridBtn.addEventListener('click', function () {
