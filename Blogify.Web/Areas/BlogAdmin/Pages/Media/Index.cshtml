@@ -24,7 +24,7 @@
              class="me-1" viewBox="0 0 16 16" aria-hidden="true">
             <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
         </svg>
-        Add New Media
+        @Localizer["Action.AddNewMedia"]
     </button>
 </div>
 
@@ -38,14 +38,14 @@
             <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"/>
             <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/>
         </svg>
-        <p class="fw-semibold mb-1">Drop files to upload</p>
-        <p class="small mb-3 text-muted">or</p>
+        <p class="fw-semibold mb-1">@Localizer["Message.DropFilesToUpload"]</p>
+        <p class="small mb-3 text-muted">@Localizer["Label.Or"]</p>
         <label class="btn btn-outline-primary btn-sm">
-            Select Files
+            @Localizer["Action.SelectFiles"]
             <input type="file" id="upload-file-input" class="d-none"
                    accept="image/jpeg,image/png,image/gif,image/webp" multiple />
         </label>
-        <p class="small text-muted mt-2 mb-0">JPEG, PNG, GIF, WebP · max 10 MB per file</p>
+        <p class="small text-muted mt-2 mb-0">@Localizer["Message.UploadConstraints"]</p>
     </div>
     <div id="upload-error" class="mt-2"></div>
     <ul id="upload-queue" class="list-group mt-2 d-none"></ul>
@@ -92,9 +92,9 @@
             hx-include="[name='q'],[name='month'],[name='view']"
             hx-trigger="change"
             aria-label="Filter by type">
-        <option value="" selected="@(string.IsNullOrEmpty(Model.TypeFilter) ? "selected" : null)">All media types</option>
-        <option value="image" selected="@(Model.TypeFilter == "image" ? "selected" : null)">Images</option>
-        <option value="document" selected="@(Model.TypeFilter == "document" ? "selected" : null)">Documents</option>
+        <option value="" selected="@(string.IsNullOrEmpty(Model.TypeFilter) ? "selected" : null)">@Localizer["Label.AllMediaTypes"]</option>
+        <option value="image" selected="@(Model.TypeFilter == "image" ? "selected" : null)">@Localizer["Label.Images"]</option>
+        <option value="document" selected="@(Model.TypeFilter == "document" ? "selected" : null)">@Localizer["Label.Documents"]</option>
     </select>
 
     @* Date filter *@
@@ -106,7 +106,7 @@
             hx-include="[name='q'],[name='type'],[name='view']"
             hx-trigger="change"
             aria-label="Filter by date">
-        <option value="" selected="@(string.IsNullOrEmpty(Model.MonthFilter) ? "selected" : null)">All dates</option>
+        <option value="" selected="@(string.IsNullOrEmpty(Model.MonthFilter) ? "selected" : null)">@Localizer["Label.AllDates"]</option>
         @foreach (MonthBucketVm bucket in Model.AvailableMonths)
         {
             <option value="@bucket.Value"
@@ -120,7 +120,7 @@
     <input type="search" class="form-control form-control-sm ms-auto" name="q"
            style="max-width: 220px;"
            value="@Model.SearchQuery"
-           placeholder="Search media…"
+           placeholder="@Localizer["Placeholder.SearchMedia"].Value"
            hx-get="?handler=Search"
            hx-target="#media-content"
            hx-swap="innerHTML"
@@ -158,10 +158,11 @@
     </div>
 
     @* Inline attachment details panel (closed by default) *@
-    <div id="attachment-details" class="closed" role="complementary" aria-label="Attachment details">
+    <div id="attachment-details" class="closed" role="complementary" aria-label="Attachment details"
+         data-placeholder="@Localizer["Message.SelectFileForDetails"].Value">
         <div id="attachment-details-content">
             <div class="p-4 text-center text-muted">
-                <p class="small mb-0">Select a file to view its details.</p>
+                <p class="small mb-0">@Localizer["Message.SelectFileForDetails"]</p>
             </div>
         </div>
     </div>
