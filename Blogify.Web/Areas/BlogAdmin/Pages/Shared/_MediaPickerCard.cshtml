@@ -1,0 +1,37 @@
+@model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaPickerCardVm
+
+<li class="media-attachment">
+    <button type="button"
+            class="media-attachment-btn"
+            data-media-select
+            data-media-id="@Model.Item.Id"
+            data-url="@(Model.Item.ThumbnailUrl ?? Model.Item.Url)"
+            data-full-url="@Model.Item.Url"
+            data-alt-text="@(Model.Item.AltText ?? Model.Item.FileName)"
+            data-target="@Model.TargetInputId"
+            data-modal-id="@Model.ModalId"
+            aria-label="@Localizer["Aria.SelectMedia", Model.Item.FileName].Value">
+        @if (Model.Item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+        {
+            <img src="@(Model.Item.ThumbnailUrl ?? Model.Item.Url)"
+                 alt="@(Model.Item.AltText ?? Model.Item.FileName)"
+                 class="media-attachment-thumb" />
+        }
+        else
+        {
+            <span class="media-attachment-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                     viewBox="0 0 16 16">
+                    <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 4.5z"/>
+                </svg>
+            </span>
+        }
+        <span class="media-attachment-check" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                 viewBox="0 0 16 16">
+                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+            </svg>
+        </span>
+        <span class="media-attachment-caption">@Model.Item.FileName</span>
+    </button>
+</li>

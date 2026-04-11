@@ -262,6 +262,7 @@
   <data name="Message.NoMediaFiles" xml:space="preserve"><value>Medya dosyası bulunamadı.</value></data>
   <data name="Message.UploadFirstFile" xml:space="preserve"><value>Yukarıdaki Yeni Medya Ekle düğmesiyle ilk dosyanızı yükleyin.</value></data>
   <data name="Message.SelectFileForDetails" xml:space="preserve"><value>Ayrıntılarını görmek için bir dosya seçin.</value></data>
+  <data name="Message.UploadFileRequired" xml:space="preserve"><value>Lütfen yüklenecek bir dosya seçin.</value></data>
   <data name="Placeholder.SearchMedia" xml:space="preserve"><value>Medya ara…</value></data>
   <!-- Media Library — Aria labels -->
   <data name="Aria.ViewMode" xml:space="preserve"><value>Görünüm modu</value></data>
