@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Media;
 
@@ -12,7 +13,8 @@ namespace Blogify.Web.Areas.BlogAdmin.Pages.Media;
 public sealed class IndexModel(
     ApplicationDbContext dbContext,
     TenantContext tenantContext,
-    IFileStorageService fileStorage) : PageModel
+    IFileStorageService fileStorage,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     private const int PageSize = 24;
     private const int ThumbnailMaxWidthPx = 300;
@@ -119,13 +121,13 @@ public sealed class IndexModel(
     {
         if (file is null || file.Length == 0)
         {
-            return ReturnUploadError("Please select a file to upload.");
+            return ReturnUploadError(localizer["Message.UploadFileRequired"].Value);
         }
 
-        string url;
+        Models.Media media;
         try
         {
-            url = await fileStorage.SaveAsync(file, tenantContext.RequiredTenant.Id, ct);
+            media = await SaveUploadedFileAsync(file, ct);
         }
         catch (ArgumentOutOfRangeException ex)
         {
@@ -135,30 +137,6 @@ public sealed class IndexModel(
         {
             return ReturnUploadError(ex.Message);
         }
-
-        Models.Media media = Models.Media.Upload(
-            blogId: tenantContext.RequiredTenant.Id,
-            fileName: file.FileName,
-            url: url,
-            contentType: file.ContentType,
-            sizeBytes: file.Length);
-
-        if (file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
-        {
-            (int Width, int Height)? dims =
-                await fileStorage.GetImageDimensionsAsync(url, ct);
-
-            string? thumbnailUrl =
-                await fileStorage.SaveThumbnailAsync(url, tenantContext.RequiredTenant.Id, ThumbnailMaxWidthPx, ct);
-
-            if (thumbnailUrl is not null && dims.HasValue)
-            {
-                media.SetThumbnail(thumbnailUrl, dims.Value.Width, dims.Value.Height);
-            }
-        }
-
-        dbContext.Media.Add(media);
-        await dbContext.SaveChangesAsync(ct);
 
         MediaItemVm vm = new(
             media.Id, media.FileName, media.Url, media.ContentType,
@@ -178,24 +156,24 @@ public sealed class IndexModel(
         string? modalId,
         CancellationToken ct = default)
     {
-        if (string.IsNullOrWhiteSpace(targetInputId))
+        if (string.IsNullOrWhiteSpace(targetInputId) || !IsSafeDomId(targetInputId))
         {
             return BadRequest();
         }
 
-        string resolvedModalId = string.IsNullOrWhiteSpace(modalId)
-            ? $"{targetInputId}-picker-modal"
-            : modalId;
+        string resolvedModalId = !string.IsNullOrWhiteSpace(modalId) && IsSafeDomId(modalId)
+            ? modalId
+            : $"{targetInputId}-picker-modal";
 
         if (file is null || file.Length == 0)
         {
-            return ReturnPickerUploadError("Please select a file to upload.", resolvedModalId);
+            return ReturnPickerUploadError(localizer["Message.UploadFileRequired"].Value, resolvedModalId);
         }
 
-        string url;
+        Models.Media media;
         try
         {
-            url = await fileStorage.SaveAsync(file, tenantContext.RequiredTenant.Id, ct);
+            media = await SaveUploadedFileAsync(file, ct);
         }
         catch (ArgumentOutOfRangeException ex)
         {
@@ -205,30 +183,6 @@ public sealed class IndexModel(
         {
             return ReturnPickerUploadError(ex.Message, resolvedModalId);
         }
-
-        Models.Media media = Models.Media.Upload(
-            blogId: tenantContext.RequiredTenant.Id,
-            fileName: file.FileName,
-            url: url,
-            contentType: file.ContentType,
-            sizeBytes: file.Length);
-
-        if (file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
-        {
-            (int Width, int Height)? dims =
-                await fileStorage.GetImageDimensionsAsync(url, ct);
-
-            string? thumbnailUrl =
-                await fileStorage.SaveThumbnailAsync(url, tenantContext.RequiredTenant.Id, ThumbnailMaxWidthPx, ct);
-
-            if (thumbnailUrl is not null && dims.HasValue)
-            {
-                media.SetThumbnail(thumbnailUrl, dims.Value.Width, dims.Value.Height);
-            }
-        }
-
-        dbContext.Media.Add(media);
-        await dbContext.SaveChangesAsync(ct);
 
         MediaItemVm item = new(
             media.Id, media.FileName, media.Url, media.ContentType,
@@ -424,6 +378,40 @@ public sealed class IndexModel(
 
         return (items, nextCursor);
     }
+
+    private async Task<Models.Media> SaveUploadedFileAsync(IFormFile file, CancellationToken ct)
+    {
+        string url = await fileStorage.SaveAsync(file, tenantContext.RequiredTenant.Id, ct);
+
+        Models.Media media = Models.Media.Upload(
+            blogId: tenantContext.RequiredTenant.Id,
+            fileName: file.FileName,
+            url: url,
+            contentType: file.ContentType,
+            sizeBytes: file.Length);
+
+        if (file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+        {
+            (int Width, int Height)? dims =
+                await fileStorage.GetImageDimensionsAsync(url, ct);
+
+            string? thumbnailUrl =
+                await fileStorage.SaveThumbnailAsync(url, tenantContext.RequiredTenant.Id, ThumbnailMaxWidthPx, ct);
+
+            if (thumbnailUrl is not null && dims.HasValue)
+            {
+                media.SetThumbnail(thumbnailUrl, dims.Value.Width, dims.Value.Height);
+            }
+        }
+
+        dbContext.Media.Add(media);
+        await dbContext.SaveChangesAsync(ct);
+
+        return media;
+    }
+
+    private static bool IsSafeDomId(string value) =>
+        System.Text.RegularExpressions.Regex.IsMatch(value, @"^[A-Za-z0-9_\-]+$");
 
     private IActionResult ReturnUploadError(string message, string? htmxRetargetId = null)
     {
