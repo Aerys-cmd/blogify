@@ -262,6 +262,7 @@
   <data name="Message.NoMediaFiles" xml:space="preserve"><value>No media files found.</value></data>
   <data name="Message.UploadFirstFile" xml:space="preserve"><value>Upload your first file using the Add New Media button above.</value></data>
   <data name="Message.SelectFileForDetails" xml:space="preserve"><value>Select a file to view its details.</value></data>
+  <data name="Message.UploadFileRequired" xml:space="preserve"><value>Please select a file to upload.</value></data>
   <data name="Placeholder.SearchMedia" xml:space="preserve"><value>Search media…</value></data>
   <!-- Media Library — Aria labels -->
   <data name="Aria.ViewMode" xml:space="preserve"><value>View mode</value></data>

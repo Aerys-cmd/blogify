@@ -1,9 +1,4 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaPickerModalVm
-@{
-    string FormatFileSize(long bytes) => bytes >= 1_048_576
-        ? $"{bytes / 1_048_576.0:F1} MB"
-        : $"{bytes / 1024.0:F0} KB";
-}
 
 @* Search bar + tab strip *@
 <div class="px-3 pt-3">
@@ -45,51 +40,50 @@
         }
         else
         {
-            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-3">
+            <ul class="media-attachments" role="list">
                 @foreach (MediaItemVm item in Model.Items)
                 {
-                    <div class="col">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light overflow-hidden"
-                                 style="height: 90px;">
-                                @if (item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    <img src="@(item.ThumbnailUrl ?? item.Url)" alt="@(item.AltText ?? item.FileName)"
-                                         class="img-fluid w-100 h-100 object-fit-cover" />
-                                }
-                                else
-                                {
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
-                                         class="text-secondary" viewBox="0 0 16 16" aria-hidden="true">
+                    <li class="media-attachment">
+                        <button type="button"
+                                class="media-attachment-btn"
+                                data-media-select
+                                data-media-id="@item.Id"
+                                data-url="@(item.ThumbnailUrl ?? item.Url)"
+                                data-full-url="@item.Url"
+                                data-alt-text="@(item.AltText ?? item.FileName)"
+                                data-target="@Model.TargetInputId"
+                                data-modal-id="@Model.ModalId"
+                                aria-label="@Localizer["Aria.SelectMedia", item.FileName].Value">
+                            @if (item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <img src="@(item.ThumbnailUrl ?? item.Url)"
+                                     alt="@(item.AltText ?? item.FileName)"
+                                     class="media-attachment-thumb" />
+                            }
+                            else
+                            {
+                                <span class="media-attachment-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                                         viewBox="0 0 16 16">
                                         <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 4.5z"/>
                                     </svg>
-                                }
-                            </div>
-                            <div class="card-body p-2">
-                                <p class="card-text small text-truncate mb-0" title="@item.FileName">@item.FileName</p>
-                                <p class="card-text small text-muted mb-0">@FormatFileSize(item.SizeBytes)</p>
-                            </div>
-                            <div class="card-footer p-1 bg-transparent">
-                                <button type="button"
-                                        class="btn btn-primary btn-sm w-100"
-                                        data-media-select
-                                        data-media-id="@item.Id"
-                                        data-url="@(item.ThumbnailUrl ?? item.Url)"
-                                        data-full-url="@item.Url"
-                                        data-alt-text="@(item.AltText ?? item.FileName)"
-                                        data-target="@Model.TargetInputId"
-                                        data-modal-id="@Model.ModalId">
-                                    Select
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                                </span>
+                            }
+                            <span class="media-attachment-check" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                     viewBox="0 0 16 16">
+                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                                </svg>
+                            </span>
+                            <span class="media-attachment-caption">@item.FileName</span>
+                        </button>
+                    </li>
                 }
-            </div>
+            </ul>
 
             @if (!string.IsNullOrEmpty(Model.Pager.NextCursor))
             {
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center mt-3">
                     <button type="button" class="btn btn-outline-secondary btn-sm"
                             hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&cursor=@Model.Pager.NextCursor"
                             hx-target="#@(Model.ModalId)-body"
@@ -104,7 +98,7 @@
     @* Upload tab *@
     <div class="tab-pane fade p-3" id="@(Model.ModalId)-upload" role="tabpanel">
         <div id="picker-upload-error-@Model.ModalId" class="mb-3"></div>
-        <form hx-post="/admin/Media?handler=Upload"
+        <form hx-post="/admin/Media?handler=PickerUpload&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId"
               hx-encoding="multipart/form-data"
               hx-target="#picker-upload-result-@Model.ModalId"
               hx-swap="afterbegin"
@@ -118,7 +112,7 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">Upload</button>
         </form>
-        <div class="row row-cols-2 row-cols-sm-3 g-2 mt-3" id="picker-upload-result-@Model.ModalId"></div>
+        <ul class="media-attachments mt-3" id="picker-upload-result-@Model.ModalId"></ul>
         <div class="mt-3 border-top pt-3">
             <button type="button" class="btn btn-outline-secondary btn-sm w-100"
                     hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId"
