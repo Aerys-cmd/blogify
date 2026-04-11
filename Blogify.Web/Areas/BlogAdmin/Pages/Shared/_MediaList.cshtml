@@ -34,10 +34,8 @@
                                 class="border-0 bg-transparent p-0 d-block"
                                 style="width: 40px; height: 40px;"
                                 hx-get="?handler=MediaDetail&id=@item.Id"
-                                hx-target="#media-detail-offcanvas-body"
+                                hx-target="#attachment-details-content"
                                 hx-swap="innerHTML"
-                                data-bs-toggle="offcanvas"
-                                data-bs-target="#media-detail-offcanvas"
                                 aria-label="View details for @item.FileName">
                             @if (item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
                             {
@@ -61,10 +59,8 @@
                         <button type="button"
                                 class="btn btn-link p-0 text-start text-decoration-none fw-semibold text-body"
                                 hx-get="?handler=MediaDetail&id=@item.Id"
-                                hx-target="#media-detail-offcanvas-body"
-                                hx-swap="innerHTML"
-                                data-bs-toggle="offcanvas"
-                                data-bs-target="#media-detail-offcanvas">
+                                hx-target="#attachment-details-content"
+                                hx-swap="innerHTML">
                             <span class="text-truncate d-block" style="max-width: 260px;" title="@item.FileName">
                                 @item.FileName
                             </span>

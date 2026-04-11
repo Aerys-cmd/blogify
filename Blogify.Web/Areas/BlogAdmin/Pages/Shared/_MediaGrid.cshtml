@@ -2,15 +2,14 @@
 
 @if (Model.Items.Count == 0)
 {
-    <div class="card shadow-sm">
-        <div class="card-body text-center py-5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
-                 class="text-muted mb-3" viewBox="0 0 16 16" aria-hidden="true">
-                <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
-                <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
-            </svg>
-            <p class="text-muted mb-0">No media files yet. Upload your first file using the Upload button.</p>
-        </div>
+    <div class="p-5 text-center text-muted">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+             class="mb-3" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+            <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
+        </svg>
+        <p class="mb-1">No media files found.</p>
+        <p class="small mb-0">Upload your first file using the <strong>Add New Media</strong> button above.</p>
     </div>
 }
 else if (Model.ViewMode == "list")
@@ -19,18 +18,18 @@ else if (Model.ViewMode == "list")
 }
 else
 {
-    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-4" id="media-items-row">
+    <ul class="wp-media-attachments" id="media-items-row" aria-label="Media attachments">
         @foreach (MediaItemVm item in Model.Items)
         {
             <partial name="_MediaCard" model="item" />
         }
-    </div>
+    </ul>
 
     @if (!string.IsNullOrEmpty(Model.Pager.NextCursor))
     {
-        <div class="d-flex justify-content-center mb-3">
-            <button type="button" class="btn btn-outline-secondary"
-                    hx-get="?cursor=@Model.Pager.NextCursor&q=@Model.SearchQuery&type=@Model.TypeFilter&month=@Model.MonthFilter&view=grid"
+        <div class="d-flex justify-content-center p-3">
+            <button type="button" class="btn btn-outline-secondary btn-sm"
+                    hx-get="?handler=Search&cursor=@Model.Pager.NextCursor&q=@Model.SearchQuery&type=@Model.TypeFilter&month=@Model.MonthFilter&view=grid"
                     hx-target="#media-content"
                     hx-swap="innerHTML">
                 Load more
