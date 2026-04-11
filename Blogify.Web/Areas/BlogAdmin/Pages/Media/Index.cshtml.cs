@@ -172,6 +172,76 @@ public sealed class IndexModel(
         return RedirectToPage("/Media/Index", new { area = "BlogAdmin" });
     }
 
+    public async Task<IActionResult> OnPostPickerUploadAsync(
+        IFormFile? file,
+        string targetInputId,
+        string? modalId,
+        CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(targetInputId))
+        {
+            return BadRequest();
+        }
+
+        string resolvedModalId = string.IsNullOrWhiteSpace(modalId)
+            ? $"{targetInputId}-picker-modal"
+            : modalId;
+
+        if (file is null || file.Length == 0)
+        {
+            return ReturnPickerUploadError("Please select a file to upload.", resolvedModalId);
+        }
+
+        string url;
+        try
+        {
+            url = await fileStorage.SaveAsync(file, tenantContext.RequiredTenant.Id, ct);
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            return ReturnPickerUploadError(ex.Message, resolvedModalId);
+        }
+        catch (ArgumentException ex)
+        {
+            return ReturnPickerUploadError(ex.Message, resolvedModalId);
+        }
+
+        Models.Media media = Models.Media.Upload(
+            blogId: tenantContext.RequiredTenant.Id,
+            fileName: file.FileName,
+            url: url,
+            contentType: file.ContentType,
+            sizeBytes: file.Length);
+
+        if (file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+        {
+            (int Width, int Height)? dims =
+                await fileStorage.GetImageDimensionsAsync(url, ct);
+
+            string? thumbnailUrl =
+                await fileStorage.SaveThumbnailAsync(url, tenantContext.RequiredTenant.Id, ThumbnailMaxWidthPx, ct);
+
+            if (thumbnailUrl is not null && dims.HasValue)
+            {
+                media.SetThumbnail(thumbnailUrl, dims.Value.Width, dims.Value.Height);
+            }
+        }
+
+        dbContext.Media.Add(media);
+        await dbContext.SaveChangesAsync(ct);
+
+        MediaItemVm item = new(
+            media.Id, media.FileName, media.Url, media.ContentType,
+            media.SizeBytes, media.UploadedAt, media.AltText, media.Title, media.ThumbnailUrl);
+
+        if (Request.Headers.ContainsKey("HX-Request"))
+        {
+            return Partial("_MediaPickerCard", new MediaPickerCardVm(item, targetInputId, resolvedModalId));
+        }
+
+        return RedirectToPage("/Media/Index", new { area = "BlogAdmin" });
+    }
+
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken ct = default)
     {
         Models.Media? media = await dbContext.Media.FirstOrDefaultAsync(m => m.Id == id, ct);
@@ -355,11 +425,11 @@ public sealed class IndexModel(
         return (items, nextCursor);
     }
 
-    private IActionResult ReturnUploadError(string message)
+    private IActionResult ReturnUploadError(string message, string? htmxRetargetId = null)
     {
         if (Request.Headers.ContainsKey("HX-Request"))
         {
-            Response.Headers["HX-Retarget"] = "#upload-error";
+            Response.Headers["HX-Retarget"] = htmxRetargetId ?? "#upload-error";
             Response.Headers["HX-Reswap"] = "innerHTML";
             return Content(
                 $"<div class=\"alert alert-danger alert-dismissible fade show mb-0\" role=\"alert\">" +
@@ -372,6 +442,9 @@ public sealed class IndexModel(
         ModelState.AddModelError("file", message);
         return Page();
     }
+
+    private IActionResult ReturnPickerUploadError(string message, string modalId) =>
+        ReturnUploadError(message, $"#picker-upload-error-{modalId}");
 
     public async Task<IActionResult> OnGetMediaDetailAsync(Guid id, CancellationToken ct = default)
     {
@@ -451,6 +524,11 @@ public sealed record MediaPickerModalVm(
     CursorPagerVm Pager);
 
 public sealed record MonthBucketVm(string Value, string Label);
+
+public sealed record MediaPickerCardVm(
+    MediaItemVm Item,
+    string TargetInputId,
+    string ModalId);
 
 public sealed record MediaDetailVm(
     Guid Id,
