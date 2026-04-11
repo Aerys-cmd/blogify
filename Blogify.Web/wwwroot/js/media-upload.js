@@ -118,8 +118,8 @@ function handleFiles(files, queue, gridContainerId) {
     Array.from(files).forEach((f) => uploadFile(f, queue, gridContainerId));
 }
 
-// Auto-initialise
-const dropZone = document.getElementById('upload-drop-zone');
+// Auto-initialise — element IDs align with the WordPress-style upload zone in Index.cshtml
+const dropZone = document.getElementById('media-upload-zone');
 const queue = document.getElementById('upload-queue');
 const fileInput = document.getElementById('upload-file-input');
 const GRID_CONTAINER_ID = 'media-items-row';
@@ -127,16 +127,16 @@ const GRID_CONTAINER_ID = 'media-items-row';
 if (dropZone && queue) {
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
-        dropZone.classList.add('border-primary', 'bg-primary-subtle');
+        dropZone.classList.add('drag-over');
     });
 
     dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('border-primary', 'bg-primary-subtle');
+        dropZone.classList.remove('drag-over');
     });
 
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
-        dropZone.classList.remove('border-primary', 'bg-primary-subtle');
+        dropZone.classList.remove('drag-over');
         handleFiles(e.dataTransfer.files, queue, GRID_CONTAINER_ID);
     });
 

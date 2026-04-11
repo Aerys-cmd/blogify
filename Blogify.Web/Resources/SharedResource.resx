@@ -243,4 +243,56 @@
   <data name="Index.CTA.Heading" xml:space="preserve"><value>Ready to share your story?</value></data>
   <data name="Index.CTA.Description" xml:space="preserve"><value>Create your free blog today and be part of a growing community of writers, creators, and thinkers.</value></data>
   <data name="Index.CTA.Button" xml:space="preserve"><value>Get Started — It&#x2019;s Free</value></data>
+  <data name="Action.AddNewMedia" xml:space="preserve"><value>Add New Media</value></data>
+  <data name="Action.SelectFiles" xml:space="preserve"><value>Select Files</value></data>
+  <data name="Action.DeletePermanently" xml:space="preserve"><value>Delete Permanently</value></data>
+  <data name="Label.AllMediaTypes" xml:space="preserve"><value>All media types</value></data>
+  <data name="Label.Images" xml:space="preserve"><value>Images</value></data>
+  <data name="Label.Documents" xml:space="preserve"><value>Documents</value></data>
+  <data name="Label.AllDates" xml:space="preserve"><value>All dates</value></data>
+  <data name="Label.File" xml:space="preserve"><value>File</value></data>
+  <data name="Label.Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Label.Size" xml:space="preserve"><value>Size</value></data>
+  <data name="Label.Uploaded" xml:space="preserve"><value>Uploaded</value></data>
+  <data name="Label.FileUrl" xml:space="preserve"><value>File URL</value></data>
+  <data name="Label.Or" xml:space="preserve"><value>or</value></data>
+  <data name="Label.AttachmentDetails" xml:space="preserve"><value>Attachment Details</value></data>
+  <data name="Message.DropFilesToUpload" xml:space="preserve"><value>Drop files to upload</value></data>
+  <data name="Message.UploadConstraints" xml:space="preserve"><value>JPEG, PNG, GIF, WebP · max 10 MB per file</value></data>
+  <data name="Message.NoMediaFiles" xml:space="preserve"><value>No media files found.</value></data>
+  <data name="Message.UploadFirstFile" xml:space="preserve"><value>Upload your first file using the Add New Media button above.</value></data>
+  <data name="Message.SelectFileForDetails" xml:space="preserve"><value>Select a file to view its details.</value></data>
+  <data name="Placeholder.SearchMedia" xml:space="preserve"><value>Search media…</value></data>
+  <!-- Media Library — Aria labels -->
+  <data name="Aria.ViewMode" xml:space="preserve"><value>View mode</value></data>
+  <data name="Aria.GridView" xml:space="preserve"><value>Grid view</value></data>
+  <data name="Aria.ListView" xml:space="preserve"><value>List view</value></data>
+  <data name="Aria.FilterByType" xml:space="preserve"><value>Filter by type</value></data>
+  <data name="Aria.FilterByDate" xml:space="preserve"><value>Filter by date</value></data>
+  <data name="Aria.SearchMedia" xml:space="preserve"><value>Search media by filename</value></data>
+  <data name="Aria.BulkActions" xml:space="preserve"><value>Bulk actions</value></data>
+  <data name="Aria.SelectAll" xml:space="preserve"><value>Select all on this page</value></data>
+  <data name="Aria.SelectMedia" xml:space="preserve"><value>Select {0}</value></data>
+  <data name="Aria.ViewMediaDetails" xml:space="preserve"><value>View details for {0}</value></data>
+  <data name="Aria.CloseDetailsPanel" xml:space="preserve"><value>Close details panel</value></data>
+  <!-- Media Library — Labels -->
+  <data name="Label.AltText" xml:space="preserve"><value>Alt Text</value></data>
+  <data name="Label.Description" xml:space="preserve"><value>Description</value></data>
+  <data name="Label.Dimensions" xml:space="preserve"><value>Dimensions</value></data>
+  <!-- Media Library — Placeholders -->
+  <data name="Placeholder.AltText" xml:space="preserve"><value>Describe this image for screen readers…</value></data>
+  <data name="Placeholder.MediaTitle" xml:space="preserve"><value>Optional display title…</value></data>
+  <data name="Placeholder.MediaDescription" xml:space="preserve"><value>Optional description…</value></data>
+  <!-- Media Library — Actions -->
+  <data name="Action.DeleteSelected" xml:space="preserve"><value>Delete Selected</value></data>
+  <data name="Action.ClearSelection" xml:space="preserve"><value>Clear selection</value></data>
+  <data name="Action.Copy" xml:space="preserve"><value>Copy</value></data>
+  <data name="Action.LoadMore" xml:space="preserve"><value>Load more</value></data>
+  <!-- Media Library — Bulk count label -->
+  <data name="Media.ItemsSelectedOne" xml:space="preserve"><value>1 item selected</value></data>
+  <data name="Media.ItemsSelectedMany" xml:space="preserve"><value>{0} items selected</value></data>
+  <!-- Media Library — Messages -->
+  <data name="Media.UsedAsCoverIn" xml:space="preserve"><value>Used as cover in:</value></data>
+  <data name="Message.ConfirmDeleteFile" xml:space="preserve"><value>Delete this file?</value></data>
+  <data name="Message.ConfirmDeleteMediaDetail" xml:space="preserve"><value>Delete &apos;{0}&apos;? Posts using this as cover image will lose their cover.</value></data>
 </root>

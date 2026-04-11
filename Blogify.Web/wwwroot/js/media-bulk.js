@@ -53,7 +53,12 @@ if (!toolbar) {
         }
 
         if (countLabel) {
-            countLabel.textContent = `${count} item${count !== 1 ? 's' : ''} selected`;
+            if (count === 1) {
+                countLabel.textContent = countLabel.dataset.labelOne ?? '1 item selected';
+            } else {
+                const template = countLabel.dataset.labelMany ?? '{0} items selected';
+                countLabel.textContent = template.replace('{0}', count);
+            }
         }
 
         // Rebuild hidden id inputs for the bulk-delete form
@@ -73,7 +78,16 @@ if (!toolbar) {
 
     function syncCheckboxDom() {
         document.querySelectorAll('.media-check').forEach(function (cb) {
-            cb.checked = selected.has(cb.dataset.mediaId);
+            const isSelected = selected.has(cb.dataset.mediaId);
+            cb.checked = isSelected;
+            const item = cb.closest('.media-attachment');
+            if (item) {
+                if (isSelected) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            }
         });
     }
 
