@@ -1,60 +1,45 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaItemVm
-@{
-    string FormatFileSize(long bytes) => bytes >= 1_048_576
-        ? $"{bytes / 1_048_576.0:F1} MB"
-        : $"{bytes / 1024.0:F0} KB";
-}
 
-<div class="col position-relative" data-media-id="@Model.Id">
-    @* Checkbox overlay *@
-    <div class="position-absolute top-0 start-0 p-1 media-checkbox-wrap" style="z-index: 2;">
-        <input type="checkbox" class="form-check-input shadow-sm media-check"
-               data-media-id="@Model.Id" aria-label="Select @Model.FileName" />
-    </div>
+<li class="wp-attachment" data-media-id="@Model.Id">
+    @* Bulk-select checkbox (top-left, visible on hover / when selected) *@
+    <input type="checkbox"
+           class="wp-attachment-bulk-check media-check"
+           data-media-id="@Model.Id"
+           aria-label="Select @Model.FileName" />
 
-    <div class="card h-100 shadow-sm">
-        @* Thumbnail — click opens detail offcanvas *@
-        <button type="button"
-                class="card-img-top d-flex align-items-center justify-content-center bg-light overflow-hidden border-0 w-100 p-0 media-thumb-btn"
-                style="height: 100px;"
-                hx-get="?handler=MediaDetail&id=@Model.Id"
-                hx-target="#media-detail-offcanvas-body"
-                hx-swap="innerHTML"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#media-detail-offcanvas"
-                aria-label="View details for @Model.FileName">
-            @if (Model.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
-            {
-                <img src="@(Model.ThumbnailUrl ?? Model.Url)" alt="@(Model.AltText ?? Model.FileName)"
-                     class="img-fluid w-100 h-100 object-fit-cover" />
-            }
-            else
-            {
+    @* Thumbnail button — opens inline attachment details panel *@
+    <button type="button"
+            class="wp-attachment-btn"
+            hx-get="?handler=MediaDetail&id=@Model.Id"
+            hx-target="#attachment-details-content"
+            hx-swap="innerHTML"
+            aria-label="View details for @Model.FileName">
+        @if (Model.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+        {
+            <img src="@(Model.ThumbnailUrl ?? Model.Url)"
+                 alt=""
+                 class="wp-attachment-thumb" />
+        }
+        else
+        {
+            <span class="wp-attachment-icon" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                     class="text-secondary" viewBox="0 0 16 16" aria-hidden="true">
+                     viewBox="0 0 16 16">
                     <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 4.5z"/>
                 </svg>
-            }
-        </button>
+            </span>
+        }
 
-        <div class="card-body p-2">
-            <p class="card-text small text-truncate mb-0" title="@Model.FileName">@Model.FileName</p>
-            <p class="card-text small text-muted mb-0">@FormatFileSize(Model.SizeBytes)</p>
-        </div>
-        <div class="card-footer p-1 bg-transparent border-top-0 d-flex justify-content-end">
-            <button type="button"
-                    class="btn btn-outline-danger btn-sm py-0 px-2"
-                    hx-post="?handler=Delete&id=@Model.Id"
-                    hx-confirm="Delete this file?"
-                    hx-target="closest .col"
-                    hx-swap="outerHTML">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
-                     viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                </svg>
-            </button>
-        </div>
-    </div>
-</div>
+        @* Checkmark badge (top-right, blue when selected) *@
+        <span class="wp-attachment-check" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                 viewBox="0 0 16 16">
+                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+            </svg>
+        </span>
+
+        @* Filename caption (bottom, visible on hover) *@
+        <span class="wp-attachment-caption">@Model.FileName</span>
+    </button>
+</li>
 
