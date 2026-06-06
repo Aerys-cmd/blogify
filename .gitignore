@@ -49,3 +49,9 @@ aspire-manifest.json
 
 # Dapr
 .dapr/
+
+node_modules/
+
+keys/
+blogify.db-shm
+blogify.db-wal
