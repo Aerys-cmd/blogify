@@ -20,14 +20,9 @@ services:
 
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=web"
 
-      # HTTP router
       - "traefik.http.routers.blogify.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`) || HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
-      - "traefik.http.routers.blogify.entrypoints=web"
-
-      - "traefik.http.routers.blogify-secure.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`) || HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
-      - "traefik.http.routers.blogify-secure.entrypoints=websecure"
+      - "traefik.http.routers.blogify.entrypoints=websecure"
 
       - "traefik.http.services.blogify.loadbalancer.server.port=8080"
 
