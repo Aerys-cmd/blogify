@@ -22,7 +22,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=web"
 
-      - "traefik.http.routers.blogify-web.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`) || HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
+      - "traefik.http.routers.blogify-web.rule=Host(`blogify.com.tr`) || Host(`www.blogify.com.tr`) || Host(`*.blogify.com.tr`)"
       - "traefik.http.routers.blogify-web.entrypoints=websecure"
       - "traefik.http.routers.blogify-web.tls=true"
 
