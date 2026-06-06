@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Blogify.Web.Models;
 using Blogify.Web.Models.Posts;
 
@@ -45,6 +47,29 @@ namespace Blogify.Web.Data
                     (!CurrentTenantId.HasValue || c.BlogId == CurrentTenantId.Value));
 
             base.OnModelCreating(builder);
+
+            ValueConverter<DateTimeOffset, long> dateTimeOffsetConverter = new(
+                value => value.UtcTicks,
+                value => new DateTimeOffset(value, TimeSpan.Zero));
+
+            ValueConverter<DateTimeOffset?, long?> nullableDateTimeOffsetConverter = new(
+                value => value.HasValue ? value.Value.UtcTicks : null,
+                value => value.HasValue ? new DateTimeOffset(value.Value, TimeSpan.Zero) : null);
+
+            foreach (IMutableEntityType entityType in builder.Model.GetEntityTypes())
+            {
+                foreach (IMutableProperty property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTimeOffset))
+                    {
+                        property.SetValueConverter(dateTimeOffsetConverter);
+                    }
+                    else if (property.ClrType == typeof(DateTimeOffset?))
+                    {
+                        property.SetValueConverter(nullableDateTimeOffsetConverter);
+                    }
+                }
+            }
         }
 
     }

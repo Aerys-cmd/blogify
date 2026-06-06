@@ -336,7 +336,7 @@ public sealed class IndexModel(
         if (!string.IsNullOrWhiteSpace(q))
         {
             string pattern = $"%{q.Trim()}%";
-            query = query.Where(m => EF.Functions.ILike(m.FileName, pattern));
+            query = query.Where(m => EF.Functions.Like(m.FileName, pattern));
         }
 
         if (!string.IsNullOrWhiteSpace(type) && type != "all")
@@ -466,15 +466,16 @@ public sealed class IndexModel(
 
     private async Task<IReadOnlyList<MonthBucketVm>> LoadAvailableMonthsAsync(CancellationToken ct)
     {
-        var rawMonths = await dbContext.Media
+        List<DateTimeOffset> uploadedDates = await dbContext.Media
             .AsNoTracking()
-            .GroupBy(m => new { m.UploadedAt.Year, m.UploadedAt.Month })
-            .Select(g => new { g.Key.Year, g.Key.Month })
-            .OrderByDescending(x => x.Year)
-            .ThenByDescending(x => x.Month)
+            .Select(m => m.UploadedAt)
             .ToListAsync(ct);
 
-        return rawMonths
+        return uploadedDates
+            .Select(uploadedAt => new { uploadedAt.Year, uploadedAt.Month })
+            .Distinct()
+            .OrderByDescending(x => x.Year)
+            .ThenByDescending(x => x.Month)
             .Select(x => new MonthBucketVm(
                 $"{x.Year}-{x.Month:D2}",
                 $"{new DateTime(x.Year, x.Month, 1):MMMM yyyy}"))
@@ -532,4 +533,3 @@ public sealed record MediaDetailVm(
     int? WidthPx,
     int? HeightPx,
     IReadOnlyList<string> UsedInPosts);
-
