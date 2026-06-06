@@ -26,10 +26,8 @@ services:
       - "traefik.http.routers.blogify.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`) || HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
       - "traefik.http.routers.blogify.entrypoints=web"
 
-      # If Cloudflare is using Full/Full (Strict), Traefik still receives HTTPS
-      # Uncomment these two lines if your VPS Traefik has a websecure entrypoint.
-      # - "traefik.http.routers.blogify-secure.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`) || HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
-      # - "traefik.http.routers.blogify-secure.entrypoints=websecure"
+      - "traefik.http.routers.blogify-secure.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`) || HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
+      - "traefik.http.routers.blogify-secure.entrypoints=websecure"
 
       - "traefik.http.services.blogify.loadbalancer.server.port=8080"
 
