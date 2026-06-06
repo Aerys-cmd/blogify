@@ -21,10 +21,10 @@ services:
     labels:
       - "traefik.enable=true"
 
-      - "traefik.http.routers.blogify.rule=Host(`blog.lunavex.com`)"
-      - "traefik.http.routers.blogify.entrypoints=websecure"
+      - "traefik.http.routers.blogify-web.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`) || HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
+      - "traefik.http.routers.blogify-web.entrypoints=websecure"
 
-      - "traefik.http.services.blogify.loadbalancer.server.port=8080"
+      - "traefik.http.services.blogify-web.loadbalancer.server.port=8080"
 
 volumes:
   sqlite-data:
