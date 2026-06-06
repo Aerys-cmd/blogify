@@ -1,68 +1,39 @@
 services:
-  traefik:
-    image: traefik:v3.6.1
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      - traefik-certs:/letsencrypt
-    environment:
-      CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
-    networks:
-      - web
-    restart: unless-stopped
-
   blogify-web:
     image: ghcr.io/${OWNER:?OWNER must be set}/blogify-web:${IMAGE_TAG:-latest}
+
+    restart: unless-stopped
+
     networks:
       - web
+
     volumes:
       - sqlite-data:/app/data
       - uploads-data:/app/wwwroot/uploads
       - app-keys:/app/keys
+
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_HTTP_PORTS: "8080"
       ConnectionStrings__blogdb: "Data Source=/app/data/blogify.db;Default Timeout=30"
       Analytics__IpHashSalt: ${IP_HASH_SALT}
+
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=web"
 
-      # HTTP → HTTPS redirect
-      - "traefik.http.routers.blogify-http.entrypoints=web"
-      - "traefik.http.routers.blogify-http.rule=HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`) || Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`)"
-      - "traefik.http.routers.blogify-http.middlewares=redirect-to-https"
-      - "traefik.http.routers.blogify-http.service=noop@internal"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+      # HTTP router
+      - "traefik.http.routers.blogify.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`) || HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
+      - "traefik.http.routers.blogify.entrypoints=web"
 
-      # Root domain router
-      - "traefik.http.routers.blogify-root.entrypoints=websecure"
-      - "traefik.http.routers.blogify-root.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`)"
-      - "traefik.http.routers.blogify-root.tls=true"
-      - "traefik.http.routers.blogify-root.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.blogify-root.priority=120"
-      - "traefik.http.routers.blogify-root.service=blogify-svc"
+      # If Cloudflare is using Full/Full (Strict), Traefik still receives HTTPS
+      # Uncomment these two lines if your VPS Traefik has a websecure entrypoint.
+      # - "traefik.http.routers.blogify-secure.rule=Host(`blog.lunavex.com`) || Host(`www.blog.lunavex.com`) || HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`)"
+      # - "traefik.http.routers.blogify-secure.entrypoints=websecure"
 
-      # Tenant subdomains router
-      - "traefik.http.routers.blogify-tenants.entrypoints=websecure"
-      - "traefik.http.routers.blogify-tenants.rule=HostRegexp(`[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.blog\\.lunavex\\.com`) && !Host(`www.blog.lunavex.com`)"
-      - "traefik.http.routers.blogify-tenants.tls=true"
-      - "traefik.http.routers.blogify-tenants.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.blogify-tenants.priority=100"
-      - "traefik.http.routers.blogify-tenants.tls.domains[0].main=blog.lunavex.com"
-      - "traefik.http.routers.blogify-tenants.tls.domains[0].sans=*.blog.lunavex.com"
-      - "traefik.http.routers.blogify-tenants.service=blogify-svc"
-
-      # Shared service definition
-      - "traefik.http.services.blogify-svc.loadbalancer.server.port=8080"
-    restart: unless-stopped
+      - "traefik.http.services.blogify.loadbalancer.server.port=8080"
 
 volumes:
-  traefik-certs:
   sqlite-data:
   uploads-data:
   app-keys:
