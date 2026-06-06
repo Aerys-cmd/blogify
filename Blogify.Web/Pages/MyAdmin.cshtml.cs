@@ -45,7 +45,6 @@ public sealed class MyAdminModel(
         string baseHost = ResolveBaseHost(currentHost.Host, tenantOptions.Value.PlatformHosts);
 
         // Prefix the tenant label onto the resolved platform host
-        // (e.g. lunavex + blog.lunavex.com => lunavex.blog.lunavex.com).
         string tenantHost = baseHost.StartsWith(
             tenant.Subdomain + ".",
             StringComparison.OrdinalIgnoreCase)
