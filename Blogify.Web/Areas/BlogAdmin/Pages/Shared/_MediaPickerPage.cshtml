@@ -1,0 +1,18 @@
+@model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaPickerPageVm
+
+@foreach (MediaItemVm item in Model.Items)
+{
+    <partial name="_MediaPickerCard" model="@(new MediaPickerCardVm(item, Model.TargetInputId, Model.ModalId))" />
+}
+
+@if (!string.IsNullOrEmpty(Model.Pager.NextCursor))
+{
+    <li id="@(Model.ModalId)-load-sentinel" class="media-picker-load-sentinel">
+        <button type="button" class="btn btn-outline-secondary btn-sm"
+                hx-get="/admin/Media?handler=MediaPickerPage&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&cursor=@Model.Pager.NextCursor&q=@Model.SearchQuery&type=@Model.TypeFilter"
+                hx-target="#@(Model.ModalId)-load-sentinel"
+                hx-swap="outerHTML">
+            @Localizer["Media.Picker.LoadMore"]
+        </button>
+    </li>
+}

@@ -93,6 +93,7 @@ public sealed class IndexModel(
         string? modalId = null,
         string? cursor = null,
         string? q = null,
+        string? type = null,
         CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(targetInputId))
@@ -105,7 +106,7 @@ public sealed class IndexModel(
             : modalId;
 
         (IReadOnlyList<Models.Media> mediaList, string? nextCursor) =
-            await FetchPageAsync(cursor, q, null, null, ct);
+            await FetchPageAsync(cursor, q, type, null, ct);
 
         IReadOnlyList<MediaItemVm> items = mediaList
             .Select(m => new MediaItemVm(
@@ -113,8 +114,38 @@ public sealed class IndexModel(
                 m.UploadedAt, m.AltText, m.Title, m.ThumbnailUrl))
             .ToList();
 
-        MediaPickerModalVm vm = new(resolvedModalId, targetInputId, items, new CursorPagerVm(nextCursor));
+        MediaPickerModalVm vm = new(resolvedModalId, targetInputId, items, new CursorPagerVm(nextCursor), type, q);
         return Partial("_MediaPickerModal", vm);
+    }
+
+    public async Task<IActionResult> OnGetMediaPickerPageAsync(
+        string targetInputId,
+        string? modalId = null,
+        string? cursor = null,
+        string? q = null,
+        string? type = null,
+        CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(targetInputId))
+        {
+            return BadRequest();
+        }
+
+        string resolvedModalId = string.IsNullOrWhiteSpace(modalId)
+            ? $"{targetInputId}-picker-modal"
+            : modalId;
+
+        (IReadOnlyList<Models.Media> mediaList, string? nextCursor) =
+            await FetchPageAsync(cursor, q, type, null, ct);
+
+        IReadOnlyList<MediaItemVm> items = mediaList
+            .Select(m => new MediaItemVm(
+                m.Id, m.FileName, m.Url, m.ContentType, m.SizeBytes,
+                m.UploadedAt, m.AltText, m.Title, m.ThumbnailUrl))
+            .ToList();
+
+        MediaPickerPageVm vm = new(resolvedModalId, targetInputId, items, new CursorPagerVm(nextCursor), type, q);
+        return Partial("_MediaPickerPage", vm);
     }
 
     public async Task<IActionResult> OnPostUploadAsync(IFormFile? file, CancellationToken ct = default)
@@ -504,13 +535,17 @@ public sealed record MediaPickerFieldVm(
     string InputName,
     Guid? CurrentMediaId,
     string? CurrentThumbnailUrl,
-    string ModalId);
+    string ModalId,
+    string? ModalTitle = null,
+    string? RecommendedDimensionsHint = null);
 
 public sealed record MediaPickerModalVm(
     string ModalId,
     string TargetInputId,
     IReadOnlyList<MediaItemVm> Items,
-    CursorPagerVm Pager);
+    CursorPagerVm Pager,
+    string? TypeFilter = null,
+    string? SearchQuery = null);
 
 public sealed record MonthBucketVm(string Value, string Label);
 
@@ -518,6 +553,14 @@ public sealed record MediaPickerCardVm(
     MediaItemVm Item,
     string TargetInputId,
     string ModalId);
+
+public sealed record MediaPickerPageVm(
+    string ModalId,
+    string TargetInputId,
+    IReadOnlyList<MediaItemVm> Items,
+    CursorPagerVm Pager,
+    string? TypeFilter = null,
+    string? SearchQuery = null);
 
 public sealed record MediaDetailVm(
     Guid Id,

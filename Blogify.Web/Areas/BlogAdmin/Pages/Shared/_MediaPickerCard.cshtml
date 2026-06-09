@@ -3,14 +3,16 @@
 <li class="media-attachment">
     <button type="button"
             class="media-attachment-btn"
-            data-media-select
+            data-media-preview
             data-media-id="@Model.Item.Id"
             data-url="@(Model.Item.ThumbnailUrl ?? Model.Item.Url)"
             data-full-url="@Model.Item.Url"
-            data-alt-text="@(Model.Item.AltText ?? Model.Item.FileName)"
+            data-alt-text="@(Model.Item.AltText ?? "")"
+            data-filename="@Model.Item.FileName"
             data-target="@Model.TargetInputId"
             data-modal-id="@Model.ModalId"
-            aria-label="@Localizer["Aria.SelectMedia", Model.Item.FileName].Value">
+            aria-label="@Localizer["Aria.SelectMedia", Model.Item.FileName].Value"
+            aria-pressed="false">
         @if (Model.Item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
         {
             <img src="@(Model.Item.ThumbnailUrl ?? Model.Item.Url)"

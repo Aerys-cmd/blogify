@@ -319,6 +319,35 @@
   <data name="Media.UsedAsCoverIn" xml:space="preserve"><value>Used as cover in:</value></data>
   <data name="Message.ConfirmDeleteFile" xml:space="preserve"><value>Delete this file?</value></data>
   <data name="Message.ConfirmDeleteMediaDetail" xml:space="preserve"><value>Delete &apos;{0}&apos;? Posts using this as cover image will lose their cover.</value></data>
+  <!-- Media Picker — redesign additions -->
+  <data name="Media.Picker.UploadFirstImage" xml:space="preserve"><value>Upload your first image</value></data>
+  <data name="Media.Picker.InsertImage" xml:space="preserve"><value>Insert Image</value></data>
+  <data name="Media.Picker.MediaLibrary" xml:space="preserve"><value>Media Library</value></data>
+  <data name="Media.Picker.TypeAll" xml:space="preserve"><value>All</value></data>
+  <data name="Media.Picker.TypeImages" xml:space="preserve"><value>Images</value></data>
+  <data name="Media.Picker.TypeDocuments" xml:space="preserve"><value>Documents</value></data>
+  <data name="Media.Picker.RecentlyUploaded" xml:space="preserve"><value>Recently uploaded</value></data>
+  <data name="Media.Picker.UseThisImage" xml:space="preserve"><value>Use this image</value></data>
+  <data name="Media.Picker.SelectImage" xml:space="preserve"><value>Select image</value></data>
+  <data name="Media.Picker.AltTextForThisUse" xml:space="preserve"><value>Alt text for this use</value></data>
+  <data name="Media.Picker.Dimensions" xml:space="preserve"><value>{0} × {1} px</value></data>
+  <data name="Media.Picker.NoPreview" xml:space="preserve"><value>Select an image to preview it here.</value></data>
+  <data name="Media.Picker.LoadMore" xml:space="preserve"><value>Load more</value></data>
+  <data name="Media.Picker.DropOrBrowse" xml:space="preserve"><value>Drop images here or click to browse</value></data>
+  <data name="Media.Picker.UploadConstraints" xml:space="preserve"><value>JPEG, PNG, GIF, WebP · max 10 MB per file</value></data>
+  <data name="Media.Picker.UploadedStatus" xml:space="preserve"><value>✓ Uploaded</value></data>
+  <data name="Media.Picker.UploadFailed" xml:space="preserve"><value>Upload failed</value></data>
+  <data name="Media.Picker.InvalidType" xml:space="preserve"><value>Not allowed — only JPEG, PNG, GIF, WebP.</value></data>
+  <data name="Media.Picker.FileTooLarge" xml:space="preserve"><value>Exceeds 10 MB limit.</value></data>
+  <data name="Media.Picker.UseUploadedFiles" xml:space="preserve"><value>Use uploaded files</value></data>
+  <data name="Media.Picker.BackToLibrary" xml:space="preserve"><value>← Back to library</value></data>
+  <data name="Media.Picker.Aria.Preview" xml:space="preserve"><value>Preview of {0}</value></data>
+  <data name="Media.Detail.SavedStatus" xml:space="preserve"><value>Saved ✓</value></data>
+  <data name="Media.Detail.DeleteTitle" xml:space="preserve"><value>Delete media file</value></data>
+  <data name="Media.Detail.DeleteConfirmBody" xml:space="preserve"><value>Are you sure you want to permanently delete &apos;{0}&apos;? This action cannot be undone.</value></data>
+  <data name="Media.Detail.DeleteConfirmUsed" xml:space="preserve"><value>This file is used as the cover image in {0} post(s). Deleting it will cause those posts to show a broken image.</value></data>
+  <data name="Label.FeaturedImage.Recommended" xml:space="preserve"><value>Recommended: 1200×630 px (16:9)</value></data>
+  <data name="Label.FeaturedImage.Min" xml:space="preserve"><value>Min: 400×225 px</value></data>
   <!-- Posts List -->
   <data name="Action.NewPost" xml:space="preserve"><value>New Post</value></data>
   <data name="Action.ClearFilters" xml:space="preserve"><value>Clear filters</value></data>

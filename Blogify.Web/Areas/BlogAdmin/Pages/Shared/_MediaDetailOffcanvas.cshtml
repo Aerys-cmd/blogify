@@ -32,38 +32,6 @@ else
 }
 
 <div class="p-3">
-    @* Metadata edit form *@
-    <form hx-post="?handler=UpdateMetadata"
-          hx-target="#metadata-save-result"
-          hx-swap="innerHTML"
-          class="mb-3">
-        <input type="hidden" name="id" value="@Model.Id" />
-
-        <div class="mb-2">
-            <label for="meta-alt-@Model.Id" class="form-label small fw-semibold mb-1">@Localizer["Label.AltText"]</label>
-            <input type="text" class="form-control form-control-sm"
-                   id="meta-alt-@Model.Id" name="altText" value="@Model.AltText"
-                   placeholder="@Localizer["Placeholder.AltText"].Value" maxlength="500" />
-        </div>
-
-        <div class="mb-2">
-            <label for="meta-title-@Model.Id" class="form-label small fw-semibold mb-1">@Localizer["Label.Title"]</label>
-            <input type="text" class="form-control form-control-sm"
-                   id="meta-title-@Model.Id" name="title" value="@Model.Title"
-                   placeholder="@Localizer["Placeholder.MediaTitle"].Value" maxlength="255" />
-        </div>
-
-        <div class="mb-2">
-            <label for="meta-desc-@Model.Id" class="form-label small fw-semibold mb-1">@Localizer["Label.Description"]</label>
-            <textarea class="form-control form-control-sm"
-                      id="meta-desc-@Model.Id" name="description" rows="3"
-                      placeholder="@Localizer["Placeholder.MediaDescription"].Value" maxlength="2000">@Model.Description</textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-sm w-100">@Localizer["Action.Save"]</button>
-    </form>
-
-    <div id="metadata-save-result" class="mb-3" aria-live="polite"></div>
 
     @* File info *@
     <dl class="row small mb-3">
@@ -85,6 +53,56 @@ else
         <dt class="col-5 text-muted fw-normal">@Localizer["Label.Uploaded"]</dt>
         <dd class="col-7 mb-1">@Model.UploadedAt.LocalDateTime.ToString("dd MMM yyyy HH:mm")</dd>
     </dl>
+
+    @* Autosaving metadata form *@
+    <div class="mb-3 border-top pt-3">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="small fw-semibold">@Localizer["Label.AltText"]</span>
+            <span class="small text-muted media-detail-save-status" id="meta-save-status-@Model.Id"
+                  aria-live="polite"></span>
+        </div>
+
+        <input type="hidden" name="id" id="meta-id-@Model.Id" value="@Model.Id" />
+
+        <div class="mb-2">
+            <input type="text" class="form-control form-control-sm media-detail-autosave"
+                   id="meta-alt-@Model.Id"
+                   data-field="altText"
+                   data-media-id="@Model.Id"
+                   value="@Model.AltText"
+                   placeholder="@Localizer["Placeholder.AltText"].Value"
+                   maxlength="500"
+                   aria-label="@Localizer["Label.AltText"].Value" />
+            <div class="d-flex justify-content-between mt-1">
+                <div class="form-text small">@Localizer["Label.AltText"]</div>
+                <span class="form-text small media-char-count" data-max="500" data-input="meta-alt-@Model.Id">
+                    @(Model.AltText?.Length ?? 0)/500
+                </span>
+            </div>
+        </div>
+
+        <div class="mb-2">
+            <label for="meta-title-@Model.Id" class="form-label small fw-semibold mb-1">@Localizer["Label.Title"]</label>
+            <input type="text" class="form-control form-control-sm media-detail-autosave"
+                   id="meta-title-@Model.Id"
+                   data-field="title"
+                   data-media-id="@Model.Id"
+                   value="@Model.Title"
+                   placeholder="@Localizer["Placeholder.MediaTitle"].Value"
+                   maxlength="255" />
+        </div>
+
+        <div class="mb-2">
+            <label for="meta-desc-@Model.Id" class="form-label small fw-semibold mb-1">@Localizer["Label.Description"]</label>
+            <textarea class="form-control form-control-sm media-detail-autosave"
+                      id="meta-desc-@Model.Id"
+                      data-field="description"
+                      data-media-id="@Model.Id"
+                      rows="3"
+                      placeholder="@Localizer["Placeholder.MediaDescription"].Value"
+                      maxlength="2000">@Model.Description</textarea>
+        </div>
+    </div>
 
     @* URL copy *@
     <div class="mb-3">
@@ -113,17 +131,60 @@ else
         </div>
     }
 
-    @* Delete *@
+    @* Delete — danger zone with Bootstrap confirmation modal *@
     <div class="border-top pt-3 mt-1">
+        <p class="small text-muted mb-2">@Localizer["Media.Detail.DeleteTitle"]</p>
+        @if (Model.UsedInPosts.Count > 0)
+        {
+            <div class="alert alert-warning py-2 px-3 small mb-2" role="alert">
+                @string.Format(Localizer["Media.Detail.DeleteConfirmUsed"].Value, Model.UsedInPosts.Count)
+            </div>
+        }
         <button type="button"
-                class="btn btn-link text-danger p-0 small"
-                hx-post="?handler=Delete&id=@Model.Id"
-                hx-confirm="@string.Format(Localizer["Message.ConfirmDeleteMediaDetail"].Value, Model.FileName)"
-                hx-target="[data-media-id='@Model.Id']"
-                hx-swap="outerHTML"
-                hx-on:htmx:after-request="if(event.detail.successful) { window.closeAttachmentPanel && window.closeAttachmentPanel(); }">
+                class="btn btn-outline-danger btn-sm w-100"
+                data-bs-toggle="modal"
+                data-bs-target="#media-delete-confirm-@Model.Id">
             @Localizer["Action.DeletePermanently"]
         </button>
+    </div>
+</div>
+
+@* ── Delete confirmation modal ───────────────────────────────────────── *@
+<div class="modal fade" id="media-delete-confirm-@Model.Id" tabindex="-1"
+     aria-labelledby="media-delete-label-@Model.Id" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h2 class="modal-title h6" id="media-delete-label-@Model.Id">
+                    @Localizer["Media.Detail.DeleteTitle"]
+                </h2>
+                <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal"
+                        aria-label="@Localizer["Action.Cancel"].Value"></button>
+            </div>
+            <div class="modal-body small">
+                @string.Format(Localizer["Media.Detail.DeleteConfirmBody"].Value, Model.FileName)
+                @if (Model.UsedInPosts.Count > 0)
+                {
+                    <div class="alert alert-warning py-1 px-2 small mt-2 mb-0" role="alert">
+                        @string.Format(Localizer["Media.Detail.DeleteConfirmUsed"].Value, Model.UsedInPosts.Count)
+                    </div>
+                }
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    @Localizer["Action.Cancel"]
+                </button>
+                <button type="button"
+                        class="btn btn-danger btn-sm"
+                        data-bs-dismiss="modal"
+                        hx-post="?handler=Delete&id=@Model.Id"
+                        hx-target="[data-media-id='@Model.Id']"
+                        hx-swap="outerHTML"
+                        hx-on:htmx:after-request="if(event.detail.successful) { window.closeAttachmentPanel && window.closeAttachmentPanel(); }">
+                    @Localizer["Action.DeletePermanently"]
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 

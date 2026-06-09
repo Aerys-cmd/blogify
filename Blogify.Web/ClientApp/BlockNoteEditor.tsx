@@ -26,6 +26,10 @@ function openMediaLibraryModal(): void {
     bootstrap.Modal.getOrCreateInstance(modalEl).show();
 }
 
+// Module-level reference so we can remove the old handler before attaching a new one,
+// preventing duplicate insertions if the slash-menu item is triggered multiple times.
+let activeEditorInsertHandler: ((event: Event) => void) | null = null;
+
 function customImageItem(editor: BNEditor) {
     return {
         title: 'Image from Library',
@@ -36,28 +40,56 @@ function customImageItem(editor: BNEditor) {
         onItemClick: () => {
             openMediaLibraryModal();
 
-            // mediaSelected is dispatched by media-picker.js when the user picks an image
-            document.addEventListener(
-                'mediaSelected',
-                (event: Event) => {
-                    const e = event as CustomEvent<{
-                        targetInputId: string;
-                        url: string;
-                        fullUrl?: string;
-                        altText?: string;
-                    }>;
-                    if (e.detail.targetInputId !== 'editorImageInsert') return;
+            // Remove any previously registered handler so repeated slash-menu usage
+            // does not accumulate stale listeners.
+            if (activeEditorInsertHandler) {
+                document.removeEventListener('mediaSelected', activeEditorInsertHandler);
+                activeEditorInsertHandler = null;
+            }
 
-                    const url = e.detail.fullUrl ?? e.detail.url;
-                    const cursorBlock = editor.getTextCursorPosition().block;
-                    editor.insertBlocks(
-                        [{ type: 'image', props: { url, caption: e.detail.altText ?? '' } }],
-                        cursorBlock,
-                        'after',
-                    );
-                },
-                { once: true },
-            );
+            const modalEl = document.getElementById('editorImageInsert-modal');
+
+            function handleMediaSelected(event: Event): void {
+                const e = event as CustomEvent<{
+                    targetInputId: string;
+                    url: string;
+                    fullUrl?: string;
+                    altText?: string;
+                }>;
+                if (e.detail.targetInputId !== 'editorImageInsert') return;
+
+                const url = e.detail.fullUrl ?? e.detail.url;
+                const cursorBlock = editor.getTextCursorPosition().block;
+                editor.insertBlocks(
+                    [{ type: 'image', props: { url, caption: e.detail.altText ?? '' } }],
+                    cursorBlock,
+                    'after',
+                );
+
+                cleanup();
+            }
+
+            // Remove handler and cleanup listener on modal close (covers the case where
+            // the user closes the modal without selecting an image).
+            function cleanup(): void {
+                document.removeEventListener('mediaSelected', handleMediaSelected);
+                if (modalEl) {
+                    modalEl.removeEventListener('hidden.bs.modal', onModalHidden);
+                }
+                activeEditorInsertHandler = null;
+            }
+
+            function onModalHidden(): void {
+                cleanup();
+            }
+
+            activeEditorInsertHandler = handleMediaSelected;
+            document.addEventListener('mediaSelected', handleMediaSelected);
+
+            if (modalEl) {
+                // Use addEventListener so it can be removed; not { once } to stay in sync with cleanup().
+                modalEl.addEventListener('hidden.bs.modal', onModalHidden);
+            }
         },
     };
 }

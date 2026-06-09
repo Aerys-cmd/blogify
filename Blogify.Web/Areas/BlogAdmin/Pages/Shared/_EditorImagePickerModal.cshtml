@@ -1,28 +1,11 @@
 @model string
-<input type="hidden" id="@Model" />
-
-<div class="modal fade" id="@(Model)-modal" tabindex="-1"
-     aria-labelledby="@(Model)-modal-label" aria-hidden="true"
-     hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model&modalId=@(Model)-modal"
-     hx-target="#@(Model)-modal-body"
-     hx-swap="innerHTML"
-     hx-trigger="show.bs.modal">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title h5" id="@(Model)-modal-label">Insert Image</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="@(Model)-modal-body">
-                <div class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading…</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+@{
+    MediaPickerFieldVm editorPickerVm = new(
+        InputId: Model,
+        InputName: Model,
+        CurrentMediaId: null,
+        CurrentThumbnailUrl: null,
+        ModalId: Model + "-modal",
+        ModalTitle: Localizer["Media.Picker.InsertImage"].Value);
+}
+<partial name="_MediaPickerDialog" model="editorPickerVm" />

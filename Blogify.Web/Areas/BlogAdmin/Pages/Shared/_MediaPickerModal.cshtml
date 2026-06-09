@@ -1,125 +1,184 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaPickerModalVm
 
-@* Search bar + tab strip *@
-<div class="px-3 pt-3">
-    <input type="search" class="form-control form-control-sm mb-3"
-           name="q" placeholder="Search by filename…"
-           hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId"
-           hx-target="#@(Model.ModalId)-body"
-           hx-swap="innerHTML"
-           hx-trigger="input changed delay:400ms, search"
-           aria-label="Search media" />
-
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="@(Model.ModalId)-library-tab"
-                    data-bs-toggle="tab" data-bs-target="#@(Model.ModalId)-library"
-                    type="button" role="tab">Library</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="@(Model.ModalId)-upload-tab"
-                    data-bs-toggle="tab" data-bs-target="#@(Model.ModalId)-upload"
-                    type="button" role="tab">Upload</button>
-        </li>
-    </ul>
-</div>
-
-<div class="tab-content">
-    @* Library tab *@
-    <div class="tab-pane fade show active p-3" id="@(Model.ModalId)-library" role="tabpanel">
-        @if (Model.Items.Count == 0)
-        {
-            <div class="text-center py-5">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
-                     class="text-muted mb-3" viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
-                    <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
-                </svg>
-                <p class="text-muted mb-0">No media files available.</p>
-            </div>
-        }
-        else
-        {
-            <ul class="media-attachments" role="list">
-                @foreach (MediaItemVm item in Model.Items)
-                {
-                    <li class="media-attachment">
-                        <button type="button"
-                                class="media-attachment-btn"
-                                data-media-select
-                                data-media-id="@item.Id"
-                                data-url="@(item.ThumbnailUrl ?? item.Url)"
-                                data-full-url="@item.Url"
-                                data-alt-text="@(item.AltText ?? item.FileName)"
-                                data-target="@Model.TargetInputId"
-                                data-modal-id="@Model.ModalId"
-                                aria-label="@Localizer["Aria.SelectMedia", item.FileName].Value">
-                            @if (item.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
-                            {
-                                <img src="@(item.ThumbnailUrl ?? item.Url)"
-                                     alt="@(item.AltText ?? item.FileName)"
-                                     class="media-attachment-thumb" />
-                            }
-                            else
-                            {
-                                <span class="media-attachment-icon" aria-hidden="true">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                                         viewBox="0 0 16 16">
-                                        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1L14 4.5z"/>
-                                    </svg>
-                                </span>
-                            }
-                            <span class="media-attachment-check" aria-hidden="true">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                     viewBox="0 0 16 16">
-                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
-                                </svg>
-                            </span>
-                            <span class="media-attachment-caption">@item.FileName</span>
-                        </button>
-                    </li>
-                }
-            </ul>
-
-            @if (!string.IsNullOrEmpty(Model.Pager.NextCursor))
-            {
-                <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-outline-secondary btn-sm"
-                            hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&cursor=@Model.Pager.NextCursor"
-                            hx-target="#@(Model.ModalId)-body"
-                            hx-swap="innerHTML">
-                        Load more
-                    </button>
-                </div>
-            }
-        }
+@* ── Search bar ─────────────────────────────────────────────────────── *@
+<div class="media-picker-toolbar px-3 pt-3 pb-2">
+    <div class="position-relative mb-2">
+        <input type="search" class="form-control form-control-sm pe-4"
+               name="q" id="@(Model.ModalId)-search"
+               value="@Model.SearchQuery"
+               placeholder="@Localizer["Placeholder.SearchMedia"].Value"
+               hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&type=@Model.TypeFilter"
+               hx-target="#@(Model.ModalId)-body"
+               hx-swap="innerHTML"
+               hx-trigger="input changed delay:350ms, search"
+               aria-label="@Localizer["Placeholder.SearchMedia"].Value" />
     </div>
 
-    @* Upload tab *@
-    <div class="tab-pane fade p-3" id="@(Model.ModalId)-upload" role="tabpanel">
-        <div id="picker-upload-error-@Model.ModalId" class="mb-3"></div>
-        <form hx-post="/admin/Media?handler=PickerUpload&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId"
-              hx-encoding="multipart/form-data"
-              hx-target="#picker-upload-result-@Model.ModalId"
-              hx-swap="afterbegin"
-              hx-on:htmx:after-request="if(event.detail.successful) this.reset()"
-              novalidate>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Image File <span class="text-danger">*</span></label>
-                <input type="file" class="form-control" name="file"
-                       accept="image/jpeg,image/png,image/gif,image/webp" />
-                <div class="form-text">JPEG, PNG, GIF, WebP · max 10 MB.</div>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Upload</button>
-        </form>
-        <ul class="media-attachments mt-3" id="picker-upload-result-@Model.ModalId"></ul>
-        <div class="mt-3 border-top pt-3">
-            <button type="button" class="btn btn-outline-secondary btn-sm w-100"
-                    hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId"
+    @* ── Type filter chips ──────────────────────────────────────────── *@
+    <div class="media-picker-type-chips d-flex gap-1 flex-wrap" role="group"
+         aria-label="@Localizer["Aria.FilterByType"].Value">
+        @{
+            (string Value, string LabelKey)[] chips =
+            [
+                ("",         "Media.Picker.TypeAll"),
+                ("image",    "Media.Picker.TypeImages"),
+                ("document", "Media.Picker.TypeDocuments"),
+            ];
+        }
+        @foreach ((string value, string labelKey) in chips)
+        {
+            bool active = (Model.TypeFilter ?? "") == value;
+            <button type="button"
+                    class="btn btn-sm media-type-chip @(active ? "active" : "")"
+                    data-type="@value"
+                    hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&q=@Model.SearchQuery&type=@value"
                     hx-target="#@(Model.ModalId)-body"
-                    hx-swap="innerHTML">
-                ← Refresh Library
+                    hx-swap="innerHTML"
+                    aria-pressed="@(active ? "true" : "false")">
+                @Localizer[labelKey]
             </button>
+        }
+    </div>
+</div>
+
+@* ── Split body: library grid (left) + preview panel (right) ─────────── *@
+<div class="media-picker-split">
+
+    @* ── LEFT: tab strip + grid ──────────────────────────────────────── *@
+    <div class="media-picker-main">
+        <ul class="nav nav-tabs px-3 border-0" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="@(Model.ModalId)-library-tab"
+                        data-bs-toggle="tab" data-bs-target="#@(Model.ModalId)-library"
+                        type="button" role="tab"
+                        aria-controls="@(Model.ModalId)-library" aria-selected="true">
+                    @Localizer["Nav.Media"]
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="@(Model.ModalId)-upload-tab"
+                        data-bs-toggle="tab" data-bs-target="#@(Model.ModalId)-upload"
+                        type="button" role="tab"
+                        aria-controls="@(Model.ModalId)-upload" aria-selected="false">
+                    @Localizer["Action.AddNewMedia"]
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content flex-grow-1 overflow-auto">
+
+            @* ── Library tab ─────────────────────────────────────────── *@
+            <div class="tab-pane fade show active p-3" id="@(Model.ModalId)-library"
+                 role="tabpanel" aria-labelledby="@(Model.ModalId)-library-tab">
+
+                @if (Model.Items.Count == 0)
+                {
+                    @* ── Empty state with CTA ────────────────────────── *@
+                    <div class="text-center py-5 px-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+                             class="text-muted mb-3" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+                            <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
+                        </svg>
+                        @if (!string.IsNullOrEmpty(Model.SearchQuery))
+                        {
+                            <p class="text-muted mb-3">@Localizer["Message.NoMediaFiles"]</p>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-1">@Localizer["Message.NoMediaFiles"]</p>
+                            <p class="text-muted small mb-3">@Localizer["Message.UploadFirstFile"]</p>
+                            <button type="button" class="btn btn-primary btn-sm"
+                                    data-picker-switch-tab="@(Model.ModalId)-upload-tab">
+                                @Localizer["Media.Picker.UploadFirstImage"]
+                            </button>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <ul class="media-attachments" id="@(Model.ModalId)-grid"
+                        role="list" aria-label="@Localizer["Page.Title.BlogAdmin.Media"].Value"
+                        data-modal-id="@Model.ModalId"
+                        data-target-input-id="@Model.TargetInputId">
+                        @foreach (MediaItemVm item in Model.Items)
+                        {
+                            <partial name="_MediaPickerCard" model="@(new MediaPickerCardVm(item, Model.TargetInputId, Model.ModalId))" />
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Pager.NextCursor))
+                        {
+                            <li id="@(Model.ModalId)-load-sentinel" class="media-picker-load-sentinel">
+                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                        hx-get="/admin/Media?handler=MediaPickerPage&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&cursor=@Model.Pager.NextCursor&q=@Model.SearchQuery&type=@Model.TypeFilter"
+                                        hx-target="#@(Model.ModalId)-load-sentinel"
+                                        hx-swap="outerHTML">
+                                    @Localizer["Media.Picker.LoadMore"]
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+
+            @* ── Upload tab ───────────────────────────────────────────── *@
+            <div class="tab-pane fade p-3" id="@(Model.ModalId)-upload"
+                 role="tabpanel" aria-labelledby="@(Model.ModalId)-upload-tab">
+                <div class="media-picker-upload-zone"
+                     id="@(Model.ModalId)-drop-zone"
+                     data-modal-id="@Model.ModalId"
+                     data-target-input-id="@Model.TargetInputId"
+                     data-upload-url="/admin/Media?handler=PickerUpload&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
+                         class="mb-2 text-secondary" viewBox="0 0 16 16" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"/>
+                        <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/>
+                    </svg>
+                    <p class="fw-semibold mb-1 small">@Localizer["Media.Picker.DropOrBrowse"]</p>
+                    <label class="btn btn-outline-primary btn-sm mt-1 mb-2">
+                        @Localizer["Action.SelectFiles"]
+                        <input type="file" class="d-none media-picker-file-input"
+                               accept="image/jpeg,image/png,image/gif,image/webp"
+                               multiple />
+                    </label>
+                    <p class="small text-muted mb-0">@Localizer["Media.Picker.UploadConstraints"]</p>
+                </div>
+
+                <ul class="list-group mt-3 d-none" id="@(Model.ModalId)-upload-queue"
+                    aria-label="Upload queue" aria-live="polite"></ul>
+
+                <div id="@(Model.ModalId)-upload-error" class="mt-2" aria-live="assertive"></div>
+            </div>
         </div>
     </div>
+
+    @* ── RIGHT: sticky preview panel ─────────────────────────────────── *@
+    <aside class="media-picker-preview" id="@(Model.ModalId)-preview-panel"
+           aria-label="@Localizer["Label.AttachmentDetails"].Value">
+        <div class="media-picker-preview-empty text-center text-muted p-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                 class="mb-2 opacity-50" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+                <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
+            </svg>
+            <p class="small mb-0">@Localizer["Media.Picker.NoPreview"]</p>
+        </div>
+        <div class="media-picker-preview-content d-none">
+            <div class="media-picker-preview-img-wrap">
+                <img src="" alt="" class="media-picker-preview-img" />
+            </div>
+            <div class="p-3">
+                <p class="small fw-semibold text-truncate mb-1 media-picker-preview-filename"></p>
+                <p class="small text-muted mb-3 media-picker-preview-meta"></p>
+                <label for="@(Model.ModalId)-preview-alt" class="form-label small fw-semibold mb-1">
+                    @Localizer["Media.Picker.AltTextForThisUse"]
+                </label>
+                <input type="text" class="form-control form-control-sm media-picker-preview-alt"
+                       id="@(Model.ModalId)-preview-alt"
+                       placeholder="@Localizer["Placeholder.AltText"].Value"
+                       maxlength="500" />
+            </div>
+        </div>
+    </aside>
 </div>
+

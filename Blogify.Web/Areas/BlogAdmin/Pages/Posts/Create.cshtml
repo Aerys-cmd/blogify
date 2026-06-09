@@ -223,9 +223,10 @@
         </button>
     </div>
 
+    <input type="hidden" id="editorImageInsert" />
     <partial name="_EditorImagePickerModal" model='"editorImageInsert"' />
     <partial name="_MediaPickerDialog"
-             model="@(new MediaPickerFieldVm("coverImageId", "Input.CoverImageId", Model.Input.CoverImageId, null, "mediaPickerModal"))" />
+             model="@(new MediaPickerFieldVm("coverImageId", "Input.CoverImageId", Model.Input.CoverImageId, null, "mediaPickerModal", RecommendedDimensionsHint: Localizer["Label.FeaturedImage.Recommended"].Value))" />
 </form>
 
 @section Scripts {

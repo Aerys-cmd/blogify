@@ -389,6 +389,182 @@ body {
   }
 }
 
+/* ── Media Picker Modal — Redesigned ──────────────────────────────── */
+
+/* Toolbar: search + type chips */
+.media-picker-toolbar {
+  border-bottom: 1px solid var(--bs-border-color);
+  background: var(--bs-body-bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Type filter chip buttons */
+.media-type-chip {
+  border-radius: 2rem;
+  font-size: 0.78rem;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--bs-border-color);
+  background: transparent;
+  color: var(--bs-secondary-color);
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+}
+
+.media-type-chip:hover {
+  background: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+}
+
+.media-type-chip.active {
+  background: var(--bs-primary);
+  border-color: var(--bs-primary);
+  color: #fff;
+}
+
+/* Split body: grid (left) + preview panel (right) */
+.media-picker-split {
+  display: flex;
+  min-height: 420px;
+  max-height: calc(80vh - 160px);
+  overflow: hidden;
+}
+
+.media-picker-main {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--bs-border-color);
+}
+
+.media-picker-main .tab-content {
+  flex: 1 1 0;
+  overflow-y: auto;
+}
+
+.media-picker-main .nav-tabs {
+  border-bottom: 1px solid var(--bs-border-color);
+  background: var(--bs-body-bg);
+}
+
+/* Load-more sentinel list item */
+.media-picker-load-sentinel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem;
+  list-style: none;
+  grid-column: 1 / -1;
+}
+
+/* Preview panel — right side */
+.media-picker-preview {
+  width: 260px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  background: var(--bs-body-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.media-picker-preview-img-wrap {
+  background: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.media-picker-preview-img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Upload zone inside picker */
+.media-picker-upload-zone {
+  border: 2px dashed var(--bs-border-color);
+  border-radius: 10px;
+  background: var(--bs-tertiary-bg, #f8f9fa);
+  padding: 2rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.media-picker-upload-zone:hover,
+.media-picker-upload-zone.drag-over {
+  background: rgba(13, 110, 253, 0.04);
+  border-color: var(--bs-primary);
+}
+
+.media-picker-upload-zone.drag-over {
+  background: rgba(13, 110, 253, 0.08);
+}
+
+/* Featured image — hover overlay on set image */
+.pe-featured-image-set {
+  border-radius: var(--bs-border-radius);
+  overflow: hidden;
+}
+
+.pe-featured-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  opacity: 0;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.pe-featured-image-set:hover .pe-featured-image-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 1;
+}
+
+/* Mobile: hide preview panel, use full-width picker */
+@media (max-width: 767.98px) {
+  .media-picker-split {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .media-picker-main {
+    border-right: none;
+    border-bottom: 1px solid var(--bs-border-color);
+  }
+
+  .media-picker-preview {
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease;
+  }
+
+  .media-picker-preview.has-selection {
+    max-height: 360px;
+  }
+
+  .media-attachments {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-picker-upload-zone,
+  .pe-featured-image-overlay {
+    transition: none;
+  }
+}
+
 /* ── Post Editor Page ──────────────────────────────────────────────── */
 
 .pe-header {

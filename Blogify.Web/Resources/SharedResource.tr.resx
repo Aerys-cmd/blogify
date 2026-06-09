@@ -319,6 +319,36 @@
   <data name="Media.UsedAsCoverIn" xml:space="preserve"><value>Kapak olarak kullanıldığı yerler:</value></data>
   <data name="Message.ConfirmDeleteFile" xml:space="preserve"><value>Bu dosyayı sil?</value></data>
   <data name="Message.ConfirmDeleteMediaDetail" xml:space="preserve"><value>&apos;{0}&apos; silinsin mi? Bunu kapak görseli olarak kullanan gönderiler kapak görselini kaybedecek.</value></data>
+  <!-- Media Picker — redesign additions -->
+  <data name="Media.Picker.UploadFirstImage" xml:space="preserve"><value>İlk resminizi yükleyin</value></data>
+  <data name="Media.Picker.InsertImage" xml:space="preserve"><value>Resim Ekle</value></data>
+  <data name="Media.Picker.MediaLibrary" xml:space="preserve"><value>Medya Kütüphanesi</value></data>
+  <data name="Media.Picker.TypeAll" xml:space="preserve"><value>Tümü</value></data>
+  <data name="Media.Picker.TypeImages" xml:space="preserve"><value>Resimler</value></data>
+  <data name="Media.Picker.TypeDocuments" xml:space="preserve"><value>Belgeler</value></data>
+  <data name="Media.Picker.RecentlyUploaded" xml:space="preserve"><value>Son yüklenenler</value></data>
+  <data name="Media.Picker.UseThisImage" xml:space="preserve"><value>Bu resmi kullan</value></data>
+  <data name="Media.Picker.SelectImage" xml:space="preserve"><value>Resim seç</value></data>
+  <data name="Media.Picker.AltTextForThisUse" xml:space="preserve"><value>Bu kullanım için açıklama metni</value></data>
+  <data name="Media.Picker.Dimensions" xml:space="preserve"><value>{0} × {1} piksel</value></data>
+  <data name="Media.Picker.NoPreview" xml:space="preserve"><value>Önizlemek için bir resim seçin.</value></data>
+  <data name="Media.Picker.LoadMore" xml:space="preserve"><value>Daha fazla yükle</value></data>
+  <data name="Media.Picker.DropOrBrowse" xml:space="preserve"><value>Resimleri buraya bırakın veya dosyalara göz atmak için tıklayın</value></data>
+  <data name="Media.Picker.UploadConstraints" xml:space="preserve"><value>JPEG, PNG, GIF, WebP · dosya başına en fazla 10 MB</value></data>
+  <data name="Media.Picker.UploadedStatus" xml:space="preserve"><value>✓ Yüklendi</value></data>
+  <data name="Media.Picker.UploadFailed" xml:space="preserve"><value>Yükleme başarısız</value></data>
+  <data name="Media.Picker.InvalidType" xml:space="preserve"><value>İzin verilmiyor — yalnızca JPEG, PNG, GIF, WebP.</value></data>
+  <data name="Media.Picker.FileTooLarge" xml:space="preserve"><value>10 MB sınırını aşıyor.</value></data>
+  <data name="Media.Picker.UseUploadedFiles" xml:space="preserve"><value>Yüklenen dosyaları kullan</value></data>
+  <data name="Media.Picker.BackToLibrary" xml:space="preserve"><value>← Kütüphaneye dön</value></data>
+  <data name="Media.Picker.Aria.Preview" xml:space="preserve"><value>{0} önizlemesi</value></data>
+  <data name="Media.Detail.SavingStatus" xml:space="preserve"><value>Kaydediliyor…</value></data>
+  <data name="Media.Detail.SavedStatus" xml:space="preserve"><value>Kaydedildi ✓</value></data>
+  <data name="Media.Detail.DeleteTitle" xml:space="preserve"><value>Medya dosyasını sil</value></data>
+  <data name="Media.Detail.DeleteConfirmBody" xml:space="preserve"><value>&apos;{0}&apos; adlı dosyayı kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</value></data>
+  <data name="Media.Detail.DeleteConfirmUsed" xml:space="preserve"><value>Bu dosya {0} gönderide kapak görseli olarak kullanılmaktadır. Silinmesi bu gönderilerde bozuk görsel görünmesine yol açacaktır.</value></data>
+  <data name="Label.FeaturedImage.Recommended" xml:space="preserve"><value>Önerilen: 1200×630 piksel (16:9)</value></data>
+  <data name="Label.FeaturedImage.Min" xml:space="preserve"><value>En az: 400×225 piksel</value></data>
   <!-- Posts List -->
   <data name="Action.NewPost" xml:space="preserve"><value>Yeni Yazı</value></data>
   <data name="Action.ClearFilters" xml:space="preserve"><value>Filtreleri temizle</value></data>
