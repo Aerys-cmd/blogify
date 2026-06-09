@@ -287,6 +287,7 @@
         }
 
         if (slugInput) {
+            slugInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
             slugInput.addEventListener('input', function () {
                 slugManuallyEdited = slugInput.value.length > 0;
                 updateSlugDisplay();
@@ -380,6 +381,7 @@
             updateCharCount(excerptInput, excerptCount, 500);
         }
         if (metaTitleInput) {
+            metaTitleInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
             metaTitleInput.addEventListener('input', function () { updateCharCount(metaTitleInput, metaTitleCount, 60); updateSerp(); });
             updateCharCount(metaTitleInput, metaTitleCount, 60);
         }
@@ -463,6 +465,13 @@
                 categoriesBadge.style.display = count === 0 ? 'none' : '';
             }
 
+            categorySearch.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var first = categoryDropdown.querySelector('.pe-category-option');
+                    if (first) first.click();
+                }
+            });
             categorySearch.addEventListener('input', function () { renderDropdown(categorySearch.value); });
             categorySearch.addEventListener('focus', function () { renderDropdown(categorySearch.value); });
             document.addEventListener('click', function (e) {

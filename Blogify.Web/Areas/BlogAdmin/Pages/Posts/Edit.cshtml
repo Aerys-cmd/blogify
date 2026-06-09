@@ -367,6 +367,7 @@
         }
 
         if (slugInput) {
+            slugInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
             slugInput.addEventListener('input', function () { updateSlugDisplay(); setSaveStatus('unsaved'); });
         }
 
@@ -425,9 +426,18 @@
         if (editorHidden) {
             var orig = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
             if (orig) {
+                var initialEditorContent = null;
                 Object.defineProperty(editorHidden, 'value', {
                     get: function () { return orig.get.call(this); },
-                    set: function (v) { orig.set.call(this, v); updateWordCount(v); setSaveStatus('unsaved'); }
+                    set: function (v) {
+                        orig.set.call(this, v);
+                        updateWordCount(v);
+                        if (initialEditorContent === null) {
+                            initialEditorContent = v;
+                        } else if (v !== initialEditorContent) {
+                            setSaveStatus('unsaved');
+                        }
+                    }
                 });
             }
             updateWordCount(editorHidden.value);
@@ -447,6 +457,7 @@
             updateCharCount(excerptInput, excerptCount, 500);
         }
         if (metaTitleInput) {
+            metaTitleInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
             metaTitleInput.addEventListener('input', function () { updateCharCount(metaTitleInput, metaTitleCount, 60); updateSerp(); });
             updateCharCount(metaTitleInput, metaTitleCount, 60);
         }
@@ -531,6 +542,13 @@
                 categoriesBadge.style.display = count === 0 ? 'none' : '';
             }
 
+            categorySearch.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var first = categoryDropdown.querySelector('.pe-category-option');
+                    if (first) first.click();
+                }
+            });
             categorySearch.addEventListener('input', function () { renderDropdown(categorySearch.value); });
             categorySearch.addEventListener('focus', function () { renderDropdown(categorySearch.value); });
             document.addEventListener('click', function (e) {
