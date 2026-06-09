@@ -24,11 +24,12 @@ COPY --from=npm-deps /src/Blogify.Web/node_modules Blogify.Web/node_modules
 # Copy remaining source
 COPY . .
 
-# Publish with Tailwind build enabled; keep portable debug symbols for production diagnostics
+# Publish with Tailwind + Vite builds enabled; keep portable debug symbols for production diagnostics
 RUN dotnet publish Blogify.Web/Blogify.Web.csproj \
     -c Release \
     -o /app/publish \
     -p:EnableTailwindBuild=true \
+    -p:EnableViteBuild=true \
     -p:DebugType=portable \
     --no-restore
 

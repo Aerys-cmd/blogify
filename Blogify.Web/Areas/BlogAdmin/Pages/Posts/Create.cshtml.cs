@@ -57,7 +57,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         Guid blogId = tenantContext.RequiredTenant.Id;
 
-        string contentText = TiptapContentExtractor.ExtractPlainText(Input.Content);
+        string contentText = BlockNoteContentExtractor.ExtractPlainText(Input.Content);
 
         Post post = Post.Create(
             blogId: blogId,
@@ -85,9 +85,14 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         if (Input.Publish)
         {
             feedService.InvalidateTenant(blogId);
+            TempData["PostSaved"] = "published";
+        }
+        else
+        {
+            TempData["PostSaved"] = "saved";
         }
 
-        return RedirectToPage("/Posts/Index", new { area = "BlogAdmin" });
+        return RedirectToPage("/Posts/Edit", new { area = "BlogAdmin", id = post.Id });
     }
 
     private async Task LoadAvailableCategoriesAsync(CancellationToken ct)

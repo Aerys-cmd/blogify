@@ -84,9 +84,27 @@
   <data name="Label.MetaDescription.Help.Blog" xml:space="preserve"><value>Maksimum 160 karakter. Arama motoru sonuçlarında kullanılır.</value></data>
   <data name="Label.MetaDescription.Blog.Placeholder" xml:space="preserve"><value>Arama motorları için blogunuzun kısa açıklaması…</value></data>
   <data name="Label.Seo" xml:space="preserve"><value>SEO</value></data>
+  <data name="Label.Author" xml:space="preserve"><value>Yazar</value></data>
+  <data name="Label.FeaturedImage" xml:space="preserve"><value>Öne Çıkan Görsel</value></data>
+  <data name="Label.PostStatus" xml:space="preserve"><value>Durum</value></data>
+  <data name="Label.Excerpt.Placeholder" xml:space="preserve"><value>Yazının kısa özeti (isteğe bağlı)…</value></data>
+  <data name="Label.Excerpt.Help" xml:space="preserve"><value>Maksimum 500 karakter. Yazı listelerinde gösterilir.</value></data>
+  <data name="Label.Slug.Help.Create" xml:space="preserve"><value>Başlıktan otomatik oluşturulur. Manuel düzenlemek için ✎ simgesine tıklayın.</value></data>
+  <data name="Label.Slug.Help.Edit" xml:space="preserve"><value>Yazının URL'si. Dikkatli değiştirin — mevcut bağlantıları bozabilir.</value></data>
+  <data name="Label.Categories.None" xml:space="preserve"><value>Henüz kategori yok.</value></data>
+  <data name="Label.Categories.Create" xml:space="preserve"><value>Oluşturun</value></data>
+  <data name="Label.Categories.Search" xml:space="preserve"><value>Kategori ara…</value></data>
+  <data name="Label.MoreSettings" xml:space="preserve"><value>Daha fazla ayar</value></data>
+  <data name="Post.Status.Draft" xml:space="preserve"><value>Taslak</value></data>
+  <data name="Post.Status.Published" xml:space="preserve"><value>Yayımlandı</value></data>
 
   <!-- Actions -->
   <data name="Action.Save" xml:space="preserve"><value>Kaydet</value></data>
+  <data name="Action.SaveDraft" xml:space="preserve"><value>Taslak Kaydet</value></data>
+  <data name="Action.Update" xml:space="preserve"><value>Güncelle</value></data>
+  <data name="Action.Preview" xml:space="preserve"><value>Önizle</value></data>
+  <data name="Action.ViewPost" xml:space="preserve"><value>Yazıyı Görüntüle</value></data>
+  <data name="Action.EditUrl" xml:space="preserve"><value>URL'yi Düzenle</value></data>
   <data name="Action.Delete" xml:space="preserve"><value>Sil</value></data>
   <data name="Action.Cancel" xml:space="preserve"><value>İptal</value></data>
   <data name="Action.Publish" xml:space="preserve"><value>Yayımla</value></data>
@@ -150,6 +168,11 @@
   <data name="Message.CannotDeleteOwnAccount" xml:space="preserve"><value>Kendi hesabınızı silemezsiniz.</value></data>
   <data name="Message.InvalidTenant" xml:space="preserve"><value>Seçilen kiracı geçersiz.</value></data>
   <data name="Message.PostDeleteConfirm" xml:space="preserve"><value>'{0}' silinsin mi? Bu işlem geri alınamaz.</value></data>
+  <data name="Message.PostSaved" xml:space="preserve"><value>Taslak kaydedildi.</value></data>
+  <data name="Message.PostPublished" xml:space="preserve"><value>Yazı yayımlandı.</value></data>
+  <data name="Message.PostUpdated" xml:space="preserve"><value>Yazı güncellendi.</value></data>
+  <data name="Message.PostUnpublished" xml:space="preserve"><value>Yazı yayımdan kaldırıldı.</value></data>
+  <data name="Message.SlugChangeWarning" xml:space="preserve"><value>Bu URL'yi değiştirmek gelen bağlantıları bozacak. Emin misiniz?</value></data>
 
   <!-- Nav -->
   <data name="Nav.Posts" xml:space="preserve"><value>Yazılar</value></data>

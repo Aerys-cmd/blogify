@@ -39,7 +39,7 @@ builder.Services.AddScoped<TenantContext>();
 builder.Services.AddScoped<DatabaseMigrator>();
 builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
-builder.Services.AddSingleton<ITiptapHtmlRenderer, TiptapHtmlRenderer>();
+builder.Services.AddSingleton<IBlockNoteHtmlRenderer, BlockNoteHtmlRenderer>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<FeedService>();
 

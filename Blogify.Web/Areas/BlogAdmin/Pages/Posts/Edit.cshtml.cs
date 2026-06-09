@@ -26,6 +26,9 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
     public IReadOnlyList<CategorySelectItem> AvailableCategories { get; private set; } = [];
     public string PostTitle { get; private set; } = string.Empty;
     public string? CoverImagePreviewUrl { get; private set; }
+    public string PostCreatedAtFormatted { get; private set; } = string.Empty;
+    public string AuthorName { get; private set; } = string.Empty;
+    public string? SavedToastType { get; private set; }
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
@@ -61,6 +64,14 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
         PostRevision latestRevision = revisions.First();
 
         PostTitle = latestRevision.Title;
+        PostCreatedAtFormatted = post.CreatedAt.ToString("MMM d, yyyy");
+
+        AuthorName = await dbContext.Users
+            .AsNoTracking()
+            .Where(u => u.Id == post.AuthorId)
+            .Select(u => u.UserName!)
+            .FirstOrDefaultAsync(ct) ?? post.AuthorId;
+
         SelectedCategoryIds = await dbContext.PostCategories
             .AsNoTracking()
             .Where(pc => pc.PostId == Id)
@@ -78,6 +89,8 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
             MetaTitle = post.MetaTitle,
             MetaDescription = post.MetaDescription
         };
+
+        SavedToastType = TempData["PostSaved"] as string;
 
         await LoadAvailableCategoriesAsync(ct);
         return Page();
@@ -128,7 +141,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
 
         if (contentChanged)
         {
-            string contentText = TiptapContentExtractor.ExtractPlainText(Input.Content);
+            string contentText = BlockNoteContentExtractor.ExtractPlainText(Input.Content);
             post.AddRevision(Input.Title, Input.Content, contentText);
         }
 
@@ -160,7 +173,12 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
 
         await dbContext.SaveChangesAsync(ct);
         feedService.InvalidateTenant(post.BlogId);
-        return RedirectToPage("/Posts/Index", new { area = "BlogAdmin" });
+
+        TempData["PostSaved"] = (Input.IsPublished && !currentlyPublished) ? "published"
+            : (!Input.IsPublished && currentlyPublished) ? "unpublished"
+            : "saved";
+
+        return RedirectToPage("/Posts/Edit", new { area = "BlogAdmin", id = Id });
     }
 
     private async Task LoadAvailableCategoriesAsync(CancellationToken ct)

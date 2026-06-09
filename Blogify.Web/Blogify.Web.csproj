@@ -27,13 +27,18 @@
 
   <PropertyGroup>
     <EnableTailwindBuild>$(TAILWIND_BUILD)</EnableTailwindBuild>
-    <TailwindCli Condition="'$(OS)' == 'Windows_NT'">$(MSBuildProjectDirectory)\node_modules\.bin\tailwindcss.cmd</TailwindCli>
-    <TailwindCli Condition="'$(OS)' != 'Windows_NT'">$(MSBuildProjectDirectory)/node_modules/.bin/tailwindcss</TailwindCli>
+    <EnableViteBuild>$(VITE_BUILD)</EnableViteBuild>
+    <NpmCli Condition="'$(OS)' == 'Windows_NT'">npm.cmd</NpmCli>
+    <NpmCli Condition="'$(OS)' != 'Windows_NT'">npm</NpmCli>
   </PropertyGroup>
 
-  <Target Name="BuildTailwind" BeforeTargets="Build" Condition="'$(EnableTailwindBuild)' == 'true' And Exists('$(TailwindCli)')">
-    <Exec Command="&quot;$(TailwindCli)&quot; -i styles/themes/minimal.css -o wwwroot/css/themes/minimal.css --minify" ContinueOnError="WarnAndContinue" />
-    <Exec Command="&quot;$(TailwindCli)&quot; -i styles/themes/aurora.css -o wwwroot/css/themes/aurora.css --minify" ContinueOnError="WarnAndContinue" />
+  <Target Name="BuildTailwind" BeforeTargets="Build" Condition="'$(EnableTailwindBuild)' == 'true'">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(NpmCli)&quot; run build:css:minimal" ContinueOnError="WarnAndContinue" />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(NpmCli)&quot; run build:css:aurora" ContinueOnError="WarnAndContinue" />
+  </Target>
+
+  <Target Name="BuildVite" BeforeTargets="Build" Condition="'$(EnableViteBuild)' == 'true'">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(NpmCli)&quot; run build:editor" ContinueOnError="WarnAndContinue" />
   </Target>
 
 </Project>

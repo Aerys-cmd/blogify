@@ -1,0 +1,16 @@
+/* ============================================================
+   Blogify post editor — wrapper and minimum-height overrides
+   Applied on top of @blocknote/mantine/style.css
+   ============================================================ */
+
+.post-editor-wrapper .bn-container {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.post-editor-wrapper .bn-editor {
+    min-height: 480px;
+    padding: 1.25rem 1.5rem;
+}

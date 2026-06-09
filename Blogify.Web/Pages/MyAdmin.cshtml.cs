@@ -51,11 +51,10 @@ public sealed class MyAdminModel(
             ? baseHost
             : $"{tenant.Subdomain}.{baseHost}";
 
-        // Build the tenant admin URL: {scheme}://{tenantHost}/admin
-        // preserving any non-standard port (e.g. myblog.localhost:5001/admin in dev).
+        // Route through AdminRedirect so the user is signed in on the subdomain via a one-time cross-auth token before landing on the admin panel.
         string adminUrl = currentHost.Port.HasValue
-            ? $"{scheme}://{tenantHost}:{currentHost.Port}/admin"
-            : $"{scheme}://{tenantHost}/admin";
+            ? $"{scheme}://{tenantHost}:{currentHost.Port}/GetStarted/AdminRedirect?subdomain={tenant.Subdomain}"
+            : $"{scheme}://{tenantHost}/GetStarted/AdminRedirect?subdomain={tenant.Subdomain}";
 
         return Redirect(adminUrl);
     }
