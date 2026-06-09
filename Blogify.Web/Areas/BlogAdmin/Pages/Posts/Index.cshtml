@@ -1,125 +1,264 @@
 @page
 @model Blogify.Web.Areas.BlogAdmin.Pages.Posts.IndexModel
+@using Blogify.Web.Areas.BlogAdmin.Pages.Posts
+@using Blogify.Web.Models.Posts
 @{
-    ViewData["Title"] = "Posts";
+    ViewData["Title"] = Localizer["Page.Title.BlogAdmin.Posts"].Value;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-1">Posts</h1>
+        <h1 class="h3 mb-1">@Localizer["Page.Title.BlogAdmin.Posts"]</h1>
         <p class="text-muted mb-0">
-            @Model.TenantTitle &mdash;
-            @Model.TotalCount post@(Model.TotalCount == 1 ? "" : "s") total
+            @string.Format(Localizer["Label.Posts.CountSummary"].Value,
+                Model.PublishedCount + Model.DraftCount,
+                Model.PublishedCount,
+                Model.DraftCount)
         </p>
     </div>
     <a asp-area="BlogAdmin" asp-page="/Posts/Create" class="btn btn-primary">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
         </svg>
-        New Post
+        @Localizer["Action.NewPost"]
     </a>
 </div>
 
-@if (Model.Posts.Count == 0)
-{
-    <div id="posts-content">
-        <div class="alert alert-info">
-            No posts yet. <a asp-area="BlogAdmin" asp-page="/Posts/Create">Create your first post</a>.
+<div id="posts-content">
+    <div class="pl-filter-bar mb-4">
+        <nav class="pl-filter-tabs" aria-label="@Localizer["Aria.Posts.StatusFilter"].Value">
+            <a asp-area="BlogAdmin" asp-page="/Posts/Index"
+               asp-route-searchQuery="@Model.SearchQuery"
+               class="pl-filter-tab @(string.IsNullOrEmpty(Model.StatusFilter) ? "active" : "")">
+                @Localizer["Label.Posts.FilterAll"]
+                <span class="badge rounded-pill @(string.IsNullOrEmpty(Model.StatusFilter) ? "text-bg-dark" : "text-bg-secondary")">
+                    @(Model.PublishedCount + Model.DraftCount)
+                </span>
+            </a>
+            <a asp-area="BlogAdmin" asp-page="/Posts/Index"
+               asp-route-statusFilter="published"
+               asp-route-searchQuery="@Model.SearchQuery"
+               class="pl-filter-tab @(Model.StatusFilter == "published" ? "active" : "")">
+                @Localizer["Label.Posts.FilterPublished"]
+                <span class="badge rounded-pill @(Model.StatusFilter == "published" ? "text-bg-success" : "text-bg-secondary")">
+                    @Model.PublishedCount
+                </span>
+            </a>
+            <a asp-area="BlogAdmin" asp-page="/Posts/Index"
+               asp-route-statusFilter="draft"
+               asp-route-searchQuery="@Model.SearchQuery"
+               class="pl-filter-tab @(Model.StatusFilter == "draft" ? "active" : "")">
+                @Localizer["Label.Posts.FilterDraft"]
+                <span class="badge rounded-pill @(Model.StatusFilter == "draft" ? "text-bg-dark" : "text-bg-secondary")">
+                    @Model.DraftCount
+                </span>
+            </a>
+        </nav>
+        <div class="ms-auto">
+            <input type="search"
+                   class="form-control pl-search-input"
+                   value="@Model.SearchQuery"
+                   placeholder="@Localizer["Label.Posts.SearchPlaceholder"].Value"
+                   aria-label="@Localizer["Label.Posts.SearchPlaceholder"].Value"
+                   data-post-search
+                   data-status-filter="@Model.StatusFilter" />
         </div>
     </div>
-}
-else
-{
-    <div id="posts-content">
+
+    @if (Model.Posts.Count == 0)
+    {
         <div class="card shadow-sm">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">Title</th>
-                            <th scope="col">Slug</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Author</th>
-                            <th scope="col">Created</th>
-                            <th scope="col" class="text-end">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (Blogify.Web.Areas.BlogAdmin.Pages.Posts.PostRow post in Model.Posts)
-                        {
-                            <tr>
-                                <td class="fw-semibold">@post.Title</td>
-                                <td><code class="text-muted">@post.Slug</code></td>
-                                <td>
-                                    @if (post.Status == Blogify.Web.Models.Posts.PostStatus.Published)
-                                    {
-                                        <span class="badge bg-success">Published</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">Draft</span>
-                                    }
-                                </td>
-                                <td class="text-muted small">@post.AuthorId</td>
-                                <td class="text-muted small">@post.CreatedAt.ToString("MMM d, yyyy")</td>
-                                <td class="text-end">
-                                    <a asp-area="BlogAdmin" asp-page="/Posts/Edit"
-                                       asp-route-id="@post.Id"
-                                       class="btn btn-sm btn-outline-secondary me-1">Edit</a>
-                                    <form method="post" asp-page-handler="Delete"
-                                          asp-route-id="@post.Id"
-                                          class="d-inline"
-                                          data-confirm-message="@Localizer["Message.PostDeleteConfirm", post.Title].Value">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+            @if (!Model.HasActiveFilters && Model.PublishedCount == 0 && Model.DraftCount == 0)
+            {
+                <div class="pl-empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-pencil-square text-muted mb-3" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                    </svg>
+                    <p class="text-muted mb-3">@Localizer["Message.Posts.Empty"]</p>
+                    <a asp-area="BlogAdmin" asp-page="/Posts/Create" class="btn btn-primary">
+                        @Localizer["Message.Posts.EmptyCreate"]
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="pl-empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-search text-muted mb-3" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                    </svg>
+                    <p class="text-muted mb-3">@Localizer["Message.Posts.NoResults"]</p>
+                    <a asp-area="BlogAdmin" asp-page="/Posts/Index" class="btn btn-outline-secondary btn-sm">
+                        @Localizer["Action.ClearFilters"]
+                    </a>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm mb-4">
+            @foreach (PostRow post in Model.Posts)
+            {
+                <article class="pl-row">
+                    <div class="pl-row-body">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <a asp-area="BlogAdmin" asp-page="/Posts/Edit"
+                               asp-route-id="@post.Id"
+                               class="pl-row-title">@post.Title</a>
+                            @if (post.Status == PostStatus.Published)
+                            {
+                                <span class="badge text-bg-success">@Localizer["Post.Status.Published"]</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-secondary">@Localizer["Post.Status.Draft"]</span>
+                            }
+                        </div>
+                        <p class="pl-row-meta mb-0">
+                            @if (!string.IsNullOrEmpty(post.Excerpt))
+                            {
+                                @post.Excerpt
+                            }
+                            else
+                            {
+                                <span>/@post.Slug</span>
+                            }
+                        </p>
+                    </div>
+
+                    <div class="d-none d-md-flex align-items-center gap-1 text-muted small flex-shrink-0 pl-row-author">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="bi bi-person me-1" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.029 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                        </svg>
+                        @post.AuthorName
+                    </div>
+
+                    <time class="text-muted small flex-shrink-0 pl-row-date d-none d-lg-block"
+                          datetime="@post.CreatedAt.ToString("yyyy-MM-dd")">
+                        @post.CreatedAt.ToString("MMM d, yyyy")
+                    </time>
+
+                    <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                        <a asp-area="BlogAdmin" asp-page="/Posts/Edit"
+                           asp-route-id="@post.Id"
+                           class="pl-action-btn"
+                           title="@Localizer["Action.Edit"].Value"
+                           aria-label="@Localizer["Action.Edit"].Value">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                            </svg>
+                        </a>
+                        <form method="post" asp-page-handler="Delete"
+                              asp-route-id="@post.Id"
+                              class="d-inline"
+                              data-confirm-message="@Localizer["Message.PostDeleteConfirm", post.Title].Value">
+                            @Html.AntiForgeryToken()
+                            <button type="submit"
+                                    class="pl-action-btn pl-action-btn-danger"
+                                    title="@Localizer["Action.Delete"].Value"
+                                    aria-label="@Localizer["Action.Delete"].Value">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" aria-hidden="true">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            }
         </div>
 
         @if (Model.TotalPages > 1)
         {
-            <nav aria-label="Post list pagination" class="mt-4"
-                 hx-boost="true"
-                 hx-target="#posts-content"
-                 hx-select="#posts-content"
-                 hx-swap="outerHTML"
-                 hx-push-url="true">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : "")">
-                        <a class="page-link"
-                           asp-area="BlogAdmin" asp-page="/Posts/Index"
-                           asp-route-page="@(Model.CurrentPage - 1)"
-                           aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-
-                    @for (int p = 1; p <= Model.TotalPages; p++)
-                    {
-                        int pageNum = p;
-                        <li class="page-item @(pageNum == Model.CurrentPage ? "active" : "")">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
+                <p class="text-muted small mb-0">
+                    @string.Format(Localizer["Label.Posts.PaginationInfo"].Value, Model.CurrentPage, Model.TotalPages)
+                </p>
+                <nav aria-label="@Localizer["Aria.Posts.Pagination"].Value"
+                     hx-boost="true"
+                     hx-target="#posts-content"
+                     hx-select="#posts-content"
+                     hx-swap="outerHTML"
+                     hx-push-url="true">
+                    <ul class="pagination mb-0">
+                        <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : "")">
                             <a class="page-link"
                                asp-area="BlogAdmin" asp-page="/Posts/Index"
-                               asp-route-page="@pageNum">@pageNum</a>
+                               asp-route-page="@(Model.CurrentPage - 1)"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               asp-route-searchQuery="@Model.SearchQuery"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
                         </li>
-                    }
-
-                    <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : "")">
-                        <a class="page-link"
-                           asp-area="BlogAdmin" asp-page="/Posts/Index"
-                           asp-route-page="@(Model.CurrentPage + 1)"
-                           aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                        @for (int p = 1; p <= Model.TotalPages; p++)
+                        {
+                            int pageNum = p;
+                            <li class="page-item @(pageNum == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link"
+                                   asp-area="BlogAdmin" asp-page="/Posts/Index"
+                                   asp-route-page="@pageNum"
+                                   asp-route-statusFilter="@Model.StatusFilter"
+                                   asp-route-searchQuery="@Model.SearchQuery">@pageNum</a>
+                            </li>
+                        }
+                        <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-area="BlogAdmin" asp-page="/Posts/Index"
+                               asp-route-page="@(Model.CurrentPage + 1)"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               asp-route-searchQuery="@Model.SearchQuery"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         }
-    </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var SESSION_KEY = 'pl-search-focused';
+            var searchInput = document.querySelector('[data-post-search]');
+            if (!searchInput) { return; }
+
+            // Restore focus after search-triggered navigation
+            if (sessionStorage.getItem(SESSION_KEY) === '1') {
+                sessionStorage.removeItem(SESSION_KEY);
+                searchInput.focus();
+                var len = searchInput.value.length;
+                searchInput.setSelectionRange(len, len);
+            }
+
+            var debounceTimer = null;
+
+            searchInput.addEventListener('input', function () {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(function () {
+                    var searchValue = searchInput.value.trim();
+                    var statusFilter = searchInput.dataset.statusFilter || '';
+                    var url = new URL(window.location.href);
+                    url.searchParams.set('page', '1');
+                    if (searchValue) {
+                        url.searchParams.set('searchQuery', searchValue);
+                    } else {
+                        url.searchParams.delete('searchQuery');
+                    }
+                    if (statusFilter) {
+                        url.searchParams.set('statusFilter', statusFilter);
+                    } else {
+                        url.searchParams.delete('statusFilter');
+                    }
+                    sessionStorage.setItem(SESSION_KEY, '1');
+                    window.location.href = url.toString();
+                }, 300);
+            });
+        }());
+    </script>
 }
 

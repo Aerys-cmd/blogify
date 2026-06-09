@@ -319,4 +319,18 @@
   <data name="Media.UsedAsCoverIn" xml:space="preserve"><value>Used as cover in:</value></data>
   <data name="Message.ConfirmDeleteFile" xml:space="preserve"><value>Delete this file?</value></data>
   <data name="Message.ConfirmDeleteMediaDetail" xml:space="preserve"><value>Delete &apos;{0}&apos;? Posts using this as cover image will lose their cover.</value></data>
+  <!-- Posts List -->
+  <data name="Action.NewPost" xml:space="preserve"><value>New Post</value></data>
+  <data name="Action.ClearFilters" xml:space="preserve"><value>Clear filters</value></data>
+  <data name="Label.Posts.FilterAll" xml:space="preserve"><value>All</value></data>
+  <data name="Label.Posts.FilterPublished" xml:space="preserve"><value>Published</value></data>
+  <data name="Label.Posts.FilterDraft" xml:space="preserve"><value>Draft</value></data>
+  <data name="Label.Posts.SearchPlaceholder" xml:space="preserve"><value>Search posts…</value></data>
+  <data name="Label.Posts.CountSummary" xml:space="preserve"><value>{0} total — {1} published, {2} drafts</value></data>
+  <data name="Label.Posts.PaginationInfo" xml:space="preserve"><value>Page {0} of {1}</value></data>
+  <data name="Message.Posts.Empty" xml:space="preserve"><value>You haven't written any posts yet.</value></data>
+  <data name="Message.Posts.EmptyCreate" xml:space="preserve"><value>Create your first post</value></data>
+  <data name="Message.Posts.NoResults" xml:space="preserve"><value>No posts match your search.</value></data>
+  <data name="Aria.Posts.StatusFilter" xml:space="preserve"><value>Filter by status</value></data>
+  <data name="Aria.Posts.Pagination" xml:space="preserve"><value>Post list pagination</value></data>
 </root>

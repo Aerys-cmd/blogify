@@ -319,4 +319,18 @@
   <data name="Media.UsedAsCoverIn" xml:space="preserve"><value>Kapak olarak kullanıldığı yerler:</value></data>
   <data name="Message.ConfirmDeleteFile" xml:space="preserve"><value>Bu dosyayı sil?</value></data>
   <data name="Message.ConfirmDeleteMediaDetail" xml:space="preserve"><value>&apos;{0}&apos; silinsin mi? Bunu kapak görseli olarak kullanan gönderiler kapak görselini kaybedecek.</value></data>
+  <!-- Posts List -->
+  <data name="Action.NewPost" xml:space="preserve"><value>Yeni Yazı</value></data>
+  <data name="Action.ClearFilters" xml:space="preserve"><value>Filtreleri temizle</value></data>
+  <data name="Label.Posts.FilterAll" xml:space="preserve"><value>Tümü</value></data>
+  <data name="Label.Posts.FilterPublished" xml:space="preserve"><value>Yayımlanmış</value></data>
+  <data name="Label.Posts.FilterDraft" xml:space="preserve"><value>Taslak</value></data>
+  <data name="Label.Posts.SearchPlaceholder" xml:space="preserve"><value>Yazılarda ara…</value></data>
+  <data name="Label.Posts.CountSummary" xml:space="preserve"><value>{0} toplam — {1} yayımlanmış, {2} taslak</value></data>
+  <data name="Label.Posts.PaginationInfo" xml:space="preserve"><value>Sayfa {0} / {1}</value></data>
+  <data name="Message.Posts.Empty" xml:space="preserve"><value>Henüz hiç yazı eklemediniz.</value></data>
+  <data name="Message.Posts.EmptyCreate" xml:space="preserve"><value>İlk yazınızı oluşturun</value></data>
+  <data name="Message.Posts.NoResults" xml:space="preserve"><value>Aramanızla eşleşen yazı bulunamadı.</value></data>
+  <data name="Aria.Posts.StatusFilter" xml:space="preserve"><value>Duruma göre filtrele</value></data>
+  <data name="Aria.Posts.Pagination" xml:space="preserve"><value>Yazı listesi sayfalaması</value></data>
 </root>
