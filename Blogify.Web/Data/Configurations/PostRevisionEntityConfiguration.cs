@@ -22,6 +22,8 @@ public sealed class PostRevisionEntityConfiguration : IEntityTypeConfiguration<P
 
         builder.Property(r => r.Content).IsRequired();
 
+        builder.Property(r => r.ContentText);
+
         builder.Property(r => r.CreatedAt).IsRequired();
     }
 }

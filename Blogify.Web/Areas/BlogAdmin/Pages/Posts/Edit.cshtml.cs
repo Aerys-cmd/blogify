@@ -128,7 +128,8 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
 
         if (contentChanged)
         {
-            post.AddRevision(Input.Title, Input.Content);
+            string contentText = TiptapContentExtractor.ExtractPlainText(Input.Content);
+            post.AddRevision(Input.Title, Input.Content, contentText);
         }
 
         post.UpdateExcerpt(Input.Excerpt);

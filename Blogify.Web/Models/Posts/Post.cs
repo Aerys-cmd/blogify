@@ -13,7 +13,7 @@ public sealed class Post
 
     private Post() { }
 
-    private Post(Guid blogId, string authorId, string slug, string initialTitle, string initialContent)
+    private Post(Guid blogId, string authorId, string slug, string initialTitle, string initialContent, string? initialContentText)
     {
         if (blogId == Guid.Empty)
         {
@@ -32,7 +32,7 @@ public sealed class Post
         CreatedAt = DateTimeOffset.UtcNow;
         ChangeSlug(slug);
 
-        PostRevision initialRevision = PostRevision.Create(Id, initialTitle, initialContent);
+        PostRevision initialRevision = PostRevision.Create(Id, initialTitle, initialContent, initialContentText);
         _revisions.Add(initialRevision);
     }
 
@@ -51,9 +51,9 @@ public sealed class Post
     public IReadOnlyList<PostRevision> Revisions => _revisions.AsReadOnly();
     public IReadOnlyList<PostCategory> Categories => _categories.AsReadOnly();
 
-    public static Post Create(Guid blogId, string authorId, string slug, string initialTitle, string initialContent)
+    public static Post Create(Guid blogId, string authorId, string slug, string initialTitle, string initialContent, string? initialContentText = null)
     {
-        return new Post(blogId, authorId, slug, initialTitle, initialContent);
+        return new Post(blogId, authorId, slug, initialTitle, initialContent, initialContentText);
     }
 
     public void UpdateExcerpt(string? excerpt)
@@ -99,9 +99,9 @@ public sealed class Post
         }
     }
 
-    public void AddRevision(string title, string content)
+    public void AddRevision(string title, string content, string? contentText = null)
     {
-        PostRevision revision = PostRevision.Create(Id, title, content);
+        PostRevision revision = PostRevision.Create(Id, title, content, contentText);
         _revisions.Add(revision);
     }
 

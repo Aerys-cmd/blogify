@@ -1,45 +1,399 @@
+/* ============================================================
+   Blogify post editor — Notion-like Tiptap styles
+   ============================================================ */
+
+/* ---- Wrapper ---- */
 .post-editor-wrapper {
-    border: 1px solid #dee2e6;
-    border-radius: 0.375rem;
-    overflow: hidden;
+    position: relative;
+    /* No border — the card provides the visual container */
 }
 
+/* ---- ProseMirror editing area ---- */
 .post-editor-tiptap .ProseMirror {
-    min-height: 600px;
-    padding: 0.75rem 1rem;
+    min-height: 520px;
+    padding: 1.5rem 2.5rem 3rem;
     outline: none;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #1c1c1e;
+    caret-color: #1c1c1e;
 }
 
-.post-editor-tiptap .ProseMirror p.is-editor-empty:first-child::before {
+/* Tight block spacing, Notion-style */
+.post-editor-tiptap .ProseMirror > * + * {
+    margin-top: 0.2rem;
+}
+
+/* Extra breathing room before headings */
+.post-editor-tiptap .ProseMirror > * + h1,
+.post-editor-tiptap .ProseMirror > * + h2,
+.post-editor-tiptap .ProseMirror > * + h3 {
+    margin-top: 1.75rem;
+}
+
+/* ---- Headings ---- */
+.post-editor-tiptap .ProseMirror h1,
+.post-editor-tiptap .ProseMirror h2,
+.post-editor-tiptap .ProseMirror h3 {
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: #111;
+}
+
+.post-editor-tiptap .ProseMirror h1 { font-size: 1.875rem; font-weight: 700; }
+.post-editor-tiptap .ProseMirror h2 { font-size: 1.5rem;   font-weight: 600; }
+.post-editor-tiptap .ProseMirror h3 { font-size: 1.25rem;  font-weight: 600; }
+
+/* ---- Placeholder (active empty block only) ---- */
+.post-editor-tiptap .ProseMirror p.is-empty::before {
     content: attr(data-placeholder);
-    color: #adb5bd;
-    pointer-events: none;
     float: left;
+    color: #b8bec9;
+    pointer-events: none;
     height: 0;
 }
 
-.post-editor-quill .ql-container {
-    min-height: 600px;
-    font-size: 1rem;
+/* First block of a completely empty editor gets a slightly different hint */
+.post-editor-tiptap .ProseMirror.is-editor-empty > p:first-child::before {
+    color: #a8b0bb;
 }
 
-.post-editor-quill .ql-toolbar {
-    border-left: none;
-    border-right: none;
-    border-top: none;
+/* ---- Blockquote — Notion style ---- */
+.post-editor-tiptap .ProseMirror blockquote {
+    border-left: 3px solid #e0e3e8;
+    background: #f9fafc;
+    padding: 0.6rem 0.75rem 0.6rem 1rem;
+    margin: 0.4rem 0;
+    color: #5a6270;
+    border-radius: 0 4px 4px 0;
+    font-style: normal;
 }
 
+/* ---- Code block — dark VS-Code-style ---- */
+.post-editor-tiptap .ProseMirror pre {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border: none;
+    border-radius: 8px;
+    padding: 1.1rem 1.4rem;
+    margin: 0.5rem 0;
+    overflow-x: auto;
+    font-family: 'Fira Code', 'Cascadia Code', ui-monospace, 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.65;
+}
+
+.post-editor-tiptap .ProseMirror pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+    border-radius: 0;
+}
+
+/* ---- Inline code ---- */
+.post-editor-tiptap .ProseMirror :not(pre) > code {
+    background: rgba(135, 131, 120, 0.15);
+    color: #d44;
+    border-radius: 4px;
+    padding: 0.15em 0.4em;
+    font-size: 0.875em;
+    font-family: 'Fira Code', ui-monospace, Consolas, monospace;
+}
+
+/* ---- Horizontal rule ---- */
+.post-editor-tiptap .ProseMirror hr {
+    border: none;
+    border-top: 1px solid #e8eaee;
+    margin: 1.4rem 0;
+}
+
+/* ---- Images ---- */
 .post-editor-tiptap .ProseMirror img {
     max-width: 100%;
     height: auto;
     display: block;
-    margin: 0.75rem 0;
-    border-radius: 0.375rem;
-    border: 1px solid #dee2e6;
+    margin: 0.5rem auto;
+    border-radius: 6px;
     cursor: default;
 }
 
 .post-editor-tiptap .ProseMirror img.ProseMirror-selectednode {
-    outline: 3px solid #0d6efd;
-    border-color: #0d6efd;
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* ---- Lists ---- */
+.post-editor-tiptap .ProseMirror ul,
+.post-editor-tiptap .ProseMirror ol {
+    padding-left: 1.5rem;
+    margin: 0.1rem 0;
+}
+
+.post-editor-tiptap .ProseMirror li { margin-top: 0.15rem; }
+.post-editor-tiptap .ProseMirror li > p { margin: 0; }
+
+/* ---- Tables ---- */
+.post-editor-tiptap .ProseMirror table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.75rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.post-editor-tiptap .ProseMirror td,
+.post-editor-tiptap .ProseMirror th {
+    border: 1px solid #e2e4e8;
+    padding: 0.45rem 0.75rem;
+    vertical-align: top;
+    min-width: 60px;
+    position: relative;
+}
+
+.post-editor-tiptap .ProseMirror th {
+    background: #f5f6f8;
+    font-weight: 600;
+}
+
+.post-editor-tiptap .ProseMirror .selectedCell::after {
+    background: rgba(59, 130, 246, 0.08);
+    content: '';
+    left: 0; right: 0; top: 0; bottom: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+}
+
+/* ============================================================
+   Block handle — the "+" and drag dots that appear left of
+   each block on hover
+   ============================================================ */
+
+.post-editor-block-handle {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.12s ease;
+    z-index: 40;
+    user-select: none;
+}
+
+.post-editor-handle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    color: #c0c6d0;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    line-height: 1;
+}
+
+.post-editor-handle-btn:hover {
+    background: #eff0f3;
+    color: #52586a;
+}
+
+.post-editor-handle-drag { cursor: grab; }
+.post-editor-handle-drag:active { cursor: grabbing; }
+
+/* ============================================================
+   Slash command menu
+   ============================================================ */
+
+.post-editor-slash-menu {
+    position: absolute;
+    z-index: 1060;
+    background: #fff;
+    border: 1px solid #e4e6ea;
+    border-radius: 10px;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.04),
+        0 8px 28px rgba(0, 0, 0, 0.13),
+        0 2px 6px rgba(0, 0, 0, 0.06);
+    width: 288px;
+    max-height: 352px;
+    overflow-y: auto;
+    padding: 6px;
+    /* Custom scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #d0d4db transparent;
+}
+
+.post-editor-slash-menu::-webkit-scrollbar { width: 6px; }
+.post-editor-slash-menu::-webkit-scrollbar-track { background: transparent; }
+.post-editor-slash-menu::-webkit-scrollbar-thumb { background: #d0d4db; border-radius: 3px; }
+
+.post-editor-slash-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 6px 8px;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.post-editor-slash-item:hover,
+.post-editor-slash-item.is-selected {
+    background: #f1f3f8;
+}
+
+.post-editor-slash-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: #f5f6f8;
+    border: 1px solid #e6e8ec;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #3a4252;
+    line-height: 1;
+}
+
+.post-editor-slash-label {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    line-height: 1.25;
+}
+
+.post-editor-slash-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1a202c;
+}
+
+.post-editor-slash-desc {
+    font-size: 0.75rem;
+    color: #7a8494;
+}
+
+/* ============================================================
+   Bubble menu — inline formatting toolbar on text selection
+   ============================================================ */
+
+.post-editor-bubble-menu {
+    position: fixed;
+    z-index: 1050;
+    display: none;
+    align-items: center;
+    gap: 1px;
+    background: #1a1d24;
+    border-radius: 8px;
+    padding: 4px 5px;
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.35),
+        0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+.post-editor-bubble-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 28px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 5px;
+    color: #ccd0da;
+    cursor: pointer;
+    font-size: 0.875rem;
+    line-height: 1;
+    transition: background 0.1s, color 0.1s;
+}
+
+.post-editor-bubble-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.post-editor-bubble-btn.is-active {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+}
+
+/* ============================================================
+   Drag and drop — ghost preview and drop indicator
+   ============================================================ */
+
+/* Source block fades while being dragged */
+.post-editor-dragging-source {
+    opacity: 0.25 !important;
+    pointer-events: none;
+}
+
+/* Floating ghost that follows the cursor */
+.post-editor-drag-ghost {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    background: #fff;
+    border: 1px solid #e4e6ea;
+    border-radius: 6px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
+    padding: 0.5rem 0.875rem;
+    max-height: 72px;
+    overflow: hidden;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: #1c1c1e;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transform: rotate(0.4deg) scale(0.98);
+    opacity: 0.9;
+}
+
+/* Gradient fade at the bottom of the ghost */
+.post-editor-drag-ghost::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background: linear-gradient(transparent, rgba(255,255,255,0.95));
+    border-radius: 0 0 6px 6px;
+    pointer-events: none;
+}
+
+/* Blue horizontal drop-target line */
+.post-editor-drag-indicator {
+    position: fixed;
+    z-index: 9998;
+    height: 2px;
+    background: #3b82f6;
+    border-radius: 1px;
+    pointer-events: none;
+    display: none;
+}
+
+/* Dot on the left end of the indicator */
+.post-editor-drag-indicator::before {
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    background: #3b82f6;
+    border-radius: 50%;
 }

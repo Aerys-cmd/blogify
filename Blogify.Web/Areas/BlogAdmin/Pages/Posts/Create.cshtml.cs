@@ -13,8 +13,7 @@ using Microsoft.Extensions.Localization;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
 [Authorize(Roles = "BlogAdmin")]
-public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext, FeedService feedService, IStringLocalizer<SharedResource> localizer) : PageModel
-{
+public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext, FeedService feedService, IStringLocalizer<SharedResource> localizer) : PageModel{
     [BindProperty]
     public CreatePostInput Input { get; set; } = new();
 
@@ -58,12 +57,15 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         Guid blogId = tenantContext.RequiredTenant.Id;
 
+        string contentText = TiptapContentExtractor.ExtractPlainText(Input.Content);
+
         Post post = Post.Create(
             blogId: blogId,
             authorId: authorId,
             slug: Input.Slug,
             initialTitle: Input.Title,
-            initialContent: Input.Content
+            initialContent: Input.Content,
+            initialContentText: contentText
         );
 
         post.UpdateExcerpt(Input.Excerpt);

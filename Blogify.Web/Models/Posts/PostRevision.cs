@@ -4,12 +4,13 @@ public sealed class PostRevision
 {
     private PostRevision() { }
 
-    private PostRevision(Guid postId, string title, string content)
+    private PostRevision(Guid postId, string title, string content, string? contentText)
     {
         Id = Guid.NewGuid();
         PostId = postId;
         Title = title.Trim();
         Content = content.Trim();
+        ContentText = contentText;
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
@@ -17,9 +18,10 @@ public sealed class PostRevision
     public Guid PostId { get; private init; }
     public string Title { get; private init; } = string.Empty;
     public string Content { get; private init; } = string.Empty;
+    public string? ContentText { get; private init; }
     public DateTimeOffset CreatedAt { get; private init; }
 
-    public static PostRevision Create(Guid postId, string title, string content)
+    public static PostRevision Create(Guid postId, string title, string content, string? contentText = null)
     {
         if (postId == Guid.Empty)
         {
@@ -41,6 +43,6 @@ public sealed class PostRevision
             throw new ArgumentException("Revision content is required.", nameof(content));
         }
 
-        return new PostRevision(postId, title, content);
+        return new PostRevision(postId, title, content, contentText);
     }
 }

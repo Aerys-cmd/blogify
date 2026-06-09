@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.Blog.Pages;
 
-public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tenantContext, ITiptapHtmlRenderer htmlRenderer) : PageModel
 {
     public Guid PostId { get; private set; }
     public string PostTitle { get; private set; } = string.Empty;
@@ -102,7 +102,7 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
 
         PostId = post.Id;
         PostTitle = publishedRevision.Title;
-        PostContent = publishedRevision.Content;
+        PostContent = htmlRenderer.Render(publishedRevision.Content);
         PublishedAt = publishedRevision.CreatedAt;
         AuthorId = post.AuthorId;
 
