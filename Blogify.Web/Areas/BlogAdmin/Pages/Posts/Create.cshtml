@@ -224,6 +224,8 @@
     </div>
 
     <partial name="_EditorImagePickerModal" model='"editorImageInsert"' />
+    <partial name="_MediaPickerDialog"
+             model="@(new MediaPickerFieldVm("coverImageId", "Input.CoverImageId", Model.Input.CoverImageId, null, "mediaPickerModal"))" />
 </form>
 
 @section Scripts {

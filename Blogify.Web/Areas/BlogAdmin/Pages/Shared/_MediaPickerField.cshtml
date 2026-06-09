@@ -11,11 +11,7 @@
 <div class="d-flex align-items-center gap-2 flex-wrap">
     <button type="button" class="btn btn-outline-secondary btn-sm"
             data-bs-toggle="modal"
-            data-bs-target="#@Model.ModalId"
-            hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.InputId&modalId=@Model.ModalId"
-            hx-target="#@(Model.ModalId)-body"
-            hx-swap="innerHTML"
-            hx-trigger="click">
+            data-bs-target="#@Model.ModalId">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
              class="me-1" viewBox="0 0 16 16" aria-hidden="true">
             <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
@@ -29,26 +25,4 @@
             data-target-input-id="@Model.InputId">
         Remove
     </button>
-</div>
-
-<div class="modal fade" id="@Model.ModalId" tabindex="-1"
-     aria-labelledby="@(Model.ModalId)-label" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title h5" id="@(Model.ModalId)-label">Media Library</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="@(Model.ModalId)-body">
-                <div class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading…</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
 </div>
