@@ -1,0 +1,80 @@
+@page "/dashboard"
+@model Blogify.Web.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = @Localizer["Dashboard.Title"].Value;
+    Layout = "/Pages/Shared/_LandingLayout.cshtml";
+}
+
+<div class="container py-5">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h2 class="fw-bold mb-0">@Localizer["Dashboard.MyBlogs"]</h2>
+        <a asp-page="/Dashboard/CreateBlog" class="btn btn-primary btn-sm">
+            + @Localizer["Action.CreateBlog"]
+        </a>
+    </div>
+
+    @if (Model.OwnedBlogs.Count > 0)
+    {
+        <h5 class="text-muted mb-3">@Localizer["Dashboard.Owned"]</h5>
+        <div class="row g-3 mb-4">
+            @foreach (Blogify.Web.Pages.Dashboard.IndexModel.BlogCardItem blog in Model.OwnedBlogs)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="card-title fw-semibold mb-1">@blog.Title</h6>
+                            <p class="text-muted small mb-3">@(blog.Subdomain).blogify.com</p>
+                            <div class="d-flex gap-2">
+                                <a href="/app/admin/@blog.Subdomain" class="btn btn-sm btn-dark">
+                                    @Localizer["Dashboard.ManageBlog"]
+                                </a>
+                                <a href="@blog.BlogUrl" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                    @Localizer["Dashboard.ViewBlog"]
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (Model.MemberBlogs.Count > 0)
+    {
+        <h5 class="text-muted mb-3">@Localizer["Dashboard.MemberOf"]</h5>
+        <div class="row g-3 mb-4">
+            @foreach (Blogify.Web.Pages.Dashboard.IndexModel.MemberBlogCardItem blog in Model.MemberBlogs)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="card-title fw-semibold mb-1">@blog.Title</h6>
+                            <p class="text-muted small mb-1">@(blog.Subdomain).blogify.com</p>
+                            <span class="badge bg-secondary mb-3">@blog.Role.ToString()</span>
+                            <div class="d-flex gap-2">
+                                <a href="/app/admin/@blog.Subdomain" class="btn btn-sm btn-dark">
+                                    @Localizer["Dashboard.ManageBlog"]
+                                </a>
+                                <a href="@blog.BlogUrl" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                    @Localizer["Dashboard.ViewBlog"]
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (Model.OwnedBlogs.Count == 0 && Model.MemberBlogs.Count == 0)
+    {
+        <div class="text-center py-5">
+            <p class="text-muted mb-3">@Localizer["Dashboard.NoBlogs"]</p>
+            <a asp-page="/Dashboard/CreateBlog" class="btn btn-primary">
+                @Localizer["Action.CreateBlog"]
+            </a>
+        </div>
+    }
+
+</div>

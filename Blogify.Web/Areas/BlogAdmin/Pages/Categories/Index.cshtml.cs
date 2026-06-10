@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Categories;
 
-[Authorize(Roles = "BlogAdmin")]
+[Authorize]
 public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
     public IReadOnlyList<CategoryListItem> Categories { get; private set; } = [];

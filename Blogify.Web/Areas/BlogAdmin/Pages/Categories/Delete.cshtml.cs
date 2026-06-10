@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Categories;
 
-[Authorize(Roles = "BlogAdmin")]
+[Authorize]
 public sealed class DeleteModel(ApplicationDbContext dbContext) : PageModel
 {
     [BindProperty(SupportsGet = true)]

@@ -1,0 +1,42 @@
+@page
+@model Blogify.Web.Areas.Identity.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = @Localizer["Auth.Register.Title"].Value;
+}
+
+<h4 class="mb-4 fw-semibold">@Localizer["Auth.Register.Heading"]</h4>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Email" class="form-label">@Localizer["Label.Email"]</label>
+        <input asp-for="Input.Email" class="form-control" autocomplete="email" />
+        <span asp-validation-for="Input.Email" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Password" class="form-label">@Localizer["Label.Password"]</label>
+        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" />
+        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.ConfirmPassword" class="form-label">@Localizer["Label.ConfirmPassword"]</label>
+        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" />
+        <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+    </div>
+
+    <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary">@Localizer["Auth.Register.Submit"]</button>
+    </div>
+
+    <div class="text-center small">
+        @Localizer["Auth.Register.HaveAccount"]
+        <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">@Localizer["Action.SignIn"]</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

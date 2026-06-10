@@ -7,9 +7,6 @@ using Blogify.Web.Endpoints;
 using Blogify.Web.Models;
 using Blogify.Web.Services;
 using Blogify.Web.Middleware;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.HttpOverrides;
-using System.IO;
 using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +39,7 @@ builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddSingleton<IBlockNoteHtmlRenderer, BlockNoteHtmlRenderer>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<FeedService>();
+builder.Services.AddScoped<IBlogPermissionService, BlogPermissionService>();
 
 builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
 builder.Services.AddSingleton<AnalyticsChannel>();
@@ -53,12 +51,9 @@ builder.Services.Configure<TenantOptions>(
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor |
-        ForwardedHeaders.XForwardedProto |
-        ForwardedHeaders.XForwardedHost;
-    // Trust only RFC-1918 private ranges used by Docker internal networks.
-    // This restricts header spoofing to hosts inside those private ranges
-    // while still supporting any Docker Compose subnet assignment.
+        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
+        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto |
+        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedHost;
     options.ForwardLimit = 1;
     options.KnownIPNetworks.Clear();
     options.KnownIPNetworks.Add(new System.Net.IPNetwork(IPAddress.Parse("10.0.0.0"), 8));
@@ -80,18 +75,19 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
     options.ViewLocationExpanders.Add(new ThemeViewLocationExpander());
 });
 
-// Add services to the container.
 builder.Services
     .AddRazorPages(options =>
     {
-    // Map the BlogAdmin area under the /admin route prefix instead of /BlogAdmin.
+    // Map the BlogAdmin area under /app/admin/{blogSlug} so the blog is identified
+    // by route parameter rather than subdomain, enabling a single-auth architecture
+    // where all admin pages live on the root domain cookie.
     options.Conventions.AddAreaFolderRouteModelConvention(
         areaName: "BlogAdmin",
         folderPath: "/",
         action: model =>
         {
             const string areaPrefix = "BlogAdmin";
-            const string newPrefix = "admin";
+            const string newPrefix = "app/admin/{blogSlug}";
 
             foreach (SelectorModel selector in model.Selectors)
             {
@@ -104,7 +100,7 @@ builder.Services
                 }
                 else if (template.StartsWith(areaPrefix + "/", StringComparison.OrdinalIgnoreCase))
                 {
-                    selector.AttributeRouteModel.Template = newPrefix + template[areaPrefix.Length..];
+                    selector.AttributeRouteModel.Template = newPrefix + "/" + template[(areaPrefix.Length + 1)..];
                 }
             }
         });
@@ -149,11 +145,8 @@ await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
 
 app.MapDefaultEndpoints();
 
-// UseForwardedHeaders must be first so that scheme/host/IP are correctly set
-// before any downstream middleware (HSTS, HTTPS redirection, auth callbacks, etc.)
 app.UseForwardedHeaders();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -170,23 +163,17 @@ app.UseRequestLocalization(new RequestLocalizationOptions()
 
 app.UseStaticFiles();
 
-// Explicit routing must be first so that route data is available to all subsequent middleware.
 app.UseRouting();
 
 app.UseAuthentication();
 
-// Tenant resolution must run after authentication (user identity is set) but before
-// authorization so that downstream middleware and pages can access TenantContext.
+// Tenant resolution must run after authentication but before authorization.
 app.UseTenantResolution();
 
-// Unified access control: enforces host-based routing for root Pages, tenant
-// ownership/membership for BlogAdmin, and serves the landing page inline for Blog
-// area requests on the root domain. Must run after tenant resolution and before
-// the ASP.NET Core authorization middleware and analytics tracking.
+// Unified access control: host-based routing + blog ownership/membership checks.
 app.UseAccessControl();
 
 // Analytics tracking: fire-and-forget page view recording for the Blog area.
-// Runs after access guards so only legitimate tenant page views are tracked.
 app.UseAnalyticsTracking();
 
 app.UseAuthorization();
@@ -198,6 +185,7 @@ app.MapStaticAssets();
 app.MapCrossAuthEndpoints();
 app.MapFeedEndpoints();
 app.MapCultureEndpoints();
+app.MapInvitationEndpoints();
 
 app.MapRazorPages()
    .WithStaticAssets();

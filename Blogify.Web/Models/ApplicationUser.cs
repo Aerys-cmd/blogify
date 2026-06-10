@@ -2,13 +2,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Blogify.Web.Models
 {
+    /// <summary>
+    /// Application user. Every registered account is simply a User.
+    /// Blog access is controlled via <see cref="BlogMembership"/> (multi-blog) and
+    /// <see cref="Tenant.OwnerId"/> (ownership). No TenantId on the user record.
+    /// </summary>
     public class ApplicationUser : IdentityUser
     {
-        /// <summary>
-        /// The ID of the tenant this user is a member of (non-owner membership).
-        /// Null when the user has no blog membership (e.g. SuperAdmin or unassigned users).
-        /// Ownership is tracked separately via <see cref="Tenant.OwnerId"/>.
-        /// </summary>
-        public Guid? TenantId { get; set; }
     }
 }

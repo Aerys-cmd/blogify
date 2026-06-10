@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages;
 
-[Authorize(Roles = "BlogAdmin")]
+[Authorize]
 public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
     public string TenantTitle { get; private set; } = string.Empty;

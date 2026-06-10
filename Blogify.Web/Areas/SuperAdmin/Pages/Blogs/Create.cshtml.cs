@@ -58,7 +58,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, UserManager<Appl
 
         AvailableOwners = await dbContext.Users
             .AsNoTracking()
-            .Where(u => u.TenantId == null && !superAdminIds.Contains(u.Id))
+            .Where(u => !superAdminIds.Contains(u.Id))
             .Select(u => new OwnerSelectItem(u.Id, u.Email ?? u.UserName ?? u.Id))
             .ToListAsync(ct);
     }

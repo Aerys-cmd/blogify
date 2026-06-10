@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Themes;
 
-[Authorize(Roles = "BlogAdmin")]
+[Authorize]
 public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
     public string CurrentTheme { get; private set; } = string.Empty;

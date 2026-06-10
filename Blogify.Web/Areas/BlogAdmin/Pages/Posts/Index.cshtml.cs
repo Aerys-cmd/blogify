@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
-[Authorize(Roles = "BlogAdmin")]
+[Authorize]
 public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
     private const int PageSize = 10;

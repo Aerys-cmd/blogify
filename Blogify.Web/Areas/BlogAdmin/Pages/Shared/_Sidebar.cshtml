@@ -1,9 +1,11 @@
 @using Blogify.Web.Models
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
+@inject Blogify.Web.Services.TenantContext TenantCtx
 
 @{
     string? currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
     bool isDashboardActive = string.Equals(currentPage, "/Index", StringComparison.OrdinalIgnoreCase);
     bool isPostsActive = currentPage?.StartsWith("/Posts", StringComparison.OrdinalIgnoreCase) ?? false;
     bool isMediaActive = currentPage?.StartsWith("/Media", StringComparison.OrdinalIgnoreCase) ?? false;
@@ -11,6 +13,8 @@
     bool isThemesActive = currentPage?.StartsWith("/Themes", StringComparison.OrdinalIgnoreCase) ?? false;
     bool isAnalyticsActive = currentPage?.StartsWith("/Analytics", StringComparison.OrdinalIgnoreCase) ?? false;
     bool isSettingsActive = currentPage?.StartsWith("/Settings", StringComparison.OrdinalIgnoreCase) ?? false;
+    bool isMembersActive = currentPage?.StartsWith("/Members", StringComparison.OrdinalIgnoreCase) ?? false;
+    string blogTitle = TenantCtx.CurrentTenant?.Title ?? "Blog Admin";
 }
 
 <div class="offcanvas-lg offcanvas-start ba-sidebar"
@@ -28,12 +32,21 @@
                      class="text-warning" viewBox="0 0 16 16" aria-hidden="true">
                     <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
                 </svg>
-                Blog Admin
+                <span class="text-truncate" style="max-width:130px">@blogTitle</span>
             </a>
             <button type="button"
                     class="btn-close btn-close-white d-lg-none"
                     data-bs-dismiss="offcanvas"
                     aria-label="Close navigation"></button>
+        </div>
+
+        <div class="px-3 py-2 border-bottom border-secondary">
+            <a href="/dashboard" class="text-secondary small text-decoration-none d-flex align-items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+                @Localizer["Dashboard.BackToDashboard"]
+            </a>
         </div>
 
         <nav class="flex-grow-1 py-2 px-2" aria-label="Admin navigation">
@@ -107,6 +120,17 @@
                     <path d="M0 0h1v15h15v1H0zm14.5 4l-7 7-3-3-4 4v-1.5l4-4 3 3 7-7z"/>
                 </svg>
                 Analytics
+            </a>
+
+            <a class="nav-link d-flex align-items-center gap-2 px-2 py-2 rounded @(isMembersActive ? "ba-nav-active" : "")"
+               asp-area="BlogAdmin"
+               asp-page="/Members/Index"
+               aria-current="@(isMembersActive ? "page" : null)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
+                </svg>
+                @Localizer["Nav.Members"]
             </a>
 
             <a class="nav-link d-flex align-items-center gap-2 px-2 py-2 rounded @(isSettingsActive ? "ba-nav-active" : "")"

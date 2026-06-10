@@ -12,7 +12,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
-[Authorize(Roles = "BlogAdmin")]
+[Authorize]
 public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext, FeedService feedService, IStringLocalizer<SharedResource> localizer) : PageModel{
     [BindProperty]
     public CreatePostInput Input { get; set; } = new();

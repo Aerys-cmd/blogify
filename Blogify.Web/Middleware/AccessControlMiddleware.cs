@@ -1,13 +1,15 @@
 using System.Security.Claims;
+using Blogify.Web.Data;
 using Blogify.Web.Models;
 using Blogify.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Middleware;
 
 /// <summary>
-/// Unified access control middleware that enforces host-based routing and tenant
+/// Unified access control middleware that enforces host-based routing and blog
 /// ownership/membership rules for all Razor Pages areas.
 ///
 /// Rules applied in order:
@@ -17,11 +19,10 @@ namespace Blogify.Web.Middleware;
 ///    endpoint replacement so the browser URL stays at "/" instead of redirecting to
 ///    "/Index". SuperAdmin users are redirected to /sa instead.
 /// 3. Blog area on a tenant subdomain: public access, pass through.
-/// 4. BlogAdmin area: requires tenant resolution, authentication, and tenant
-///    ownership or membership. Unauthenticated users are redirected to the login page.
-///    Authenticated users without ownership or membership receive 403.
-/// 5. All other areas (SuperAdmin, Identity, …): pass through. Per-page
-///    [Authorize] attributes handle fine-grained access for those areas.
+/// 4. BlogAdmin area: requires tenant resolution (from route slug), authentication,
+///    and blog ownership or membership. Unauthenticated users are redirected to login.
+///    Authenticated users without access receive 403.
+/// 5. All other areas (SuperAdmin, Identity, …): pass through.
 ///
 /// Must be placed after UseRouting(), UseAuthentication(), and UseTenantResolution(),
 /// but before UseAuthorization() and UseAnalyticsTracking().
@@ -50,8 +51,6 @@ public sealed class AccessControlMiddleware
         bool tenantResolved = tenantContext.IsTenantResolved;
 
         // --- Rule 1: no-area Razor Pages (root Pages/) are root-domain only ---
-        // Non-Razor endpoints (health checks at /health, /alive; feeds at /sitemap.xml
-        // and /rss.xml; culture endpoint; etc.) are not subject to this rule.
         if (string.IsNullOrEmpty(area))
         {
             if (tenantResolved)
@@ -81,32 +80,21 @@ public sealed class AccessControlMiddleware
                     return;
                 }
 
-                // Serve the landing page inline at "/" without issuing a redirect so the
-                // browser URL stays at "/" rather than showing "/Index". The Blog area
-                // Index uses @page "/" which claims the root route globally; on the root
-                // domain we replace the matched endpoint with the landing page endpoint
-                // before continuing the pipeline, so the correct PageModel executes.
+                // Serve the landing page inline at "/" without redirecting.
                 Endpoint? landing = ResolveLandingPageEndpoint();
                 if (landing is not null)
                 {
                     context.SetEndpoint(landing);
-                    // Remove the Blog area route value and set the landing page route so
-                    // that downstream components (authorization metadata, URL generation
-                    // helpers such as asp-page) see the correct context for the landing
-                    // page rather than the replaced Blog area endpoint.
                     context.Request.RouteValues.Remove("area");
                     context.Request.RouteValues["page"] = "/Index";
                     await _next(context);
                     return;
                 }
 
-                // Fallback: landing endpoint could not be located (should not happen in
-                // a correctly configured application).
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
 
-            // Tenant is resolved — Blog area is publicly accessible, pass through.
             await _next(context);
             return;
         }
@@ -121,7 +109,7 @@ public sealed class AccessControlMiddleware
                 return;
             }
 
-            // Authentication guard: redirect unauthenticated users to the login page.
+            // Authentication guard: redirect unauthenticated users to login.
             if (context.User.Identity is not { IsAuthenticated: true })
             {
                 string returnUrl = context.Request.PathBase + context.Request.Path + context.Request.QueryString;
@@ -137,22 +125,21 @@ public sealed class AccessControlMiddleware
                 return;
             }
 
-            // Ownership check: the tenant owner always has full access.
+            // Ownership check: the blog owner always has full access.
             if (string.Equals(tenantContext.RequiredTenant.OwnerId, userId, StringComparison.Ordinal))
             {
                 await _next(context);
                 return;
             }
 
-            // Membership check: non-owner users are allowed only when their TenantId
-            // matches the currently resolved tenant.
-            // UserManager is resolved lazily here because it is only needed on this
-            // branch; injecting it as an InvokeAsync parameter would add unnecessary
-            // DI overhead to every request (public Blog, health checks, feeds, etc.).
-            UserManager<ApplicationUser> userManager =
-                context.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
-            ApplicationUser? user = await userManager.FindByIdAsync(userId);
-            if (user?.TenantId == tenantContext.RequiredTenant.Id)
+            // Membership check: user must have an active BlogMembership for this blog.
+            ApplicationDbContext dbContext =
+                context.RequestServices.GetRequiredService<ApplicationDbContext>();
+
+            bool isMember = await dbContext.BlogMemberships
+                .AnyAsync(m => m.BlogId == tenantContext.RequiredTenant.Id && m.UserId == userId);
+
+            if (isMember)
             {
                 await _next(context);
                 return;
@@ -163,7 +150,6 @@ public sealed class AccessControlMiddleware
         }
 
         // --- Rule 5: all other areas (SuperAdmin, Identity, …) ---
-        // Per-page [Authorize] attributes handle access control for these areas.
         await _next(context);
     }
 
@@ -182,8 +168,6 @@ public sealed class AccessControlMiddleware
                     && string.Equals(pad.RelativePath, LandingPageRelativePath, StringComparison.OrdinalIgnoreCase);
             });
 
-        // First-writer-wins: if multiple requests race on startup the same endpoint
-        // object is written by all of them, so the final state is always correct.
         Interlocked.CompareExchange(ref _landingPageEndpoint, found, null);
         return _landingPageEndpoint;
     }

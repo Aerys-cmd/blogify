@@ -42,13 +42,11 @@
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="Input.Role" class="form-label">Role</label>
-                        <select asp-for="Input.Role" class="form-select">
-                            <option value="">— Select a role —</option>
-                            <option value="SuperAdmin">SuperAdmin</option>
-                            <option value="BlogAdmin">BlogAdmin</option>
-                        </select>
-                        <span asp-validation-for="Input.Role" class="text-danger small"></span>
+                        <div class="form-check">
+                            <input asp-for="Input.IsSuperAdmin" class="form-check-input" type="checkbox" />
+                            <label asp-for="Input.IsSuperAdmin" class="form-check-label">SuperAdmin</label>
+                        </div>
+                        <div class="form-text text-muted">SuperAdmins can manage users and platform settings.</div>
                     </div>
 
                     <div class="d-flex gap-2">

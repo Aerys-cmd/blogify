@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Media;
 
-[Authorize(Roles = "BlogAdmin")]
+[Authorize]
 [RequestSizeLimit(10_485_760)]
 public sealed class IndexModel(
     ApplicationDbContext dbContext,

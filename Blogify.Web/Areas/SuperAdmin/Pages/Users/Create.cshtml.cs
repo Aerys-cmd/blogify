@@ -18,9 +18,7 @@ public sealed class CreateModel(UserManager<ApplicationUser> userManager) : Page
     public async Task<IActionResult> OnPostAsync(CancellationToken ct = default)
     {
         if (!ModelState.IsValid)
-        {
             return Page();
-        }
 
         ApplicationUser user = new()
         {
@@ -33,20 +31,22 @@ public sealed class CreateModel(UserManager<ApplicationUser> userManager) : Page
         if (!result.Succeeded)
         {
             foreach (IdentityError error in result.Errors)
-            {
                 ModelState.AddModelError(string.Empty, error.Description);
-            }
             return Page();
         }
 
-        IdentityResult roleResult = await userManager.AddToRoleAsync(user, Input.Role);
-        if (!roleResult.Succeeded)
+        // All users get the User role; SuperAdmin is optional.
+        await userManager.AddToRoleAsync(user, "User");
+
+        if (Input.IsSuperAdmin)
         {
-            foreach (IdentityError error in roleResult.Errors)
+            IdentityResult roleResult = await userManager.AddToRoleAsync(user, "SuperAdmin");
+            if (!roleResult.Succeeded)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                foreach (IdentityError error in roleResult.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+                return Page();
             }
-            return Page();
         }
 
         return RedirectToPage("./Index");
@@ -69,6 +69,5 @@ public sealed record CreateUserInput
     [Compare(nameof(Password))]
     public string ConfirmPassword { get; init; } = string.Empty;
 
-    [Required]
-    public string Role { get; init; } = string.Empty;
+    public bool IsSuperAdmin { get; init; }
 }

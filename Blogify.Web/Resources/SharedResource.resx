@@ -362,4 +362,74 @@
   <data name="Message.Posts.NoResults" xml:space="preserve"><value>No posts match your search.</value></data>
   <data name="Aria.Posts.StatusFilter" xml:space="preserve"><value>Filter by status</value></data>
   <data name="Aria.Posts.Pagination" xml:space="preserve"><value>Post list pagination</value></data>
+  <data name="Auth.Login.Title" xml:space="preserve"><value>Sign In</value></data>
+  <data name="Auth.Login.Heading" xml:space="preserve"><value>Welcome back</value></data>
+  <data name="Auth.Login.Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Auth.Login.Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Auth.Login.RememberMe" xml:space="preserve"><value>Remember me</value></data>
+  <data name="Auth.Login.Submit" xml:space="preserve"><value>Sign In</value></data>
+  <data name="Auth.Login.ForgotPassword" xml:space="preserve"><value>Forgot your password?</value></data>
+  <data name="Auth.Login.NoAccount" xml:space="preserve"><value>Don't have an account?</value></data>
+  <data name="Auth.Login.Register" xml:space="preserve"><value>Create one</value></data>
+  <data name="Auth.Register.Title" xml:space="preserve"><value>Create Account</value></data>
+  <data name="Auth.Register.Heading" xml:space="preserve"><value>Join Blogify</value></data>
+  <data name="Auth.Register.Name" xml:space="preserve"><value>Full Name</value></data>
+  <data name="Auth.Register.Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Auth.Register.Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Auth.Register.ConfirmPassword" xml:space="preserve"><value>Confirm Password</value></data>
+  <data name="Auth.Register.Submit" xml:space="preserve"><value>Create Account</value></data>
+  <data name="Auth.Register.HaveAccount" xml:space="preserve"><value>Already have an account?</value></data>
+  <data name="Auth.Register.Login" xml:space="preserve"><value>Sign in</value></data>
+  <data name="Auth.ForgotPassword.Title" xml:space="preserve"><value>Reset Password</value></data>
+  <data name="Auth.ForgotPassword.Heading" xml:space="preserve"><value>Forgot your password?</value></data>
+  <data name="Auth.ForgotPassword.Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Auth.ForgotPassword.Submit" xml:space="preserve"><value>Send Reset Link</value></data>
+  <data name="Auth.ForgotPassword.BackToLogin" xml:space="preserve"><value>Back to sign in</value></data>
+  <data name="Auth.ForgotPassword.Confirmation" xml:space="preserve"><value>If an account with that email exists, a reset link has been sent.</value></data>
+  <data name="Auth.ResetPassword.Title" xml:space="preserve"><value>New Password</value></data>
+  <data name="Auth.ResetPassword.Heading" xml:space="preserve"><value>Set a new password</value></data>
+  <data name="Auth.ResetPassword.Password" xml:space="preserve"><value>New Password</value></data>
+  <data name="Auth.ResetPassword.ConfirmPassword" xml:space="preserve"><value>Confirm New Password</value></data>
+  <data name="Auth.ResetPassword.Submit" xml:space="preserve"><value>Reset Password</value></data>
+  <data name="Dashboard.Title" xml:space="preserve"><value>My Blogs</value></data>
+  <data name="Dashboard.MyBlogs" xml:space="preserve"><value>My Blogs</value></data>
+  <data name="Dashboard.Owned" xml:space="preserve"><value>Owned</value></data>
+  <data name="Dashboard.MemberOf" xml:space="preserve"><value>Member Of</value></data>
+  <data name="Dashboard.NoBlogs" xml:space="preserve"><value>You don't have any blogs yet.</value></data>
+  <data name="Dashboard.ManageBlog" xml:space="preserve"><value>Manage</value></data>
+  <data name="Dashboard.ViewBlog" xml:space="preserve"><value>View Blog</value></data>
+  <data name="Dashboard.CreateBlog" xml:space="preserve"><value>Create Blog</value></data>
+  <data name="Dashboard.CreateBlog.Title" xml:space="preserve"><value>Create a New Blog</value></data>
+  <data name="Dashboard.CreateBlog.Heading" xml:space="preserve"><value>Let's set up your blog</value></data>
+  <data name="Dashboard.CreateBlog.Name" xml:space="preserve"><value>Blog Name</value></data>
+  <data name="Dashboard.CreateBlog.Slug" xml:space="preserve"><value>URL Slug</value></data>
+  <data name="Dashboard.CreateBlog.Submit" xml:space="preserve"><value>Create Blog</value></data>
+  <data name="Dashboard.BackToDashboard" xml:space="preserve"><value>Back to Dashboard</value></data>
+  <data name="Nav.Members" xml:space="preserve"><value>Members</value></data>
+  <data name="BlogAdmin.Members.Title" xml:space="preserve"><value>Members</value></data>
+  <data name="BlogAdmin.Members.Heading" xml:space="preserve"><value>Blog Members</value></data>
+  <data name="BlogAdmin.Members.Owner" xml:space="preserve"><value>Owner</value></data>
+  <data name="BlogAdmin.Members.OwnerRole" xml:space="preserve"><value>Owner</value></data>
+  <data name="BlogAdmin.Members.Members" xml:space="preserve"><value>Members</value></data>
+  <data name="BlogAdmin.Members.JoinedAt" xml:space="preserve"><value>Joined</value></data>
+  <data name="BlogAdmin.Members.ExpiresAt" xml:space="preserve"><value>Expires</value></data>
+  <data name="BlogAdmin.Members.InviteAction" xml:space="preserve"><value>Invite Member</value></data>
+  <data name="BlogAdmin.Members.InviteTitle" xml:space="preserve"><value>Invite Member</value></data>
+  <data name="BlogAdmin.Members.InviteHeading" xml:space="preserve"><value>Invite someone to this blog</value></data>
+  <data name="BlogAdmin.Members.InviteNote" xml:space="preserve"><value>An invitation email will be sent to the address you provide.</value></data>
+  <data name="BlogAdmin.Members.InviteSend" xml:space="preserve"><value>Send Invitation</value></data>
+  <data name="BlogAdmin.Members.BackToMembers" xml:space="preserve"><value>Back to Members</value></data>
+  <data name="BlogAdmin.Members.Remove" xml:space="preserve"><value>Remove</value></data>
+  <data name="BlogAdmin.Members.RemoveConfirm" xml:space="preserve"><value>Are you sure you want to remove this member?</value></data>
+  <data name="BlogAdmin.Members.NoMembers" xml:space="preserve"><value>No members yet.</value></data>
+  <data name="BlogAdmin.Members.PendingInvitations" xml:space="preserve"><value>Pending Invitations</value></data>
+  <data name="BlogAdmin.Members.InviteSentMessage" xml:space="preserve"><value>Invitation sent.</value></data>
+  <data name="BlogAdmin.Members.Role.Writer" xml:space="preserve"><value>Writer</value></data>
+  <data name="BlogAdmin.Members.Role.Editor" xml:space="preserve"><value>Editor</value></data>
+  <data name="BlogAdmin.Members.Role.Admin" xml:space="preserve"><value>Admin</value></data>
+  <data name="BlogAdmin.Members.Error.AlreadyOwner" xml:space="preserve"><value>This user is the blog owner.</value></data>
+  <data name="BlogAdmin.Members.Error.AlreadyMember" xml:space="preserve"><value>This user is already a member.</value></data>
+  <data name="Action.CreateBlog" xml:space="preserve"><value>Create Blog</value></data>
+  <data name="Message.InvalidRole" xml:space="preserve"><value>Invalid role selected.</value></data>
+  <data name="Action.Redirecting" xml:space="preserve"><value>Redirecting…</value></data>
 </root>

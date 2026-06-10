@@ -1,0 +1,114 @@
+@page
+@model Blogify.Web.Areas.BlogAdmin.Pages.Members.IndexModel
+@{
+    ViewData["Title"] = @Localizer["BlogAdmin.Members.Title"].Value;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h4 class="mb-0 fw-semibold">@Localizer["BlogAdmin.Members.Heading"]</h4>
+    @if (Model.CanManageUsers)
+    {
+        <a asp-page="/Members/Invite" class="btn btn-primary btn-sm">
+            + @Localizer["BlogAdmin.Members.InviteAction"]
+        </a>
+    }
+</div>
+
+@if (TempData["InviteSent"] is string inviteMsg)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @inviteMsg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white fw-semibold">@Localizer["BlogAdmin.Members.Owner"]</div>
+    <div class="card-body">
+        <div class="d-flex align-items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+            </svg>
+            <span class="fw-medium">@Model.OwnerEmail</span>
+            <span class="badge bg-warning text-dark ms-1">@Localizer["BlogAdmin.Members.OwnerRole"]</span>
+        </div>
+    </div>
+</div>
+
+@if (Model.Members.Count > 0)
+{
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white fw-semibold">@Localizer["BlogAdmin.Members.Members"]</div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Localizer["Label.Email"]</th>
+                        <th>@Localizer["Label.Role"]</th>
+                        <th>@Localizer["BlogAdmin.Members.JoinedAt"]</th>
+                        @if (Model.CanManageUsers)
+                        {
+                            <th></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Blogify.Web.Areas.BlogAdmin.Pages.Members.IndexModel.MemberListItem member in Model.Members)
+                    {
+                        <tr>
+                            <td>@member.Email</td>
+                            <td><span class="badge bg-secondary">@member.Role.ToString()</span></td>
+                            <td class="text-muted small">@member.JoinedAt</td>
+                            @if (Model.CanManageUsers)
+                            {
+                                <td>
+                                    <form method="post" asp-page-handler="Remove" class="d-inline">
+                                        <input type="hidden" name="memberId" value="@member.MembershipId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('@Localizer["BlogAdmin.Members.RemoveConfirm"].Value')">
+                                            @Localizer["BlogAdmin.Members.Remove"]
+                                        </button>
+                                    </form>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center text-muted py-4">
+        @Localizer["BlogAdmin.Members.NoMembers"]
+    </div>
+}
+
+@if (Model.PendingInvitations.Count > 0)
+{
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-header bg-white fw-semibold">@Localizer["BlogAdmin.Members.PendingInvitations"]</div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Localizer["Label.Email"]</th>
+                        <th>@Localizer["Label.Role"]</th>
+                        <th>@Localizer["BlogAdmin.Members.ExpiresAt"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Blogify.Web.Areas.BlogAdmin.Pages.Members.IndexModel.InvitationListItem inv in Model.PendingInvitations)
+                    {
+                        <tr>
+                            <td>@inv.Email</td>
+                            <td><span class="badge bg-info text-dark">@inv.Role.ToString()</span></td>
+                            <td class="text-muted small">@inv.ExpiresAt</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

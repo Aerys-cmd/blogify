@@ -1,0 +1,42 @@
+@page
+@model Blogify.Web.Areas.Identity.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = @Localizer["Auth.Login.Title"].Value;
+}
+
+<h4 class="mb-4 fw-semibold">@Localizer["Auth.Login.Heading"]</h4>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Email" class="form-label">@Localizer["Label.Email"]</label>
+        <input asp-for="Input.Email" class="form-control" autocomplete="email" />
+        <span asp-validation-for="Input.Email" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Password" class="form-label">@Localizer["Label.Password"]</label>
+        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
+        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3 form-check">
+        <input asp-for="Input.RememberMe" class="form-check-input" />
+        <label asp-for="Input.RememberMe" class="form-check-label">@Localizer["Auth.Login.RememberMe"]</label>
+    </div>
+
+    <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary">@Localizer["Action.SignIn"]</button>
+    </div>
+
+    <div class="text-center small">
+        <a asp-page="./ForgotPassword">@Localizer["Auth.Login.ForgotPassword"]</a>
+        &nbsp;·&nbsp;
+        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">@Localizer["Auth.Login.Register"]</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

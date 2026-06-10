@@ -11,7 +11,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
-[Authorize(Roles = "BlogAdmin")]
+[Authorize]
 public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedService, IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]

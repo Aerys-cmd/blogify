@@ -363,4 +363,74 @@
   <data name="Message.Posts.NoResults" xml:space="preserve"><value>Aramanızla eşleşen yazı bulunamadı.</value></data>
   <data name="Aria.Posts.StatusFilter" xml:space="preserve"><value>Duruma göre filtrele</value></data>
   <data name="Aria.Posts.Pagination" xml:space="preserve"><value>Yazı listesi sayfalaması</value></data>
+  <data name="Auth.Login.Title" xml:space="preserve"><value>Giriş Yap</value></data>
+  <data name="Auth.Login.Heading" xml:space="preserve"><value>Tekrar hoşgeldiniz</value></data>
+  <data name="Auth.Login.Email" xml:space="preserve"><value>E-posta</value></data>
+  <data name="Auth.Login.Password" xml:space="preserve"><value>Şifre</value></data>
+  <data name="Auth.Login.RememberMe" xml:space="preserve"><value>Beni hatırla</value></data>
+  <data name="Auth.Login.Submit" xml:space="preserve"><value>Giriş Yap</value></data>
+  <data name="Auth.Login.ForgotPassword" xml:space="preserve"><value>Şifrenizi mi unuttunuz?</value></data>
+  <data name="Auth.Login.NoAccount" xml:space="preserve"><value>Hesabınız yok mu?</value></data>
+  <data name="Auth.Login.Register" xml:space="preserve"><value>Oluşturun</value></data>
+  <data name="Auth.Register.Title" xml:space="preserve"><value>Hesap Oluştur</value></data>
+  <data name="Auth.Register.Heading" xml:space="preserve"><value>Blogify'a Katılın</value></data>
+  <data name="Auth.Register.Name" xml:space="preserve"><value>Ad Soyad</value></data>
+  <data name="Auth.Register.Email" xml:space="preserve"><value>E-posta</value></data>
+  <data name="Auth.Register.Password" xml:space="preserve"><value>Şifre</value></data>
+  <data name="Auth.Register.ConfirmPassword" xml:space="preserve"><value>Şifreyi Onayla</value></data>
+  <data name="Auth.Register.Submit" xml:space="preserve"><value>Hesap Oluştur</value></data>
+  <data name="Auth.Register.HaveAccount" xml:space="preserve"><value>Zaten hesabınız var mı?</value></data>
+  <data name="Auth.Register.Login" xml:space="preserve"><value>Giriş yapın</value></data>
+  <data name="Auth.ForgotPassword.Title" xml:space="preserve"><value>Şifre Sıfırla</value></data>
+  <data name="Auth.ForgotPassword.Heading" xml:space="preserve"><value>Şifrenizi mi unuttunuz?</value></data>
+  <data name="Auth.ForgotPassword.Email" xml:space="preserve"><value>E-posta</value></data>
+  <data name="Auth.ForgotPassword.Submit" xml:space="preserve"><value>Sıfırlama Bağlantısı Gönder</value></data>
+  <data name="Auth.ForgotPassword.BackToLogin" xml:space="preserve"><value>Giriş sayfasına dön</value></data>
+  <data name="Auth.ForgotPassword.Confirmation" xml:space="preserve"><value>O e-posta ile bir hesap varsa, sıfırlama bağlantısı gönderildi.</value></data>
+  <data name="Auth.ResetPassword.Title" xml:space="preserve"><value>Yeni Şifre</value></data>
+  <data name="Auth.ResetPassword.Heading" xml:space="preserve"><value>Yeni bir şifre belirleyin</value></data>
+  <data name="Auth.ResetPassword.Password" xml:space="preserve"><value>Yeni Şifre</value></data>
+  <data name="Auth.ResetPassword.ConfirmPassword" xml:space="preserve"><value>Yeni Şifreyi Onayla</value></data>
+  <data name="Auth.ResetPassword.Submit" xml:space="preserve"><value>Şifreyi Sıfırla</value></data>
+  <data name="Dashboard.Title" xml:space="preserve"><value>Bloglarım</value></data>
+  <data name="Dashboard.MyBlogs" xml:space="preserve"><value>Bloglarım</value></data>
+  <data name="Dashboard.Owned" xml:space="preserve"><value>Sahip Olunan</value></data>
+  <data name="Dashboard.MemberOf" xml:space="preserve"><value>Üye Olunan</value></data>
+  <data name="Dashboard.NoBlogs" xml:space="preserve"><value>Henüz blogunuz yok.</value></data>
+  <data name="Dashboard.ManageBlog" xml:space="preserve"><value>Yönet</value></data>
+  <data name="Dashboard.ViewBlog" xml:space="preserve"><value>Blogu Görüntüle</value></data>
+  <data name="Dashboard.CreateBlog" xml:space="preserve"><value>Blog Oluştur</value></data>
+  <data name="Dashboard.CreateBlog.Title" xml:space="preserve"><value>Yeni Blog Oluştur</value></data>
+  <data name="Dashboard.CreateBlog.Heading" xml:space="preserve"><value>Blogunuzu kuralım</value></data>
+  <data name="Dashboard.CreateBlog.Name" xml:space="preserve"><value>Blog Adı</value></data>
+  <data name="Dashboard.CreateBlog.Slug" xml:space="preserve"><value>URL Kısaltması</value></data>
+  <data name="Dashboard.CreateBlog.Submit" xml:space="preserve"><value>Blog Oluştur</value></data>
+  <data name="Dashboard.BackToDashboard" xml:space="preserve"><value>Panele Dön</value></data>
+  <data name="Nav.Members" xml:space="preserve"><value>Üyeler</value></data>
+  <data name="BlogAdmin.Members.Title" xml:space="preserve"><value>Üyeler</value></data>
+  <data name="BlogAdmin.Members.Heading" xml:space="preserve"><value>Blog Üyeleri</value></data>
+  <data name="BlogAdmin.Members.Owner" xml:space="preserve"><value>Sahip</value></data>
+  <data name="BlogAdmin.Members.OwnerRole" xml:space="preserve"><value>Sahip</value></data>
+  <data name="BlogAdmin.Members.Members" xml:space="preserve"><value>Üyeler</value></data>
+  <data name="BlogAdmin.Members.JoinedAt" xml:space="preserve"><value>Katıldı</value></data>
+  <data name="BlogAdmin.Members.ExpiresAt" xml:space="preserve"><value>Sona Eriyor</value></data>
+  <data name="BlogAdmin.Members.InviteAction" xml:space="preserve"><value>Üye Davet Et</value></data>
+  <data name="BlogAdmin.Members.InviteTitle" xml:space="preserve"><value>Üye Davet Et</value></data>
+  <data name="BlogAdmin.Members.InviteHeading" xml:space="preserve"><value>Bu bloga birini davet edin</value></data>
+  <data name="BlogAdmin.Members.InviteNote" xml:space="preserve"><value>Girdiğiniz adrese davet e-postası gönderilecek.</value></data>
+  <data name="BlogAdmin.Members.InviteSend" xml:space="preserve"><value>Davet Gönder</value></data>
+  <data name="BlogAdmin.Members.BackToMembers" xml:space="preserve"><value>Üyelere Dön</value></data>
+  <data name="BlogAdmin.Members.Remove" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="BlogAdmin.Members.RemoveConfirm" xml:space="preserve"><value>Bu üyeyi kaldırmak istediğinizden emin misiniz?</value></data>
+  <data name="BlogAdmin.Members.NoMembers" xml:space="preserve"><value>Henüz üye yok.</value></data>
+  <data name="BlogAdmin.Members.PendingInvitations" xml:space="preserve"><value>Bekleyen Davetler</value></data>
+  <data name="BlogAdmin.Members.InviteSentMessage" xml:space="preserve"><value>Davet gönderildi.</value></data>
+  <data name="BlogAdmin.Members.Role.Writer" xml:space="preserve"><value>Yazar</value></data>
+  <data name="BlogAdmin.Members.Role.Editor" xml:space="preserve"><value>Editör</value></data>
+  <data name="BlogAdmin.Members.Role.Admin" xml:space="preserve"><value>Yönetici</value></data>
+  <data name="BlogAdmin.Members.Error.AlreadyOwner" xml:space="preserve"><value>Bu kullanıcı blogun sahibidir.</value></data>
+  <data name="BlogAdmin.Members.Error.AlreadyMember" xml:space="preserve"><value>Bu kullanıcı zaten üye.</value></data>
+  <data name="Action.CreateBlog" xml:space="preserve"><value>Blog Oluştur</value></data>
+  <data name="Message.InvalidRole" xml:space="preserve"><value>Geçersiz rol seçildi.</value></data>
+  <data name="Action.Redirecting" xml:space="preserve"><value>Yönlendiriliyor…</value></data>
 </root>

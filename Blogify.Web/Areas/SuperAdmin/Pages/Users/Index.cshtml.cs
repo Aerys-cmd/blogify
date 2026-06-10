@@ -39,9 +39,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext) : PageModel
         TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
 
         if (CurrentPage > TotalPages && TotalPages > 0)
-        {
             CurrentPage = TotalPages;
-        }
 
         List<ApplicationUser> pageUsers = await query
             .OrderBy(u => u.Email)
@@ -49,20 +47,9 @@ public sealed class IndexModel(ApplicationDbContext dbContext) : PageModel
             .Take(PageSize)
             .ToListAsync(ct);
 
-        List<Guid> tenantIds = pageUsers
-            .Where(u => u.TenantId.HasValue)
-            .Select(u => u.TenantId.GetValueOrDefault())
-            .Distinct()
-            .ToList();
-
         List<string> userIds = pageUsers.Select(u => u.Id).ToList();
 
-        var blogTitles = await dbContext.Blogs
-            .AsNoTracking()
-            .Where(t => tenantIds.Contains(t.Id))
-            .ToDictionaryAsync(t => t.Id, t => t.Title, ct);
-
-        var rolesByUserId = await (
+        Dictionary<string, List<string>> rolesByUserId = await (
             from ur in dbContext.UserRoles.AsNoTracking()
             join r in dbContext.Roles.AsNoTracking() on ur.RoleId equals r.Id
             where userIds.Contains(ur.UserId) && r.Name != null
@@ -70,18 +57,25 @@ public sealed class IndexModel(ApplicationDbContext dbContext) : PageModel
         ).GroupBy(x => x.UserId)
          .ToDictionaryAsync(g => g.Key, g => g.Select(x => x.Name!).ToList(), ct);
 
+        // Count blogs owned + memberships per user.
+        Dictionary<string, int> ownedBlogCount = await dbContext.Blogs
+            .AsNoTracking()
+            .Where(b => userIds.Contains(b.OwnerId) && b.DeletedAt == null)
+            .GroupBy(b => b.OwnerId)
+            .ToDictionaryAsync(g => g.Key, g => g.Count(), ct);
+
+        Dictionary<string, int> memberBlogCount = await dbContext.BlogMemberships
+            .AsNoTracking()
+            .Where(m => userIds.Contains(m.UserId))
+            .GroupBy(m => m.UserId)
+            .ToDictionaryAsync(g => g.Key, g => g.Count(), ct);
+
         List<UserListItem> items = pageUsers.Select(user =>
         {
             List<string> roles = rolesByUserId.TryGetValue(user.Id, out List<string>? r) ? r : [];
-            string? blogTitle = user.TenantId.HasValue && blogTitles.TryGetValue(user.TenantId.Value, out string? title)
-                ? title
-                : null;
-            return new UserListItem(
-                user.Id,
-                user.Email ?? string.Empty,
-                user.UserName ?? string.Empty,
-                roles.AsReadOnly(),
-                blogTitle);
+            int owned = ownedBlogCount.TryGetValue(user.Id, out int o) ? o : 0;
+            int member = memberBlogCount.TryGetValue(user.Id, out int m) ? m : 0;
+            return new UserListItem(user.Id, user.Email ?? string.Empty, user.UserName ?? string.Empty, roles.AsReadOnly(), owned, member);
         }).ToList();
 
         Users = items;
@@ -99,4 +93,5 @@ public sealed record UserListItem(
     string Email,
     string UserName,
     IReadOnlyList<string> Roles,
-    string? BlogTitle);
+    int OwnedBlogs,
+    int MemberBlogs);

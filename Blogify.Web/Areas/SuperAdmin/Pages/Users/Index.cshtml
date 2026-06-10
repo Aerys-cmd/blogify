@@ -47,7 +47,8 @@ else
                         <th scope="col">Email</th>
                         <th scope="col">Username</th>
                         <th scope="col">Roles</th>
-                        <th scope="col">Blog</th>
+                        <th scope="col">Owned</th>
+                        <th scope="col">Member Of</th>
                         <th scope="col" class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -60,14 +61,15 @@ else
                             <td>
                                 @foreach (string role in user.Roles)
                                 {
-                                    <span class="badge @(role == "SuperAdmin" ? "bg-danger" : "bg-primary") me-1">@role</span>
+                                    <span class="badge @(role == "SuperAdmin" ? "bg-danger" : "bg-secondary") me-1">@role</span>
                                 }
                                 @if (user.Roles.Count == 0)
                                 {
                                     <span class="text-muted small">—</span>
                                 }
                             </td>
-                            <td class="text-muted small">@(user.BlogTitle ?? "—")</td>
+                            <td class="text-muted small text-center">@user.OwnedBlogs</td>
+                            <td class="text-muted small text-center">@user.MemberBlogs</td>
                             <td class="text-end">
                                 <a asp-area="SuperAdmin"
                                    asp-page="/Users/Edit"

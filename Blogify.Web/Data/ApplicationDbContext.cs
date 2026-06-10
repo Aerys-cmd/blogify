@@ -17,6 +17,8 @@ namespace Blogify.Web.Data
         public Guid? CurrentTenantId { get; set; }
 
         public DbSet<Tenant> Blogs { get; set; }
+        public DbSet<BlogMembership> BlogMemberships { get; set; }
+        public DbSet<BlogInvitation> BlogInvitations { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostRevision> PostRevisions { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }

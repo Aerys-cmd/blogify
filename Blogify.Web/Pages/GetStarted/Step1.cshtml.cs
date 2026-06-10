@@ -1,85 +1,19 @@
-using Blogify.Web.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
 
 namespace Blogify.Web.Pages.GetStarted;
 
-public sealed class Step1Model(
-    UserManager<ApplicationUser> userManager,
-    SignInManager<ApplicationUser> signInManager) : PageModel
+/// <summary>
+/// Redirects to the custom Register page.
+/// Registration is no longer part of the GetStarted wizard.
+/// </summary>
+public sealed class Step1Model : PageModel
 {
-    [BindProperty]
-    public Step1Input Input { get; set; } = new()
-    {
-        Email = string.Empty,
-        Password = string.Empty,
-        ConfirmPassword = string.Empty
-    };
-
     public IActionResult OnGet()
     {
         if (User.Identity?.IsAuthenticated == true)
-        {
-            return RedirectToPage("/GetStarted/Step2");
-        }
+            return RedirectToPage("/Dashboard/Index");
 
-        return Page();
-    }
-
-    public async Task<IActionResult> OnPostAsync(CancellationToken ct)
-    {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
-        ApplicationUser user = new ApplicationUser
-        {
-            UserName = Input.Email,
-            Email = Input.Email
-        };
-
-        IdentityResult result = await userManager.CreateAsync(user, Input.Password);
-        if (!result.Succeeded)
-        {
-            foreach (IdentityError error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-            return Page();
-        }
-
-        IdentityResult roleResult = await userManager.AddToRoleAsync(user, "BlogAdmin");
-        if (!roleResult.Succeeded)
-        {
-            foreach (IdentityError error in roleResult.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-            return Page();
-        }
-        await signInManager.SignInAsync(user, isPersistent: false);
-
-        return RedirectToPage("/GetStarted/Step2");
-    }
-
-    public sealed record Step1Input
-    {
-        [Required]
-        [EmailAddress]
-        [StringLength(256)]
-        public required string Email { get; init; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        [StringLength(100, MinimumLength = 8)]
-        public required string Password { get; init; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        [Compare(nameof(Password))]
-        public required string ConfirmPassword { get; init; }
+        return RedirectToPage("/Identity/Account/Register", new { area = "Identity" });
     }
 }

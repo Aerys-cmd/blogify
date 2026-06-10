@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Analytics;
 
-[Authorize(Roles = "BlogAdmin")]
+[Authorize]
 public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
 {
     public int TotalViews7Days { get; private set; }

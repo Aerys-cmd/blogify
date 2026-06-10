@@ -1,0 +1,54 @@
+@page "/dashboard/create-blog"
+@model Blogify.Web.Pages.Dashboard.CreateBlogModel
+@{
+    ViewData["Title"] = @Localizer["Dashboard.CreateBlog.Title"].Value;
+    Layout = "/Pages/Shared/_LandingLayout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+
+            <div class="mb-4">
+                <a asp-page="/Dashboard/Index" class="text-muted small text-decoration-none">
+                    &larr; @Localizer["Dashboard.BackToDashboard"]
+                </a>
+            </div>
+
+            <h2 class="fw-bold mb-4">@Localizer["Dashboard.CreateBlog.Heading"]</h2>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Title" class="form-label">@Localizer["Label.Title"]</label>
+                            <input asp-for="Input.Title" class="form-control" placeholder="My Awesome Blog" />
+                            <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Subdomain" class="form-label">@Localizer["Label.Subdomain"]</label>
+                            <div class="input-group">
+                                <input asp-for="Input.Subdomain" class="form-control" placeholder="my-blog" />
+                                <span class="input-group-text text-muted">.blogify.com</span>
+                            </div>
+                            <span asp-validation-for="Input.Subdomain" class="text-danger small"></span>
+                            <div class="form-text">@Localizer["GetStarted.Step2.SubdomainHelp"]</div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">@Localizer["Dashboard.CreateBlog.Submit"]</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

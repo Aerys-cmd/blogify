@@ -5,6 +5,15 @@ using Microsoft.Extensions.Options;
 
 namespace Blogify.Web.Middleware
 {
+    /// <summary>
+    /// Resolves the current tenant from:
+    /// 1. The <c>{blogSlug}</c> route parameter when the request comes from a platform host
+    ///    (used for the blog admin area at /app/admin/{blogSlug}/...).
+    /// 2. The subdomain when the request comes from a tenant subdomain
+    ///    (used for the public Blog area).
+    /// Sets <see cref="TenantContext"/> and <see cref="ApplicationDbContext.CurrentTenantId"/>
+    /// so that downstream middleware, global query filters, and page models have the correct tenant context.
+    /// </summary>
     public class TenantResolutionMiddleware
     {
         private readonly RequestDelegate _next;
@@ -18,37 +27,60 @@ namespace Blogify.Web.Middleware
 
         public async Task InvokeAsync(HttpContext context, ApplicationDbContext dbContext, TenantContext tenantContext)
         {
-            var host = context.Request.Host.Host;
+            string host = context.Request.Host.Host;
             dbContext.CurrentTenantId = null;
             tenantContext.Clear();
 
-            // Handle root domain (admin panel / dashboard)
-            // Local fallback uses "localhost" or specific explicit bindings.
-            if (_options.PlatformHosts.Any(h => host.Equals(h, StringComparison.OrdinalIgnoreCase)))
+            bool isPlatformHost = _options.PlatformHosts.Any(
+                h => host.Equals(h, StringComparison.OrdinalIgnoreCase));
+
+            if (isPlatformHost)
             {
-                // Unresolved tenant, allowed to proceed to dashboard routes
+                // On the platform host, the blog admin area embeds the blog slug in the route:
+                // /app/admin/{blogSlug}/... — resolve tenant from that route value.
+                string? blogSlug = context.GetRouteValue("blogSlug")?.ToString();
+                if (!string.IsNullOrWhiteSpace(blogSlug))
+                {
+                    string normalizedSlug = blogSlug.ToLowerInvariant();
+                    Models.Tenant? tenant = await dbContext.Blogs
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(t => t.Subdomain == normalizedSlug);
+
+                    if (tenant is not null)
+                    {
+                        tenantContext.Resolve(tenant);
+                        dbContext.CurrentTenantId = tenant.Id;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 404;
+                        await context.Response.WriteAsync("Blog not found.");
+                        return;
+                    }
+                }
+
+                // No blogSlug in route — no tenant context (dashboard, landing, SA, etc.).
                 await _next(context);
                 return;
             }
 
-            // Extract subdomain (e.g. myblog from myblog.localhost)
-            var parts = host.Split('.');
+            // Non-platform host: extract subdomain for public Blog area.
+            string[] parts = host.Split('.');
             if (parts.Length >= 2)
             {
-                var subdomain = parts[0].ToLowerInvariant();
+                string subdomain = parts[0].ToLowerInvariant();
 
-                var tenant = await dbContext.Blogs
+                Models.Tenant? tenant = await dbContext.Blogs
                     .AsNoTracking()
                     .FirstOrDefaultAsync(t => t.Subdomain == subdomain);
 
-                if (tenant != null)
+                if (tenant is not null)
                 {
                     tenantContext.Resolve(tenant);
                     dbContext.CurrentTenantId = tenant.Id;
                 }
                 else
                 {
-                    // Tenant doesn't exist, we can output a neat 404 or redirect.
                     context.Response.StatusCode = 404;
                     await context.Response.WriteAsync("Blog not found.");
                     return;
