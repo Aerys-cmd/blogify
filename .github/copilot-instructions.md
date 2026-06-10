@@ -1,152 +1,65 @@
-# Copilot Instructions — Blogify
+# Blogify Agent Guide
 
-## Project Identity
-- SaaS multi-tenant blog platform
-- Runtime: .NET 10, ASP.NET Core, Razor Pages, PostgreSQL, Aspire
-- Architecture: Modular Monolith + Domain-Driven Design (DDD)
-- Frontend: Bootstrap 5, server-rendered, optional HTMX
+Read this file first. Inspect nearby code before changing behavior; the code is the source of truth when documentation disagrees.
 
----
+## Stack and Commands
 
-## DDD Rules (Strict)
+- .NET 10, ASP.NET Core Razor Pages, EF Core with SQLite, .NET Aspire.
+- Server-rendered UI with Bootstrap, HTMX, small vanilla JS, and React only for the existing BlockNote editor.
+- Restore/build: `dotnet restore Blogify.Web/Blogify.Web.csproj` then `dotnet build Blogify.Web/Blogify.Web.csproj --no-restore`.
+- Run locally: `dotnet run --project Blogify.AppHost`.
+- Build editor/themes after related frontend changes:
+  `cd Blogify.Web && npm ci && npm run build:editor && npm run build:css:minimal && npm run build:css:aurora`.
+- There is currently no automated test project. At minimum, run the relevant build.
 
-- Every domain concept lives in a named aggregate. No free-floating entities.
-- Aggregates expose behavior through methods. Properties are never mutated from outside.
-- Invariants are enforced inside the aggregate constructor or domain methods — never in infrastructure layers.
-- Use `private set` or `init` on all entity properties. No public setters.
-- Value objects are immutable records. If it has identity, it is an entity. If not, it is a value object.
-- No `static` utility classes that encode domain logic.
-- Do not use EF Core navigation properties to bypass aggregate boundaries.
+## Repository Map
 
----
+- `Blogify.Web/`: application, domain models, EF Core, Razor Pages, middleware, endpoints, and frontend assets.
+- `Blogify.AppHost/`: local Aspire orchestration and Traefik.
+- `Blogify.ServiceDefaults/`: shared telemetry, health checks, resilience, and service discovery only.
+- `Blogify.Web/Areas/Blog/`: public blog pages and theme views.
+- `Blogify.Web/Areas/BlogAdmin/`: tenant admin pages.
+- `Blogify.Web/Areas/SuperAdmin/`: platform admin pages.
+- `Blogify.Web/Pages/`: root-domain landing, dashboard, setup, and shared pages.
+- `Blogify.Web/Models/`: domain entities. `Models/Posts/` contains the Post aggregate.
+- `Blogify.Web/Data/Configurations/`: EF mappings; migrations are in `Data/Migrations/`.
+- `Blogify.Web/ClientApp/`: BlockNote React editor source. Generated bundles are under `wwwroot/`.
 
-## Razor Pages Structure
+See [system-overview.md](architecture/system-overview.md) only when working on routing, tenancy, authorization, themes, or data boundaries.
 
-- Each panel is isolated under its own `Area`:
-  - `Areas/SuperAdmin/` — route prefix `/sa`
-  - `Areas/BlogAdmin/` — route prefix `/admin`
-  - `Areas/Blog/` — public blog, subdomain-resolved
-- The landing page lives in `Pages/Index.cshtml` (`@page "/Index"`). On the root domain, `AccessControlMiddleware` replaces the matched Blog area endpoint with the landing page endpoint so the browser URL stays at `/` without a redirect.
-- PageModel classes use primary constructor injection.
-- `OnGetAsync` / `OnPostAsync` orchestrate: load aggregate → call domain method → call `SaveChangesAsync` → return result.
-- No separate application service layer. All orchestration lives in the PageModel.
-- View models are `sealed record` types defined at the bottom of the PageModel file.
-- Never use `ViewData` or `ViewBag`. Use strongly-typed properties on PageModel.
-- Shared layout and partials live in `Pages/Shared/`. Area-specific ones in `Areas/{Area}/Pages/Shared/`.
-- Tag Helpers and Partial Tag Helpers are preferred over HTML Helpers.
+## Critical Rules
 
----
+### Tenancy and Access
 
-## Minimal API Endpoints
+- A tenant is a blog. Public tenant resolution uses the subdomain; BlogAdmin resolution uses the `{blogSlug}` route in `/app/admin/{blogSlug}`.
+- Always take the current tenant from `TenantContext`, never trust a route value, claim, or submitted tenant ID by itself.
+- `Post`, `Category`, `Media`, and `Comment` have tenant/soft-delete global query filters. Do not add redundant tenant filters to normal scoped queries.
+- `Tag`, `BlogMembership`, `BlogInvitation`, and `AnalyticsEvent` do not have tenant global filters. Scope their queries explicitly where relevant.
+- Ownership is `Tenant.OwnerId`. Multi-blog access is `BlogMembership` with `BlogRole` (`Writer`, `Editor`, `Admin`). Do not use an `ApplicationUser.TenantId`; it does not exist.
+- Keep middleware order in `Program.cs`: routing, authentication, tenant resolution, access control, analytics, authorization, antiforgery.
 
-- All minimal API endpoints live in `Blogify.Web/Endpoints/`.
-- Each file is a `public static class` named `{Feature}Endpoints` and exposes exactly one extension method: `public static IEndpointRouteBuilder Map{Feature}Endpoints(this IEndpointRouteBuilder app)`.
-- The extension method returns `app` so it can be chained if needed.
-- Register every endpoint file in `Program.cs` by calling `app.Map{Feature}Endpoints()` — never inline `app.MapGet/Post/…` calls directly in `Program.cs`.
-- Existing endpoints:
-  - `CrossAuthEndpoints` → `/crossauth` — cross-subdomain authentication handshake (one-time token, not inside BlogAdmin area).
-  - `FeedEndpoints` → `/sitemap.xml`, `/rss.xml` — tenant-scoped XML feeds.
-- Tenant-scoped endpoints must check `tenantContext.IsTenantResolved` and return `Results.NotFound()` when the tenant is absent.
+### Backend
 
----
+- Put business invariants and state changes in domain methods; do not mutate entity properties from handlers.
+- PageModels orchestrate requests and may use `ApplicationDbContext` directly. Keep focused services for behavior shared across pages or involving infrastructure, such as permissions, storage, feeds, analytics, and rendering.
+- Use async EF APIs and `AsNoTracking()` for read-only queries. Materialize queries before returning them.
+- For a normal mutation, load data, call domain methods, and call `SaveChangesAsync` once.
+- Use EF Fluent configuration rather than data annotations on domain entities. Input-model validation attributes are allowed.
+- Use `DateTimeOffset` for persisted dates and soft-delete entities that already support `DeletedAt`.
+- Minimal endpoints belong in `Blogify.Web/Endpoints/` and are mapped from `Program.cs`.
+- Do not hand-edit generated migrations or the model snapshot unless migration tooling cannot perform the required change.
 
-## Data Access — DbContext Direct Usage
+### Razor and Frontend
 
-- There are no repository interfaces or implementations. PageModels inject `ApplicationDbContext` directly.
-- All queries are written as async LINQ against `dbContext.Set<T>()` or named `DbSet<T>` properties.
-- The `DbSet<Tenant>` property is named `Blogs` on `ApplicationDbContext` (maps to the `Blogs` table). Use `dbContext.Blogs` when querying tenants.
-- Never return `IQueryable<T>` from any method. Materialize with `ToListAsync`, `FirstOrDefaultAsync`, etc.
-- Use `AsNoTracking()` for all read-only queries that do not result in EF-tracked mutations.
-- Call `SaveChangesAsync` exactly once per mutating handler. Never call it more than once per operation.
-- Tenant-scoped entities (`Post`, `Category`, `Media`, `Comment`) are filtered automatically via **EF Core global query filters** registered in `ApplicationDbContext.OnModelCreating`. The middleware sets `dbContext.CurrentTenantId` per request from `TenantContext`. Do **not** add redundant explicit `.Where(x => x.BlogId == ...)` clauses on top of these — the filter is already applied.
-- `Tag` does **not** have a global query filter. Queries against `dbContext.Tags` must include an explicit `.Where(t => t.BlogId == blogId)` filter and must exclude soft-deleted records with `.Where(t => t.DeletedAt == null)`.
-- `tenantId` is always obtained from the scoped `TenantContext`. Use `tenantContext.RequiredTenant.Id` when the tenant is guaranteed to exist, or `tenantContext.CurrentTenantId` (nullable) for optional contexts.
+- Prefer server-rendered Razor Pages and existing local patterns.
+- Use strongly typed PageModel properties for page data. `ViewData` is allowed for conventional page titles and the existing theme SEO metadata contract.
+- Localize user-visible Razor text and keep English/Turkish resource keys in sync.
+- React is limited to the existing BlockNote editor. Use small vanilla JS or HTMX elsewhere unless a broader frontend change is explicitly requested.
+- Do not edit generated frontend bundles when source files exist.
 
----
+## Change Discipline
 
-## Aspire Usage
-
-- All service wiring happens in `Blogify.AppHost/AppHost.cs`. Never hard-code connection strings outside `appsettings.Development.json`.
-- Resource names must be stable constants. `"blogdb"` is the canonical DB resource name.
-- `Blogify.ServiceDefaults/Extensions.cs` is the only place for cross-cutting defaults (OTel, health, resilience).
-- Do not add middleware or configuration in `ServiceDefaults` that is feature-specific.
-- Health check endpoints are **Development-only**: `/health` (all checks — liveness + readiness) and `/alive` (liveness tag only). Neither endpoint is exposed in production.
-
----
-
-## Identity Usage
-
-- Roles: `SuperAdmin`, `BlogAdmin`. No other roles are defined.
-- Authorization is enforced at two layers: endpoint (`[Authorize(Roles = ...)]`) and domain (aggregate checks tenant ownership).
-- The `BlogAdmin`↔`Tenant` association is modelled in two ways:
-  - **Ownership**: `Tenant.OwnerId` is a foreign key to `ApplicationUser.Id`. The owner always has full access to their blog's admin panel.
-  - **Membership** (non-owner): `ApplicationUser.TenantId` (`Guid?`) is a foreign key to `Tenant.Id`. A member user is allowed access to the blog admin panel but is not the owner. `null` for SuperAdmins and unassigned users.
-- Never trust role alone for data access. Always verify tenant ownership or membership in the domain layer or access middleware.
-- Authentication pages live under `Areas/Identity/` (scaffolded or custom). Do not move them.
-
----
-
-## Localization
-
-- Supported cultures: `en` (default), `tr`. Configured via `app.UseRequestLocalization` in `Program.cs`.
-- All translations live in two files: `Resources/SharedResource.resx` (English) and `Resources/SharedResource.tr.resx` (Turkish).
-- The `SharedResource` marker class is in the `Blogify.Web` namespace (`Services/SharedResource.cs`). Never move it to a sub-namespace — ASP.NET Core derives the resource file path from the type namespace.
-- `IHtmlLocalizer<SharedResource>` is injected as `@Localizer` in `Pages/_ViewImports.cshtml` and is available in every view and partial.
-- `IStringLocalizer<SharedResource>` is injected into PageModels and services that need localised strings in C# code.
-- **Never hard-code user-visible strings in `.cshtml` files.** Always use `@Localizer["Key"]`.
-- Every new key must be added to **both** resx files simultaneously.
-- Key naming follows the `Section.Subsection.Name` pattern. See `.github/instructions/translation.instructions.md` for the full convention table and anti-patterns.
-- Culture switching is handled by `POST /culture` (`CultureEndpoints`) which sets a `.AspNetCore.Culture` cookie. `app.UseAntiforgery()` must be registered after `app.UseAuthorization()` for this endpoint to work.
-
----
-
-## Themes System
-
-- Each blog selects a theme via `Tenant.ActiveTheme` (stored in the `Blogs` table). Valid themes: `default`, `minimal`, `aurora`.
-- Theme changes go through `Tenant.ChangeTheme(string themeName)` — the domain method validates against the allowed-themes allow-list.
-- The Blog area uses a `ThemeViewLocationExpander` (registered in `Program.cs`) to resolve views from `Areas/Blog/Themes/{Theme}/` before the standard view locations.
-- Theme-specific views live in `Areas/Blog/Themes/{Default|Minimal|Aurora}/` and their `Shared/` subfolders.
-- BlogAdmins can change the theme via `Areas/BlogAdmin/Pages/Themes/Index.cshtml`.
-- Never hard-code theme names outside `Tenant` aggregate and `ThemeViewLocationExpander`.
-
----
-
-## SEO System
-
-- `Post`, `Category`, and `Tenant` all carry SEO metadata fields:
-  - `Post.MetaTitle` (string?, max 60) and `Post.MetaDescription` (string?, max 160) — updated via `post.UpdateSeoMetadata(metaTitle, metaDescription)`.
-  - `Category.MetaTitle` (string?, max 60) and `Category.MetaDescription` (string?, max 160) — updated via `category.UpdateSeoMetadata(metaTitle, metaDescription)`.
-  - `Tenant.MetaDescription` (string?, max 160) — updated via `tenant.UpdateSeoMetadata(metaDescription)`.
-- Blog-level SEO is managed by BlogAdmins at `Areas/BlogAdmin/Pages/Settings/Index.cshtml`.
-- Post and Category SEO fields are managed in their respective Create/Edit pages.
-- All three blog theme layouts (Default, Aurora, Minimal) render `<meta name="description">`, Open Graph (`og:*`), and Twitter Card tags using `ViewData` keys:
-  - `ViewData["MetaTitle"]` — overrides page title for SEO (defaults to `ViewData["Title"]`).
-  - `ViewData["MetaDescription"]` — meta description; falls back to `Tenant.MetaDescription`.
-  - `ViewData["OgImage"]` — Open Graph and Twitter Card image URL.
-  - `ViewData["OgType"]` — Open Graph type (`"website"` or `"article"`).
-  - `ViewData["CanonicalUrl"]` — canonical link and `og:url`.
-- Blog page models populate the SEO `ViewData` keys in `OnGetAsync` / `LoadPostDataAsync`. Theme layout `.cshtml` files should only render the `<meta>` and related SEO tags from those keys; do not hard-code or compute SEO metadata directly in the theme files.
-
----
-
-## Code Quality Rules
-
-- No `var` where type is not obvious from the right-hand side.
-- No nullable reference warnings suppressed with `!`. Fix the root cause.
-- All async methods end with `Async`. All return `Task` or `ValueTask`.
-- Use `sealed` on all **new** classes that are not designed for inheritance.
-- Use `IReadOnlyList<T>` or `IReadOnlyCollection<T>` for exposing collections from domain objects.
-- Use `required` keyword on DTO/record properties that must always be provided.
-- Use `ArgumentNullException.ThrowIfNull` for null-guard checks on reference-type parameters in **new** code. Use `ArgumentException` or `ArgumentOutOfRangeException` for value validation (empty strings, out-of-range integers), consistent with the existing aggregates.
-- No commented-out code in committed files.
-- No `TODO` or `FIXME` left in generated code.
-
----
-
-## Output Expectations
-
-- Every generated file must be complete and immediately compilable.
-- Never produce partial code with placeholder comments like `// ... rest of implementation`.
-- When generating a PageModel, always include the full `OnGetAsync`/`OnPostAsync`, all EF queries, all domain method calls, and all view model records.
-- When generating an entity, include all properties, constructors, domain methods, and EF configuration class.
-- When generating a migration, verify the snapshot is in sync.
+- Keep changes scoped; do not introduce a new architectural layer or dependency without a concrete need.
+- Preserve existing user changes and generated-file conventions.
+- When behavior is unclear, inspect the model, EF configuration, middleware, and calling PageModel before deciding.
+- Update this documentation only for stable, cross-cutting facts. Avoid inventories of properties, pages, or methods that are easy to discover with `rg`.

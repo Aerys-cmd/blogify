@@ -1,146 +1,81 @@
-# System Overview — Blogify
+# System Overview
 
-## What This System Is
+Use this reference for changes involving tenancy, routing, authorization, themes, or data boundaries. For ordinary feature work, inspect the nearest implementation instead.
 
-Blogify is a SaaS multi-tenant blogging platform. Each tenant is a blog, accessed via subdomain. The platform serves three distinct audiences from a single deployable: SuperAdmins managing the platform, BlogAdmins managing their own blog, and public readers viewing blog content.
+## Runtime Shape
 
----
+`Blogify.Web` is the single deployable ASP.NET Core Razor Pages application. It uses SQLite, ASP.NET Identity, and local file storage. `Blogify.AppHost` runs the web project and Traefik for local subdomain routing. `Blogify.ServiceDefaults` contains only shared observability, health, resilience, and service-discovery setup.
 
-## Project Responsibilities
+The application starts by running EF migrations and database seeding. Development health endpoints are `/health` and `/alive`.
 
-### `Blogify.AppHost`
-- Entry point for local orchestration via .NET Aspire.
-- Declares all infrastructure resources: PostgreSQL, pgAdmin, Traefik.
-- Wires `Blogify.Web` to the `blogdb` database resource.
-- Starts Traefik container to route subdomain traffic to the web process.
-- No application logic lives here. This project exists purely for dev-time composition.
+## Routes and Tenant Resolution
 
-### `Blogify.Web`
-- The single deployable Razor Pages application.
-- Hosts all three panels as isolated Areas:
-  - `Areas/SuperAdmin/` — platform management
-  - `Areas/BlogAdmin/` — per-tenant blog management
-  - `Areas/Blog/` — public-facing blog rendering
-- Owns the domain model, EF Core context, identity configuration, middleware, and application services.
-- Registers and runs EF migrations on startup.
-- Implements a **Themes system**: each blog has an `ActiveTheme` (`default`, `minimal`, `aurora`). A `ThemeViewLocationExpander` resolves Blog area views from `Areas/Blog/Themes/{Theme}/` before falling back to the standard view locations. BlogAdmins can switch themes via `Areas/BlogAdmin/Pages/Themes/`.
-
-### `Blogify.ServiceDefaults`
-- Shared cross-cutting configuration applied via `builder.AddServiceDefaults()`.
-- Configures: OpenTelemetry (traces, metrics, logs), health endpoints, HTTP resilience defaults, service discovery.
-- No feature-specific logic. Any addition here applies to every service using this package.
-
----
-
-## Multi-Tenancy Architecture
-
-- **Tenant = Blog**. One blog per subdomain.
-- Subdomain is the sole tenant discriminator. Route-based tenancy is not used.
-- Tenant resolution is performed by `TenantResolutionMiddleware` on every request.
-- `localhost` and `saasplatform.local` are treated as platform hosts (no tenant context required).
-- Unknown subdomains return `404 Blog not found.` — never fall through to application logic.
-
-### Tenant Resolution Rules
-
-| Host | Behavior |
-|---|---|
-| `localhost` | Platform dashboard. No tenant. SuperAdmin access. |
-| `saasplatform.local` | Same as localhost. Platform root. |
-| `{slug}.localhost` | Resolve tenant by slug. Set `TenantContext`. |
-| Unknown slug | Return HTTP 404 immediately. |
-
----
-
-## Aspire Architecture Role
-
-```
-[Developer Machine]
-        │
-        ▼
-  Blogify.AppHost  (Aspire Orchestrator)
-        │
-        ├── PostgreSQL container  ──► blogdb
-        ├── pgAdmin container     ──► admin UI
-        ├── Traefik container     ──► subdomain routing
-        └── Blogify.Web process   ──► port 5050
-                │
-                └── connects to blogdb via Aspire service discovery
-```
-
-- Aspire manages service lifetimes, connection strings, and OTel wiring automatically in development.
-- In production, replace Aspire orchestration with environment variables and managed infrastructure.
-
----
-
-## Request Flow
-
-```
-HTTP Request
-    │
-    ▼
-AuthenticationMiddleware
-    │  ── validates cookie/bearer token
-    │  ── populates ClaimsPrincipal
-    │
-    ▼
-TenantResolutionMiddleware
-    │  ── reads Host header
-    │  ── queries Blogs table by subdomain
-    │  ── sets scoped TenantContext
-    │
-    ▼
-AccessControlMiddleware  (single unified middleware in Blogify.Web/Middleware/)
-    │  ── Rule 1: no-area Razor Pages blocked on tenant subdomains (404)
-    │  ── Rule 2: Blog area on root domain → endpoint replacement serves
-    │  │          landing page at "/" (SuperAdmin → /sa redirect)
-    │  ── Rule 3: Blog area on tenant subdomain → pass through (public)
-    │  ── Rule 4: BlogAdmin area → tenant + auth + ownership/membership check
-    │  ── Rule 5: all other areas (SuperAdmin, Identity, …) → pass through
-    │
-    ▼
-AnalyticsTrackingMiddleware
-    │  ── fire-and-forget page view recording for Blog area
-    │
-    ▼
-AuthorizationMiddleware
-    │  ── checks [Authorize] policies/roles
-    │  ── rejects unauthorized requests
-    │
-    ▼
-Razor Pages Router
-    │  ── routes to Area by URL prefix
-    │  ── /sa → SuperAdmin, /admin → BlogAdmin, else → Blog
-    │
-    ▼
-PageModel.OnGetAsync / OnPostAsync
-    │  ── injects ApplicationDbContext + TenantContext directly
-    │  ── loads aggregate via EF Core query (filtered by BlogId)
-    │  ── calls domain method on aggregate
-    │  ── calls SaveChangesAsync (Unit of Work)
-    │
-    ▼
-Domain Aggregate
-    │  ── enforces invariants
-    │  ── raises domain events
-    │
-    ▼
-EF Core + PostgreSQL
-```
-
----
-
-## Health Endpoints
-
-| Endpoint | Availability | Purpose |
+| Surface | Route/host | Tenant source |
 |---|---|---|
-| `/health` | Development only | Liveness + readiness combined |
-| `/alive` | Development only | Liveness only (fast probe) |
+| Landing, dashboard, setup, identity | platform host | none |
+| SuperAdmin | `/sa` on platform host | none |
+| BlogAdmin | `/app/admin/{blogSlug}` on platform host | route slug |
+| Public blog | tenant subdomain | host subdomain |
 
----
+Platform hosts come from `TenantOptions`. `TenantResolutionMiddleware` resolves a `Tenant`, sets `TenantContext`, and sets `ApplicationDbContext.CurrentTenantId`. Unknown tenant slugs return 404.
 
-## Traefik Routing
+`AccessControlMiddleware` then enforces host/area boundaries and requires ownership or membership for BlogAdmin. `IBlogPermissionService` handles action-level role checks.
 
-- Traefik is configured via `Blogify.AppHost/traefik.yml`.
-- Routes `*.localhost` and `localhost` → `http://host.docker.internal:5050`.
-- TLS is not configured for local development.
+Middleware order is significant:
 
+```text
+Routing -> Authentication -> TenantResolution -> AccessControl
+        -> AnalyticsTracking -> Authorization -> Antiforgery
+```
+
+## Access Model
+
+- A user can own blogs through `Tenant.OwnerId`.
+- Non-owner access is represented by `BlogMembership`.
+- Membership roles are `Writer`, `Editor`, and `Admin`.
+- Invitations become memberships through `/invite/{token}`.
+- ASP.NET Identity roles are separate from per-blog membership roles. `SuperAdmin` does not automatically grant access to a blog.
+
+Never authorize tenant data using only a route value, claim, or submitted ID. Resolve the tenant and verify ownership, membership, or the required permission.
+
+## Data Boundaries
+
+`ApplicationDbContext` applies tenant and soft-delete global filters to:
+
+- `Post`
+- `Category`
+- `Media`
+- `Comment`
+
+These filters use `CurrentTenantId`. When it is null, they only apply soft-delete filtering, so platform-level code must still scope queries appropriately.
+
+The following do not have tenant global filters and require explicit scoping where applicable:
+
+- `Tag`
+- `BlogMembership`
+- `BlogInvitation`
+- `AnalyticsEvent`
+
+`Tenant` is exposed as `ApplicationDbContext.Blogs`. Ownership and membership are separate records. Post revisions and post-category links are managed through the `Post` aggregate.
+
+## Public Content and Themes
+
+Public blogs use `Tenant.ActiveTheme`: `default`, `minimal`, or `aurora`. `ThemeViewLocationExpander` resolves views from `Areas/Blog/Themes/{Theme}/`.
+
+The public theme layouts consume SEO values through the established `ViewData` contract:
+
+- `MetaTitle`
+- `MetaDescription`
+- `OgImage`
+- `OgType`
+- `CanonicalUrl`
+
+Posts store BlockNote JSON in `PostRevision.Content` and searchable/plain text in `ContentText`. The React BlockNote editor is isolated under `ClientApp/`; public rendering uses server-side rendering services.
+
+## Cross-Cutting Features
+
+- Localization: shared English and Turkish resources.
+- Media: `IFileStorageService`, currently local storage.
+- Feeds: tenant-scoped RSS and sitemap endpoints.
+- Analytics: middleware queues public page views; a hosted service persists them.
+- Data protection keys persist to `keys/` in development and `/app/keys` in production.
