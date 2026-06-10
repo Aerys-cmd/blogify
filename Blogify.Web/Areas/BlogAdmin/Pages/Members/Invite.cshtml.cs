@@ -76,12 +76,13 @@ public sealed class InviteModel(
             }
         }
 
+        var now = DateTimeOffset.UtcNow;
         // Cancel any existing pending invitations for same email+blog.
         List<BlogInvitation> existing = await dbContext.BlogInvitations
             .Where(i => i.BlogId == blogId
                 && i.Email == normalizedEmail
                 && i.AcceptedAtUtc == null
-                && i.ExpiresAtUtc > DateTimeOffset.UtcNow)
+                && i.ExpiresAtUtc > now)
             .ToListAsync(ct);
         dbContext.BlogInvitations.RemoveRange(existing);
 
