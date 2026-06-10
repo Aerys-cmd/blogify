@@ -28,7 +28,10 @@
                 <select asp-for="Input.Role" class="form-select">
                     <option value="Writer">@Localizer["BlogAdmin.Members.Role.Writer"]</option>
                     <option value="Editor">@Localizer["BlogAdmin.Members.Role.Editor"]</option>
-                    <option value="Admin">@Localizer["BlogAdmin.Members.Role.Admin"]</option>
+                    @if (Model.CanInviteAdmin)
+                    {
+                        <option value="Admin">@Localizer["BlogAdmin.Members.Role.Admin"]</option>
+                    }
                 </select>
                 <span asp-validation-for="Input.Role" class="text-danger small"></span>
             </div>

@@ -60,6 +60,23 @@ public sealed class IndexModel(
         return Page();
     }
 
+    public async Task<IActionResult> OnPostLeaveAsync(Guid blogId, CancellationToken ct = default)
+    {
+        string? userId = userManager.GetUserId(User);
+        if (userId is null) return Forbid();
+
+        BlogMembership? membership = await dbContext.BlogMemberships
+            .FirstOrDefaultAsync(m => m.BlogId == blogId && m.UserId == userId, ct);
+        if (membership is not null)
+        {
+            dbContext.BlogMemberships.Remove(membership);
+            await dbContext.SaveChangesAsync(ct);
+        }
+
+        TempData["SuccessMessage"] = "You left the blog.";
+        return RedirectToPage();
+    }
+
     public sealed record BlogCardItem(Guid Id, string Title, string Subdomain, string BlogUrl);
     public sealed record MemberBlogCardItem(Guid Id, string Title, string Subdomain, BlogRole Role, string BlogUrl);
     private sealed record MemberBlogEntry(Guid Id, string Title, string Subdomain, BlogRole Role);

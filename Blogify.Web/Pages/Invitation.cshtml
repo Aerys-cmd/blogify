@@ -1,0 +1,31 @@
+@page "/invite/{token}"
+@model Blogify.Web.Pages.InvitationModel
+@{
+    ViewData["Title"] = "Blog invitation";
+}
+
+<div class="container py-5" style="max-width:640px">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h1 class="h4 mb-3">Blog invitation</h1>
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+            else
+            {
+                <p>You have been invited to <strong>@Model.BlogTitle</strong> as <strong>@Model.Role</strong>.</p>
+                <div class="d-flex gap-2">
+                    <form method="post" asp-page-handler="Accept">
+                        <input type="hidden" name="token" value="@Model.Token" />
+                        <button type="submit" class="btn btn-primary">Accept invitation</button>
+                    </form>
+                    <form method="post" asp-page-handler="Decline">
+                        <input type="hidden" name="token" value="@Model.Token" />
+                        <button type="submit" class="btn btn-outline-danger">Decline</button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>

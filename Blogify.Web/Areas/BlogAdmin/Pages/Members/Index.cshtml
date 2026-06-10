@@ -7,18 +7,22 @@
 
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h4 class="mb-0 fw-semibold">@Localizer["BlogAdmin.Members.Heading"]</h4>
-    @if (Model.CanManageUsers)
-    {
-        <a asp-page="/Members/Invite" asp-area="BlogAdmin" asp-route-blogSlug="@blogSlug" class="btn btn-primary btn-sm">
-            + @Localizer["BlogAdmin.Members.InviteAction"]
-        </a>
-    }
+    <a asp-page="/Members/Invite" asp-area="BlogAdmin" asp-route-blogSlug="@blogSlug" class="btn btn-primary btn-sm">
+        + @Localizer["BlogAdmin.Members.InviteAction"]
+    </a>
 </div>
 
-@if (TempData["InviteSent"] is string inviteMsg)
+@if (TempData["SuccessMessage"] is string successMsg)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @inviteMsg
+        @successMsg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["WarningMessage"] is string warningMsg)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @warningMsg
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
@@ -47,10 +51,7 @@
                         <th>@Localizer["Label.Email"]</th>
                         <th>@Localizer["Label.Role"]</th>
                         <th>@Localizer["BlogAdmin.Members.JoinedAt"]</th>
-                        @if (Model.CanManageUsers)
-                        {
-                            <th></th>
-                        }
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,11 +59,29 @@
                     {
                         <tr>
                             <td>@member.Email</td>
-                            <td><span class="badge bg-secondary">@member.Role.ToString()</span></td>
+                            <td>
+                                @if (member.CanManage)
+                                {
+                                    <form method="post" asp-page-handler="ChangeRole" asp-route-blogSlug="@blogSlug" class="d-flex gap-2">
+                                        <input type="hidden" name="memberId" value="@member.MembershipId" />
+                                        <select name="role" class="form-select form-select-sm" style="max-width:130px">
+                                            @foreach (Blogify.Web.Models.BlogRole role in Enum.GetValues<Blogify.Web.Models.BlogRole>())
+                                            {
+                                                <option value="@role" selected="@(member.Role == role)">@role</option>
+                                            }
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Save</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@member.Role</span>
+                                }
+                            </td>
                             <td class="text-muted small">@member.JoinedAt</td>
-                            @if (Model.CanManageUsers)
-                            {
-                                <td>
+                            <td>
+                                @if (member.CanManage)
+                                {
                                     <form method="post" asp-page-handler="Remove" asp-route-blogSlug="@blogSlug" class="d-inline">
                                         <input type="hidden" name="memberId" value="@member.MembershipId" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger"
@@ -70,8 +89,8 @@
                                             @Localizer["BlogAdmin.Members.Remove"]
                                         </button>
                                     </form>
-                                </td>
-                            }
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -97,6 +116,7 @@ else
                         <th>@Localizer["Label.Email"]</th>
                         <th>@Localizer["Label.Role"]</th>
                         <th>@Localizer["BlogAdmin.Members.ExpiresAt"]</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,6 +126,19 @@ else
                             <td>@inv.Email</td>
                             <td><span class="badge bg-info text-dark">@inv.Role.ToString()</span></td>
                             <td class="text-muted small">@inv.ExpiresAt</td>
+                            <td class="text-end">
+                                @if (inv.CanManage)
+                                {
+                                    <form method="post" asp-page-handler="ResendInvite" asp-route-blogSlug="@blogSlug" class="d-inline">
+                                        <input type="hidden" name="invitationId" value="@inv.InvitationId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Resend</button>
+                                    </form>
+                                    <form method="post" asp-page-handler="CancelInvite" asp-route-blogSlug="@blogSlug" class="d-inline">
+                                        <input type="hidden" name="invitationId" value="@inv.InvitationId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                    </form>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>

@@ -39,6 +39,18 @@ public sealed class BlogPermissionService(ApplicationDbContext dbContext) : IBlo
         return role is BlogRole.Admin || IsOwner(userId, blogId);
     }
 
+    public Task<bool> IsOwnerAsync(string userId, Guid blogId, CancellationToken ct = default) =>
+        dbContext.Blogs.AsNoTracking().AnyAsync(b => b.Id == blogId && b.OwnerId == userId, ct);
+
+    public async Task<bool> CanManageRoleAsync(string userId, Guid blogId, BlogRole targetRole, CancellationToken ct = default)
+    {
+        if (await IsOwnerAsync(userId, blogId, ct))
+            return true;
+
+        BlogRole? role = await GetUserRoleAsync(userId, blogId, ct);
+        return role == BlogRole.Admin && targetRole is BlogRole.Writer or BlogRole.Editor;
+    }
+
     /// <inheritdoc />
     public async Task<bool> CanManageSettingsAsync(string userId, Guid blogId, CancellationToken ct = default)
     {

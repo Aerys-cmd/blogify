@@ -19,6 +19,7 @@ namespace Blogify.Web.Data
         public DbSet<Tenant> Blogs { get; set; }
         public DbSet<BlogMembership> BlogMemberships { get; set; }
         public DbSet<BlogInvitation> BlogInvitations { get; set; }
+        public DbSet<BlogInvitationEvent> BlogInvitationEvents { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostRevision> PostRevisions { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }

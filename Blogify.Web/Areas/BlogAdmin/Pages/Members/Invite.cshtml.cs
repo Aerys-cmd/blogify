@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
 using Blogify.Web.Services;
@@ -27,6 +26,7 @@ public sealed class InviteModel(
 {
     [BindProperty]
     public InviteInput Input { get; set; } = new();
+    public bool CanInviteAdmin { get; private set; }
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
@@ -35,6 +35,7 @@ public sealed class InviteModel(
 
         bool canManage = await permissionService.CanManageUsersAsync(userId, tenantContext.RequiredTenant.Id, ct);
         if (!canManage) return Forbid();
+        CanInviteAdmin = await permissionService.IsOwnerAsync(userId, tenantContext.RequiredTenant.Id, ct);
 
         return Page();
     }
@@ -48,6 +49,7 @@ public sealed class InviteModel(
         bool canManage = await permissionService.CanManageUsersAsync(inviterId, blogId, ct);
         if (!canManage) return Forbid();
 
+        CanInviteAdmin = await permissionService.IsOwnerAsync(inviterId, blogId, ct);
         if (!ModelState.IsValid) return Page();
 
         if (!Enum.TryParse<BlogRole>(Input.Role, ignoreCase: true, out BlogRole role))
@@ -55,6 +57,8 @@ public sealed class InviteModel(
             ModelState.AddModelError(nameof(Input.Role), localizer["Message.InvalidRole"]);
             return Page();
         }
+        if (!await permissionService.CanManageRoleAsync(inviterId, blogId, role, ct))
+            return Forbid();
 
         string normalizedEmail = Input.Email.Trim().ToLowerInvariant();
 
@@ -80,20 +84,36 @@ public sealed class InviteModel(
             }
         }
 
-        var now = DateTimeOffset.UtcNow;
-        // Cancel any existing pending invitations for same email+blog.
-        List<BlogInvitation> existing = await dbContext.BlogInvitations
-            .Where(i => i.BlogId == blogId
+        BlogInvitation? existing = await dbContext.BlogInvitations
+            .FirstOrDefaultAsync(i => i.BlogId == blogId
                 && i.Email == normalizedEmail
-                && i.AcceptedAtUtc == null
-                && i.ExpiresAtUtc > now)
-            .ToListAsync(ct);
-        dbContext.BlogInvitations.RemoveRange(existing);
+                && i.Status == BlogInvitationStatus.Pending, ct);
+        if (existing is not null)
+        {
+            if (!existing.IsExpired)
+            {
+                ModelState.AddModelError(nameof(Input.Email), "A pending invitation already exists. Resend or cancel it from the members page.");
+                return Page();
+            }
 
-        string token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
-        BlogInvitation invitation = BlogInvitation.Create(blogId, normalizedEmail, role, token, inviterId);
+            existing.Expire();
+            dbContext.BlogInvitationEvents.Add(BlogInvitationEvent.Create(existing.Id, "Expired", inviterId));
+        }
+
+        string token = InvitationTokenService.CreateToken();
+        BlogInvitation invitation = BlogInvitation.Create(
+            blogId, normalizedEmail, role, InvitationTokenService.Hash(token), inviterId);
         dbContext.BlogInvitations.Add(invitation);
-        await dbContext.SaveChangesAsync(ct);
+        dbContext.BlogInvitationEvents.Add(BlogInvitationEvent.Create(invitation.Id, "Created", inviterId));
+        try
+        {
+            await dbContext.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException)
+        {
+            ModelState.AddModelError(nameof(Input.Email), "A pending invitation already exists.");
+            return Page();
+        }
 
         try
         {
@@ -104,6 +124,10 @@ public sealed class InviteModel(
                 token,
                 CultureInfo.CurrentUICulture,
                 ct);
+            invitation.MarkSent();
+            dbContext.BlogInvitationEvents.Add(BlogInvitationEvent.Create(invitation.Id, "Queued", inviterId));
+            await dbContext.SaveChangesAsync(ct);
+            TempData["SuccessMessage"] = "Invitation queued.";
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -111,11 +135,10 @@ public sealed class InviteModel(
                 ex,
                 "Invitation {InvitationId} was persisted but its email could not be enqueued.",
                 invitation.Id);
+            dbContext.BlogInvitationEvents.Add(BlogInvitationEvent.Create(invitation.Id, "QueueFailed", inviterId, ex.Message));
+            await dbContext.SaveChangesAsync(ct);
+            TempData["WarningMessage"] = "Invitation created, but its email could not be queued. Use Resend to try again.";
         }
-
-        TempData["InviteSent"] = string.Format(
-            localizer["BlogAdmin.Members.InviteSentMessage"].Value,
-            normalizedEmail);
 
         return RedirectToPage("/Members/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blogify.AppHost", "Blogify.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blogify.ServiceDefaults", "Blogify.ServiceDefaults\Blogify.ServiceDefaults.csproj", "{22247F02-87F6-42A7-93B2-50CDD68F9978}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blogify.Tests", "Blogify.Tests\Blogify.Tests.csproj", "{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{22247F02-87F6-42A7-93B2-50CDD68F9978}.Release|x64.Build.0 = Release|Any CPU
 		{22247F02-87F6-42A7-93B2-50CDD68F9978}.Release|x86.ActiveCfg = Release|Any CPU
 		{22247F02-87F6-42A7-93B2-50CDD68F9978}.Release|x86.Build.0 = Release|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Debug|x64.Build.0 = Debug|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Debug|x86.Build.0 = Debug|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Release|x64.ActiveCfg = Release|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Release|x64.Build.0 = Release|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Release|x86.ActiveCfg = Release|Any CPU
+		{46FEBF7E-73F5-446C-8C29-C030D33DAD9C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

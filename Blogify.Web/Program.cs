@@ -198,8 +198,6 @@ app.MapStaticAssets();
 app.MapCrossAuthEndpoints();
 app.MapFeedEndpoints();
 app.MapCultureEndpoints();
-app.MapInvitationEndpoints();
-
 app.MapRazorPages()
    .WithStaticAssets();
 

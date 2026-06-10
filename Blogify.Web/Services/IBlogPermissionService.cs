@@ -15,6 +15,8 @@ public interface IBlogPermissionService
 
     /// <summary>Owner or Admin can manage blog members and invitations.</summary>
     Task<bool> CanManageUsersAsync(string userId, Guid blogId, CancellationToken ct = default);
+    Task<bool> IsOwnerAsync(string userId, Guid blogId, CancellationToken ct = default);
+    Task<bool> CanManageRoleAsync(string userId, Guid blogId, BlogRole targetRole, CancellationToken ct = default);
 
     /// <summary>Owner or Admin can manage blog settings and SEO metadata.</summary>
     Task<bool> CanManageSettingsAsync(string userId, Guid blogId, CancellationToken ct = default);

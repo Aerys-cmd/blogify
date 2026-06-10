@@ -25,9 +25,9 @@ public sealed class BlogInvitationEntityConfiguration : IEntityTypeConfiguration
             .HasConversion<string>()
             .HasMaxLength(50);
 
-        builder.Property(i => i.Token)
+        builder.Property(i => i.TokenHash)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(64);
 
         builder.Property(i => i.InvitedByUserId)
             .IsRequired()
@@ -36,11 +36,16 @@ public sealed class BlogInvitationEntityConfiguration : IEntityTypeConfiguration
         builder.Property(i => i.CreatedAtUtc).IsRequired();
         builder.Property(i => i.ExpiresAtUtc).IsRequired();
         builder.Property(i => i.AcceptedAtUtc);
+        builder.Property(i => i.LastSentAtUtc);
+        builder.Property(i => i.Status)
+            .IsRequired()
+            .HasConversion<string>()
+            .HasMaxLength(50);
 
-        // Token must be globally unique (one-time use).
-        builder.HasIndex(i => i.Token).IsUnique();
+        builder.HasIndex(i => i.TokenHash).IsUnique();
 
-        // Pending invitations: per blog per email.
-        builder.HasIndex(i => new { i.BlogId, i.Email });
+        builder.HasIndex(i => new { i.BlogId, i.Email })
+            .IsUnique()
+            .HasFilter("\"Status\" = 'Pending'");
     }
 }
