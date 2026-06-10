@@ -1,4 +1,7 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +35,7 @@
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                     </svg>
                 </button>
-                <a asp-area="BlogAdmin" asp-page="/Index" class="text-white text-decoration-none fw-semibold">
+                <a asp-area="BlogAdmin" asp-page="/Index" asp-route-blogSlug="@blogSlug" class="text-white text-decoration-none fw-semibold">
                     <span class="text-warning">&#9998;</span> Blog Admin
                 </a>
                 <div class="ms-auto">
@@ -59,4 +62,3 @@
     <script src="~/js/blogadmin-layout.js" asp-append-version="true"></script>
 </body>
 </html>
-

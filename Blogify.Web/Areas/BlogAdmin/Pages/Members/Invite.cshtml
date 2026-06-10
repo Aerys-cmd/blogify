@@ -5,7 +5,7 @@
 }
 
 <div class="mb-4">
-    <a asp-page="/Members/Index" class="text-muted small text-decoration-none">
+    <a asp-page="/Members/Index" asp-area="BlogAdmin" asp-route-blogSlug="@ViewContext.RouteData.Values["blogSlug"]?.ToString()" class="text-muted small text-decoration-none">
         &larr; @Localizer["BlogAdmin.Members.BackToMembers"]
     </a>
 </div>
@@ -39,7 +39,7 @@
 
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">@Localizer["BlogAdmin.Members.InviteSend"]</button>
-                <a asp-page="/Members/Index" class="btn btn-outline-secondary">@Localizer["Action.Cancel"]</a>
+                <a asp-page="/Members/Index" asp-area="BlogAdmin" asp-route-blogSlug="@ViewContext.RouteData.Values["blogSlug"]?.ToString()" class="btn btn-outline-secondary">@Localizer["Action.Cancel"]</a>
             </div>
         </form>
     </div>

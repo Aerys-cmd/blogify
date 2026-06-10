@@ -111,7 +111,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
         post.SoftDelete();
         await dbContext.SaveChangesAsync(ct);
 
-        return RedirectToPage();
+        return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });
     }
 }
 

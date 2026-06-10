@@ -51,9 +51,11 @@ public sealed class IndexModel(
             m.Role,
             m.JoinedAtUtc.ToString("MMM d, yyyy"))).ToList();
 
+        var now = DateTimeOffset.UtcNow;
+
         PendingInvitations = await dbContext.BlogInvitations
             .AsNoTracking()
-            .Where(i => i.BlogId == blogId && i.AcceptedAtUtc == null && i.ExpiresAtUtc > DateTimeOffset.UtcNow)
+            .Where(i => i.BlogId == blogId && i.AcceptedAtUtc == null && i.ExpiresAtUtc > now)
             .OrderByDescending(i => i.CreatedAtUtc)
             .Select(i => new InvitationListItem(i.Email, i.Role, i.ExpiresAtUtc.ToString("MMM d, yyyy")))
             .ToListAsync(ct);
@@ -78,7 +80,7 @@ public sealed class IndexModel(
         dbContext.BlogMemberships.Remove(membership);
         await dbContext.SaveChangesAsync(ct);
 
-        return RedirectToPage();
+        return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });
     }
 
     public sealed record MemberListItem(Guid MembershipId, string Email, BlogRole Role, string JoinedAt);

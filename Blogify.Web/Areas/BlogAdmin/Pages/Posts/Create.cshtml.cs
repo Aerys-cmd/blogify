@@ -92,7 +92,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
             TempData["PostSaved"] = "saved";
         }
 
-        return RedirectToPage("/Posts/Edit", new { area = "BlogAdmin", id = post.Id });
+        return RedirectToPage("/Posts/Edit", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"], id = post.Id });
     }
 
     private async Task LoadAvailableCategoriesAsync(CancellationToken ct)

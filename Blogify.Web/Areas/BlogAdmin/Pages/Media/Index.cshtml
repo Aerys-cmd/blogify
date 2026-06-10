@@ -2,6 +2,7 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Media.IndexModel
 @{
     ViewData["Title"] = Localizer["Page.Title.BlogAdmin.Media"].Value;
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
 @* Page header *@
@@ -134,7 +135,7 @@
     <span id="bulk-count-label" class="fw-semibold small"
           data-label-one="@Localizer["Media.ItemsSelectedOne"].Value"
           data-label-many="@Localizer["Media.ItemsSelectedMany"].Value">@Localizer["Media.ItemsSelectedOne"]</span>
-    <form method="post" asp-page-handler="BulkDelete" id="bulk-delete-form" class="d-inline">
+    <form method="post" asp-page-handler="BulkDelete" asp-route-blogSlug="@blogSlug" id="bulk-delete-form" class="d-inline">
         <div id="bulk-ids-container"></div>
         <button type="submit" class="btn btn-danger btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"

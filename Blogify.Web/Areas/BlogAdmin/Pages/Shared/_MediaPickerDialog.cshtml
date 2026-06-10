@@ -1,8 +1,11 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaPickerFieldVm
+@{
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
+}
 
 <div class="modal fade" id="@Model.ModalId" tabindex="-1"
      aria-labelledby="@(Model.ModalId)-label" aria-hidden="true"
-     hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.InputId&modalId=@Model.ModalId"
+     hx-get="@Url.Page("/Media/Index", "MediaPicker", new { area = "BlogAdmin", blogSlug, targetInputId = Model.InputId, modalId = Model.ModalId })"
      hx-target="#@(Model.ModalId)-body"
      hx-swap="innerHTML"
      hx-trigger="show.bs.modal">

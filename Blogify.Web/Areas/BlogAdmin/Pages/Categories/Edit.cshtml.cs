@@ -90,7 +90,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<S
         category.UpdateSeoMetadata(Input.MetaTitle, Input.MetaDescription);
         await dbContext.SaveChangesAsync(ct);
 
-        return RedirectToPage("/Categories/Index", new { area = "BlogAdmin" });
+        return RedirectToPage("/Categories/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
 
     private static string GenerateSlug(string name)
@@ -119,5 +119,4 @@ public sealed class CategoryEditInput
     [MaxLength(160)]
     public string? MetaDescription { get; set; }
 }
-
 

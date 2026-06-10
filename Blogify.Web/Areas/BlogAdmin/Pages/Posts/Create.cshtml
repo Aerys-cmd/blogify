@@ -2,6 +2,7 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Posts.CreateModel
 @{
     ViewData["Title"] = Localizer["Page.Title.BlogAdmin.NewPost"].Value;
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
 <form method="post" id="createPostForm" novalidate>
@@ -9,6 +10,7 @@
     <div class="pe-header py-2">
         <div class="d-flex align-items-center gap-2 flex-wrap">
             <a asp-area="BlogAdmin" asp-page="/Posts/Index"
+               asp-route-blogSlug="@blogSlug"
                class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                      viewBox="0 0 16 16" aria-hidden="true">
@@ -119,7 +121,7 @@
                         {
                             <p class="text-muted small mb-0">
                                 @Localizer["Label.Categories.None"]
-                                <a asp-area="BlogAdmin" asp-page="/Categories/Create">@Localizer["Label.Categories.Create"]</a>.
+                                <a asp-area="BlogAdmin" asp-page="/Categories/Create" asp-route-blogSlug="@blogSlug">@Localizer["Label.Categories.Create"]</a>.
                             </p>
                         }
                         else

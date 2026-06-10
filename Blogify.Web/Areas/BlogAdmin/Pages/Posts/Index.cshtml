@@ -4,6 +4,7 @@
 @using Blogify.Web.Models.Posts
 @{
     ViewData["Title"] = Localizer["Page.Title.BlogAdmin.Posts"].Value;
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -16,7 +17,7 @@
                 Model.DraftCount)
         </p>
     </div>
-    <a asp-area="BlogAdmin" asp-page="/Posts/Create" class="btn btn-primary">
+    <a asp-area="BlogAdmin" asp-page="/Posts/Create" asp-route-blogSlug="@blogSlug" class="btn btn-primary">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16" aria-hidden="true">
             <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
         </svg>
@@ -28,6 +29,7 @@
     <div class="pl-filter-bar mb-4">
         <nav class="pl-filter-tabs" aria-label="@Localizer["Aria.Posts.StatusFilter"].Value">
             <a asp-area="BlogAdmin" asp-page="/Posts/Index"
+               asp-route-blogSlug="@blogSlug"
                asp-route-searchQuery="@Model.SearchQuery"
                class="pl-filter-tab @(string.IsNullOrEmpty(Model.StatusFilter) ? "active" : "")">
                 @Localizer["Label.Posts.FilterAll"]
@@ -36,6 +38,7 @@
                 </span>
             </a>
             <a asp-area="BlogAdmin" asp-page="/Posts/Index"
+               asp-route-blogSlug="@blogSlug"
                asp-route-statusFilter="published"
                asp-route-searchQuery="@Model.SearchQuery"
                class="pl-filter-tab @(Model.StatusFilter == "published" ? "active" : "")">
@@ -45,6 +48,7 @@
                 </span>
             </a>
             <a asp-area="BlogAdmin" asp-page="/Posts/Index"
+               asp-route-blogSlug="@blogSlug"
                asp-route-statusFilter="draft"
                asp-route-searchQuery="@Model.SearchQuery"
                class="pl-filter-tab @(Model.StatusFilter == "draft" ? "active" : "")">
@@ -76,7 +80,7 @@
                         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
                     </svg>
                     <p class="text-muted mb-3">@Localizer["Message.Posts.Empty"]</p>
-                    <a asp-area="BlogAdmin" asp-page="/Posts/Create" class="btn btn-primary">
+                    <a asp-area="BlogAdmin" asp-page="/Posts/Create" asp-route-blogSlug="@blogSlug" class="btn btn-primary">
                         @Localizer["Message.Posts.EmptyCreate"]
                     </a>
                 </div>
@@ -88,7 +92,7 @@
                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                     </svg>
                     <p class="text-muted mb-3">@Localizer["Message.Posts.NoResults"]</p>
-                    <a asp-area="BlogAdmin" asp-page="/Posts/Index" class="btn btn-outline-secondary btn-sm">
+                    <a asp-area="BlogAdmin" asp-page="/Posts/Index" asp-route-blogSlug="@blogSlug" class="btn btn-outline-secondary btn-sm">
                         @Localizer["Action.ClearFilters"]
                     </a>
                 </div>
@@ -104,6 +108,7 @@
                     <div class="pl-row-body">
                         <div class="d-flex align-items-center gap-2 flex-wrap">
                             <a asp-area="BlogAdmin" asp-page="/Posts/Edit"
+                               asp-route-blogSlug="@blogSlug"
                                asp-route-id="@post.Id"
                                class="pl-row-title">@post.Title</a>
                             @if (post.Status == PostStatus.Published)
@@ -141,6 +146,7 @@
 
                     <div class="d-flex align-items-center gap-1 flex-shrink-0">
                         <a asp-area="BlogAdmin" asp-page="/Posts/Edit"
+                           asp-route-blogSlug="@blogSlug"
                            asp-route-id="@post.Id"
                            class="pl-action-btn"
                            title="@Localizer["Action.Edit"].Value"
@@ -150,6 +156,7 @@
                             </svg>
                         </a>
                         <form method="post" asp-page-handler="Delete"
+                              asp-route-blogSlug="@blogSlug"
                               asp-route-id="@post.Id"
                               class="d-inline"
                               data-confirm-message="@Localizer["Message.PostDeleteConfirm", post.Title].Value">
@@ -185,6 +192,7 @@
                         <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : "")">
                             <a class="page-link"
                                asp-area="BlogAdmin" asp-page="/Posts/Index"
+                               asp-route-blogSlug="@blogSlug"
                                asp-route-page="@(Model.CurrentPage - 1)"
                                asp-route-statusFilter="@Model.StatusFilter"
                                asp-route-searchQuery="@Model.SearchQuery"
@@ -198,6 +206,7 @@
                             <li class="page-item @(pageNum == Model.CurrentPage ? "active" : "")">
                                 <a class="page-link"
                                    asp-area="BlogAdmin" asp-page="/Posts/Index"
+                                   asp-route-blogSlug="@blogSlug"
                                    asp-route-page="@pageNum"
                                    asp-route-statusFilter="@Model.StatusFilter"
                                    asp-route-searchQuery="@Model.SearchQuery">@pageNum</a>
@@ -206,6 +215,7 @@
                         <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : "")">
                             <a class="page-link"
                                asp-area="BlogAdmin" asp-page="/Posts/Index"
+                               asp-route-blogSlug="@blogSlug"
                                asp-route-page="@(Model.CurrentPage + 1)"
                                asp-route-statusFilter="@Model.StatusFilter"
                                asp-route-searchQuery="@Model.SearchQuery"
@@ -261,4 +271,3 @@
         }());
     </script>
 }
-

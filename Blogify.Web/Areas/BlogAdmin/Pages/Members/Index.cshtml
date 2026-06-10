@@ -2,13 +2,14 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Members.IndexModel
 @{
     ViewData["Title"] = @Localizer["BlogAdmin.Members.Title"].Value;
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h4 class="mb-0 fw-semibold">@Localizer["BlogAdmin.Members.Heading"]</h4>
     @if (Model.CanManageUsers)
     {
-        <a asp-page="/Members/Invite" class="btn btn-primary btn-sm">
+        <a asp-page="/Members/Invite" asp-area="BlogAdmin" asp-route-blogSlug="@blogSlug" class="btn btn-primary btn-sm">
             + @Localizer["BlogAdmin.Members.InviteAction"]
         </a>
     }
@@ -62,7 +63,7 @@
                             @if (Model.CanManageUsers)
                             {
                                 <td>
-                                    <form method="post" asp-page-handler="Remove" class="d-inline">
+                                    <form method="post" asp-page-handler="Remove" asp-route-blogSlug="@blogSlug" class="d-inline">
                                         <input type="hidden" name="memberId" value="@member.MembershipId" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger"
                                                 onclick="return confirm('@Localizer["BlogAdmin.Members.RemoveConfirm"].Value')">

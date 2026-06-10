@@ -55,7 +55,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
         }
 
         await dbContext.SaveChangesAsync(ct);
-        return RedirectToPage();
+        return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });
     }
 
     private static IReadOnlyList<ThemeOptionViewModel> BuildAvailableThemes() =>

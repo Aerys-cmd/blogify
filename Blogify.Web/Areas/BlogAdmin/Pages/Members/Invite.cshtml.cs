@@ -97,7 +97,7 @@ public sealed class InviteModel(
             localizer["BlogAdmin.Members.InviteSentMessage"].Value,
             normalizedEmail);
 
-        return RedirectToPage("/Members/Index");
+        return RedirectToPage("/Members/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
 
     public sealed record InviteInput

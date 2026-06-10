@@ -57,7 +57,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         dbContext.Categories.Add(category);
         await dbContext.SaveChangesAsync(ct);
 
-        return RedirectToPage("/Categories/Index", new { area = "BlogAdmin" });
+        return RedirectToPage("/Categories/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
 
     private static string GenerateSlug(string name)
@@ -86,4 +86,3 @@ public sealed class CategoryInputModel
     [MaxLength(160)]
     public string? MetaDescription { get; set; }
 }
-

@@ -2,13 +2,14 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Categories.EditModel
 @{
     ViewData["Title"] = $"Edit — {Model.CategoryName}";
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
 <div class="mb-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-1">
             <li class="breadcrumb-item">
-                <a asp-area="BlogAdmin" asp-page="/Categories/Index">Categories</a>
+                <a asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug">Categories</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">Edit</li>
         </ol>
@@ -63,7 +64,7 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">@Localizer["Action.Save"]</button>
-                        <a asp-area="BlogAdmin" asp-page="/Categories/Index" class="btn btn-outline-secondary">@Localizer["Action.Cancel"]</a>
+                        <a asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug" class="btn btn-outline-secondary">@Localizer["Action.Cancel"]</a>
                     </div>
                 </form>
             </div>
@@ -74,4 +75,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

@@ -46,7 +46,6 @@ public sealed class DeleteModel(ApplicationDbContext dbContext) : PageModel
         category.SoftDelete();
         await dbContext.SaveChangesAsync(ct);
 
-        return RedirectToPage("/Categories/Index", new { area = "BlogAdmin" });
+        return RedirectToPage("/Categories/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
 }
-

@@ -51,7 +51,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
         await dbContext.SaveChangesAsync(ct);
 
         TempData["SuccessMessage"] = localizer["Message.SaveSuccess"].Value;
-        return RedirectToPage();
+        return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });
     }
 }
 

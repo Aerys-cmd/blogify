@@ -178,7 +178,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
             : (!Input.IsPublished && currentlyPublished) ? "unpublished"
             : "saved";
 
-        return RedirectToPage("/Posts/Edit", new { area = "BlogAdmin", id = Id });
+        return RedirectToPage("/Posts/Edit", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"], id = Id });
     }
 
     private async Task LoadAvailableCategoriesAsync(CancellationToken ct)

@@ -2,6 +2,7 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.IndexModel
 @{
     ViewData["Title"] = "Blog Admin";
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
 <div class="mb-4">
@@ -37,11 +38,10 @@
 </div>
 
 <div class="list-group">
-    <a class="list-group-item list-group-item-action" asp-area="BlogAdmin" asp-page="/Posts/Index">
+    <a class="list-group-item list-group-item-action" asp-area="BlogAdmin" asp-page="/Posts/Index" asp-route-blogSlug="@blogSlug">
         <strong>Posts</strong> - Create and manage posts for this blog.
     </a>
-    <a class="list-group-item list-group-item-action" asp-area="BlogAdmin" asp-page="/Categories/Index">
+    <a class="list-group-item list-group-item-action" asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug">
         <strong>Categories</strong> - Organize posts into categories.
     </a>
 </div>
-

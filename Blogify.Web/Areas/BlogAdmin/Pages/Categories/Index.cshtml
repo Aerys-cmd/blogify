@@ -2,6 +2,7 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Categories.IndexModel
 @{
     ViewData["Title"] = "Categories";
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -9,7 +10,7 @@
         <h1 class="h3 mb-1">Categories</h1>
         <p class="text-muted mb-0">@Model.TenantTitle — @Model.Categories.Count category/categories</p>
     </div>
-    <a asp-area="BlogAdmin" asp-page="/Categories/Create" class="btn btn-primary">
+    <a asp-area="BlogAdmin" asp-page="/Categories/Create" asp-route-blogSlug="@blogSlug" class="btn btn-primary">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
         </svg>
@@ -20,7 +21,7 @@
 @if (Model.Categories.Count == 0)
 {
     <div class="alert alert-info">
-        No categories yet. <a asp-area="BlogAdmin" asp-page="/Categories/Create">Create your first category</a>.
+        No categories yet. <a asp-area="BlogAdmin" asp-page="/Categories/Create" asp-route-blogSlug="@blogSlug">Create your first category</a>.
     </div>
 }
 else
@@ -43,9 +44,11 @@ else
                             <td class="align-middle text-muted font-monospace small">@category.Slug</td>
                             <td class="align-middle text-end">
                                 <a asp-area="BlogAdmin" asp-page="/Categories/Edit"
+                                   asp-route-blogSlug="@blogSlug"
                                    asp-route-id="@category.Id"
                                    class="btn btn-sm btn-outline-secondary me-1">Edit</a>
                                 <a asp-area="BlogAdmin" asp-page="/Categories/Delete"
+                                   asp-route-blogSlug="@blogSlug"
                                    asp-route-id="@category.Id"
                                    class="btn btn-sm btn-outline-danger">Delete</a>
                             </td>
@@ -56,4 +59,3 @@ else
         </div>
     </div>
 }
-

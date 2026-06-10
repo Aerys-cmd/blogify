@@ -14,6 +14,6 @@ public sealed class Step1Model : PageModel
         if (User.Identity?.IsAuthenticated == true)
             return RedirectToPage("/Dashboard/Index");
 
-        return RedirectToPage("/Identity/Account/Register", new { area = "Identity" });
+        return RedirectToPage("/Account/Register", new { area = "Identity" });
     }
 }

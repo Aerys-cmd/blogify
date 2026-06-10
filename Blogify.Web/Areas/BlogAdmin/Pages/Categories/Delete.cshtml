@@ -2,13 +2,14 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Categories.DeleteModel
 @{
     ViewData["Title"] = $"Delete — {Model.CategoryName}";
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
 <div class="mb-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-1">
             <li class="breadcrumb-item">
-                <a asp-area="BlogAdmin" asp-page="/Categories/Index">Categories</a>
+                <a asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug">Categories</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">Delete</li>
         </ol>
@@ -31,11 +32,10 @@
                 <form method="post">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                        <a asp-area="BlogAdmin" asp-page="/Categories/Index" class="btn btn-outline-secondary">Cancel</a>
+                        <a asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-

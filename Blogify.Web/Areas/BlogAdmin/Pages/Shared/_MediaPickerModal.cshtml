@@ -1,4 +1,7 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaPickerModalVm
+@{
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
+}
 
 @* ── Search bar ─────────────────────────────────────────────────────── *@
 <div class="media-picker-toolbar px-3 pt-3 pb-2">
@@ -7,7 +10,7 @@
                name="q" id="@(Model.ModalId)-search"
                value="@Model.SearchQuery"
                placeholder="@Localizer["Placeholder.SearchMedia"].Value"
-               hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&type=@Model.TypeFilter"
+               hx-get="@Url.Page("/Media/Index", "MediaPicker", new { area = "BlogAdmin", blogSlug, targetInputId = Model.TargetInputId, modalId = Model.ModalId, type = Model.TypeFilter })"
                hx-target="#@(Model.ModalId)-body"
                hx-swap="innerHTML"
                hx-trigger="input changed delay:350ms, search"
@@ -31,7 +34,7 @@
             <button type="button"
                     class="btn btn-sm media-type-chip @(active ? "active" : "")"
                     data-type="@value"
-                    hx-get="/admin/Media?handler=MediaPicker&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&q=@Model.SearchQuery&type=@value"
+                    hx-get="@Url.Page("/Media/Index", "MediaPicker", new { area = "BlogAdmin", blogSlug, targetInputId = Model.TargetInputId, modalId = Model.ModalId, q = Model.SearchQuery, type = value })"
                     hx-target="#@(Model.ModalId)-body"
                     hx-swap="innerHTML"
                     aria-pressed="@(active ? "true" : "false")">
@@ -110,7 +113,7 @@
                         {
                             <li id="@(Model.ModalId)-load-sentinel" class="media-picker-load-sentinel">
                                 <button type="button" class="btn btn-outline-secondary btn-sm"
-                                        hx-get="/admin/Media?handler=MediaPickerPage&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId&cursor=@Model.Pager.NextCursor&q=@Model.SearchQuery&type=@Model.TypeFilter"
+                                        hx-get="@Url.Page("/Media/Index", "MediaPickerPage", new { area = "BlogAdmin", blogSlug, targetInputId = Model.TargetInputId, modalId = Model.ModalId, cursor = Model.Pager.NextCursor, q = Model.SearchQuery, type = Model.TypeFilter })"
                                         hx-target="#@(Model.ModalId)-load-sentinel"
                                         hx-swap="outerHTML">
                                     @Localizer["Media.Picker.LoadMore"]
@@ -128,7 +131,7 @@
                      id="@(Model.ModalId)-drop-zone"
                      data-modal-id="@Model.ModalId"
                      data-target-input-id="@Model.TargetInputId"
-                     data-upload-url="/admin/Media?handler=PickerUpload&targetInputId=@Model.TargetInputId&modalId=@Model.ModalId">
+                     data-upload-url="@Url.Page("/Media/Index", "PickerUpload", new { area = "BlogAdmin", blogSlug, targetInputId = Model.TargetInputId, modalId = Model.ModalId })">
                     <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
                          class="mb-2 text-secondary" viewBox="0 0 16 16" aria-hidden="true">
                         <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"/>
@@ -181,4 +184,3 @@
         </div>
     </aside>
 </div>
-

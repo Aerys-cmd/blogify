@@ -178,7 +178,7 @@ public sealed class IndexModel(
             return Partial("_MediaCard", vm);
         }
 
-        return RedirectToPage("/Media/Index", new { area = "BlogAdmin" });
+        return RedirectToPage("/Media/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
 
     public async Task<IActionResult> OnPostPickerUploadAsync(
@@ -224,7 +224,7 @@ public sealed class IndexModel(
             return Partial("_MediaPickerCard", new MediaPickerCardVm(item, targetInputId, resolvedModalId));
         }
 
-        return RedirectToPage("/Media/Index", new { area = "BlogAdmin" });
+        return RedirectToPage("/Media/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
 
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken ct = default)
@@ -245,7 +245,7 @@ public sealed class IndexModel(
             return new OkResult();
         }
 
-        return RedirectToPage("/Media/Index", new { area = "BlogAdmin" });
+        return RedirectToPage("/Media/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
 
     public async Task<IActionResult> OnPostBulkDeleteAsync(
@@ -254,7 +254,7 @@ public sealed class IndexModel(
     {
         if (ids is null || ids.Count == 0)
         {
-            return RedirectToPage("/Media/Index", new { area = "BlogAdmin" });
+            return RedirectToPage("/Media/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
         }
 
         List<Models.Media> mediaItems = await dbContext.Media
@@ -269,7 +269,7 @@ public sealed class IndexModel(
 
         await dbContext.SaveChangesAsync(ct);
 
-        return RedirectToPage("/Media/Index", new { area = "BlogAdmin" });
+        return RedirectToPage("/Media/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
 
     public async Task<IActionResult> OnPostUpdateMetadataAsync(
@@ -312,7 +312,7 @@ public sealed class IndexModel(
                 "text/html");
         }
 
-        return RedirectToPage("/Media/Index", new { area = "BlogAdmin" });
+        return RedirectToPage("/Media/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
 
     private static string EncodeCursor(DateTimeOffset uploadedAt, Guid id)
