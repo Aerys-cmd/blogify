@@ -41,7 +41,7 @@ everything with a single `dotnet run`, including the Aspire developer dashboard.
 
 ## Running Locally
 
-**Prerequisites**: [.NET 9 SDK](https://dotnet.microsoft.com/download), [Docker](https://docs.docker.com/get-docker/)
+**Prerequisites**: [.NET 10 SDK](https://dotnet.microsoft.com/download), [Docker](https://docs.docker.com/get-docker/)
 
 ```bash
 git clone https://github.com/Aerys-cmd/blogify.git
@@ -53,6 +53,32 @@ dotnet run --project Blogify.AppHost
 
 The Aspire dashboard will be available at `https://localhost:15888`.  
 The web application will be available at the port shown in the dashboard.
+
+## Email Delivery
+
+Password-reset and blog-invitation emails are rendered as localized HTML and placed on a bounded
+in-memory queue. Development defaults to disabled delivery, which logs and discards queued email.
+Production enables SMTP delivery by default.
+
+Configure SMTP with environment variables:
+
+```bash
+Email__Enabled=true
+Email__PublicBaseUrl=https://blogify.example.com
+Email__FromAddress=no-reply@blogify.example.com
+Email__FromName=Blogify
+Email__QueueCapacity=100
+Smtp__Host=smtp.example.com
+Smtp__Port=587
+Smtp__Username=...
+Smtp__Password=...
+Smtp__UseSsl=false
+```
+
+`Email__PublicBaseUrl` is used for canonical links in email. `Smtp__UseSsl=true` selects
+SSL-on-connect; `false` selects STARTTLS. Failed SMTP deliveries are retried after 2, 8, and 30
+seconds, then logged and discarded. The queue applies backpressure when full and is not persistent,
+so queued messages are lost when the application restarts.
 
 ---
 

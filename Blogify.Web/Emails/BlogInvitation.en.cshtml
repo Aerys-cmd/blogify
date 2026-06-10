@@ -1,0 +1,12 @@
+@model Blogify.Web.Services.Email.BlogInvitationEmailViewModel
+@{
+    Layout = "/Emails/_Layout.cshtml";
+    ViewData["Language"] = "en";
+    ViewData["Title"] = "Blog invitation";
+}
+<h1 style="font-size:24px;margin:0 0 16px">You are invited</h1>
+<p style="line-height:1.6">You have been invited to join <strong>@Model.BlogTitle</strong> as <strong>@Model.Role</strong>.</p>
+<p style="margin:24px 0">
+    <a href="@Model.InvitationUrl" style="background:#18181b;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:6px;display:inline-block">Accept invitation</a>
+</p>
+<p style="line-height:1.6;color:#52525b">This invitation expires in 7 days.</p>

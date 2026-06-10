@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
 using Blogify.Web.Services;
+using Blogify.Web.Services.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +21,9 @@ public sealed class InviteModel(
     TenantContext tenantContext,
     UserManager<ApplicationUser> userManager,
     IBlogPermissionService permissionService,
-    IStringLocalizer<SharedResource> localizer) : PageModel
+    IStringLocalizer<SharedResource> localizer,
+    IAppEmailSender emailSender,
+    ILogger<InviteModel> logger) : PageModel
 {
     [BindProperty]
     public InviteInput Input { get; set; } = new();
@@ -91,8 +95,23 @@ public sealed class InviteModel(
         dbContext.BlogInvitations.Add(invitation);
         await dbContext.SaveChangesAsync(ct);
 
-        // TODO: Send invitation email via IEmailSender once an email provider is configured.
-        // Invitation acceptance URL: {Request.Scheme}://{Request.Host}/invite/{token}
+        try
+        {
+            await emailSender.SendBlogInvitationAsync(
+                normalizedEmail,
+                tenantContext.RequiredTenant.Title,
+                role,
+                token,
+                CultureInfo.CurrentUICulture,
+                ct);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogError(
+                ex,
+                "Invitation {InvitationId} was persisted but its email could not be enqueued.",
+                invitation.Id);
+        }
 
         TempData["InviteSent"] = string.Format(
             localizer["BlogAdmin.Members.InviteSentMessage"].Value,

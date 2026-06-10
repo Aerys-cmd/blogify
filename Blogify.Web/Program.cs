@@ -6,6 +6,7 @@ using Blogify.Web.Data;
 using Blogify.Web.Endpoints;
 using Blogify.Web.Models;
 using Blogify.Web.Services;
+using Blogify.Web.Services.Email;
 using Blogify.Web.Middleware;
 using System.Net;
 using Microsoft.AspNetCore.DataProtection;
@@ -40,6 +41,18 @@ builder.Services.AddSingleton<IBlockNoteHtmlRenderer, BlockNoteHtmlRenderer>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<FeedService>();
 builder.Services.AddScoped<IBlogPermissionService, BlogPermissionService>();
+
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
+builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddSingleton<EmailQueue>();
+builder.Services.AddSingleton<IEmailQueue>(services => services.GetRequiredService<EmailQueue>());
+builder.Services.AddScoped<IRazorEmailRenderer, RazorEmailRenderer>();
+builder.Services.AddScoped<IAppEmailSender, AppEmailSender>();
+builder.Services.AddSingleton<IEmailDeliveryTransport>(services =>
+    builder.Configuration.GetValue<bool>("Email:Enabled")
+        ? ActivatorUtilities.CreateInstance<SmtpEmailDeliveryTransport>(services)
+        : ActivatorUtilities.CreateInstance<DisabledEmailDeliveryTransport>(services));
+builder.Services.AddHostedService<EmailDispatchWorker>();
 
 builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
 builder.Services.AddSingleton<AnalyticsChannel>();
