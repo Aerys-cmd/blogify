@@ -1,3 +1,5 @@
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
@@ -21,6 +23,8 @@ public sealed class SmtpEmailDeliveryTransport(
         message.Body = new BodyBuilder { HtmlBody = job.HtmlBody }.ToMessageBody();
 
         using var client = new SmtpClient();
+        client.ServerCertificateValidationCallback = ServerCertificateValidation;
+
         SecureSocketOptions socketOptions = smtp.UseSsl
             ? SecureSocketOptions.SslOnConnect
             : SecureSocketOptions.StartTls;
@@ -31,5 +35,29 @@ public sealed class SmtpEmailDeliveryTransport(
 
         await client.SendAsync(message, ct);
         await client.DisconnectAsync(quit: true, ct);
+    }
+
+    private static bool ServerCertificateValidation(object sender, X509Certificate? cert, X509Chain? chain, SslPolicyErrors errors)
+    {
+        if (errors == SslPolicyErrors.None)
+            return true;
+
+        if (errors == SslPolicyErrors.RemoteCertificateChainErrors && chain != null)
+        {
+            foreach (var status in chain.ChainStatus)
+            {
+                if (status.Status == X509ChainStatusFlags.RevocationStatusUnknown ||
+                    status.Status == X509ChainStatusFlags.OfflineRevocation)
+                {
+                    continue;
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
