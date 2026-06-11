@@ -65,6 +65,7 @@ For Docker Compose deployments, create a `.env` file beside `docker-compose.yml`
 configuration:
 
 ```bash
+FEEDBACK_HUB_PUBLIC_KEY=...
 EMAIL_ENABLED=true
 EMAIL_PUBLIC_BASE_URL=https://blogify.example.com
 EMAIL_FROM_ADDRESS=no-reply@blogify.example.com
@@ -76,6 +77,9 @@ SMTP_USERNAME=no-reply@blogify.example.com
 SMTP_PASSWORD=...
 SMTP_USE_SSL=false
 ```
+
+`FEEDBACK_HUB_PUBLIC_KEY` enables the Feedback Hub widget in the Blog Admin interface. The widget
+is omitted when the key is empty.
 
 `EMAIL_PUBLIC_BASE_URL` is used for canonical links in email. `SMTP_USE_SSL=true` selects
 SSL-on-connect; `false` selects STARTTLS. Failed SMTP deliveries are retried after 2, 8, and 30

@@ -58,6 +58,9 @@ builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("A
 builder.Services.AddSingleton<AnalyticsChannel>();
 builder.Services.AddHostedService<AnalyticsWriterService>();
 
+builder.Services.Configure<FeedbackHubOptions>(
+    builder.Configuration.GetSection("FeedbackHub"));
+
 builder.Services.Configure<TenantOptions>(
     builder.Configuration.GetSection("Tenant"));
 
