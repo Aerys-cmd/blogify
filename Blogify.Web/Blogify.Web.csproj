@@ -34,12 +34,12 @@
   </PropertyGroup>
 
   <Target Name="BuildTailwind" BeforeTargets="Build" Condition="'$(EnableTailwindBuild)' == 'true'">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(NpmCli)&quot; run build:css:minimal" ContinueOnError="WarnAndContinue" />
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(NpmCli)&quot; run build:css:aurora" ContinueOnError="WarnAndContinue" />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(NpmCli)&quot; run build:css:minimal" />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(NpmCli)&quot; run build:css:aurora" />
   </Target>
 
   <Target Name="BuildVite" BeforeTargets="Build" Condition="'$(EnableViteBuild)' == 'true'">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(NpmCli)&quot; run build:editor" ContinueOnError="WarnAndContinue" />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(NpmCli)&quot; run build:editor" />
   </Target>
 
 </Project>

@@ -17,8 +17,10 @@ COPY Blogify.ServiceDefaults/Blogify.ServiceDefaults.csproj Blogify.ServiceDefau
 
 RUN dotnet restore Blogify.Web/Blogify.Web.csproj
 
-# Copy Node.js runtime from pinned image and pre-built npm packages
+# Copy Node.js, npm, and pre-built npm packages used by the frontend MSBuild targets
 COPY --from=npm-deps /usr/local/bin/node /usr/local/bin/node
+COPY --from=npm-deps /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 COPY --from=npm-deps /src/Blogify.Web/node_modules Blogify.Web/node_modules
 
 # Copy remaining source
