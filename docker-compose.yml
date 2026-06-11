@@ -17,6 +17,16 @@ services:
       ASPNETCORE_HTTP_PORTS: "8080"
       ConnectionStrings__blogdb: "Data Source=/app/data/blogify.db;Default Timeout=30"
       Analytics__IpHashSalt: ${IP_HASH_SALT}
+      Email__Enabled: ${EMAIL_ENABLED:-true}
+      Email__PublicBaseUrl: ${EMAIL_PUBLIC_BASE_URL:?EMAIL_PUBLIC_BASE_URL must be set}
+      Email__FromAddress: ${EMAIL_FROM_ADDRESS:?EMAIL_FROM_ADDRESS must be set}
+      Email__FromName: ${EMAIL_FROM_NAME:-Blogify}
+      Email__QueueCapacity: ${EMAIL_QUEUE_CAPACITY:-100}
+      Smtp__Host: ${SMTP_HOST:?SMTP_HOST must be set}
+      Smtp__Port: ${SMTP_PORT:-587}
+      Smtp__Username: ${SMTP_USERNAME:?SMTP_USERNAME must be set}
+      Smtp__Password: ${SMTP_PASSWORD:?SMTP_PASSWORD must be set}
+      Smtp__UseSsl: ${SMTP_USE_SSL:-false}
 
     labels:
       - "traefik.enable=true"

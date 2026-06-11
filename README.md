@@ -60,22 +60,24 @@ Password-reset and blog-invitation emails are rendered as localized HTML and pla
 in-memory queue. Development defaults to disabled delivery, which logs and discards queued email.
 Production enables SMTP delivery by default.
 
-Configure SMTP with environment variables:
+For Docker Compose deployments, create a `.env` file beside `docker-compose.yml` from
+`.env.example`. Compose maps these deployment variables to the application's ASP.NET Core
+configuration:
 
 ```bash
-Email__Enabled=true
-Email__PublicBaseUrl=https://blogify.example.com
-Email__FromAddress=no-reply@blogify.example.com
-Email__FromName=Blogify
-Email__QueueCapacity=100
-Smtp__Host=smtp.example.com
-Smtp__Port=587
-Smtp__Username=...
-Smtp__Password=...
-Smtp__UseSsl=false
+EMAIL_ENABLED=true
+EMAIL_PUBLIC_BASE_URL=https://blogify.example.com
+EMAIL_FROM_ADDRESS=no-reply@blogify.example.com
+EMAIL_FROM_NAME=Blogify
+EMAIL_QUEUE_CAPACITY=100
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USERNAME=no-reply@blogify.example.com
+SMTP_PASSWORD=...
+SMTP_USE_SSL=false
 ```
 
-`Email__PublicBaseUrl` is used for canonical links in email. `Smtp__UseSsl=true` selects
+`EMAIL_PUBLIC_BASE_URL` is used for canonical links in email. `SMTP_USE_SSL=true` selects
 SSL-on-connect; `false` selects STARTTLS. Failed SMTP deliveries are retried after 2, 8, and 30
 seconds, then logged and discarded. The queue applies backpressure when full and is not persistent,
 so queued messages are lost when the application restarts.
