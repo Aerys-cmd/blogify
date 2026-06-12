@@ -468,4 +468,14 @@
   <data name="Dialog.Confirm.Title" xml:space="preserve"><value>İşlemi onayla</value></data>
   <data name="Dashboard.Leave" xml:space="preserve"><value>Ayrıl</value></data>
   <data name="Dashboard.LeaveConfirm" xml:space="preserve"><value>'{0}' blogundan ayrılsın mı?</value></data>
+  <data name="Editor.Settings" xml:space="preserve"><value>Ayarlar</value></data>
+  <data name="Editor.PostDetails" xml:space="preserve"><value>Yazı ayrıntıları</value></data>
+  <data name="Editor.Organization" xml:space="preserve"><value>Düzenleme</value></data>
+  <data name="Editor.SearchSharing" xml:space="preserve"><value>Arama ve paylaşım</value></data>
+  <data name="Editor.Unsaved" xml:space="preserve"><value>Kaydedilmemiş değişiklikler</value></data>
+  <data name="Editor.Saved" xml:space="preserve"><value>Kaydedildi</value></data>
+  <data name="Editor.RestoreDraft" xml:space="preserve"><value>Taslağı geri yükle</value></data>
+  <data name="Editor.UnsavedDraft" xml:space="preserve"><value>Kaydedilmemiş yerel taslak</value></data>
+  <data name="Action.Close" xml:space="preserve"><value>Kapat</value></data>
+  <data name="Action.Remove" xml:space="preserve"><value>Kaldır</value></data>
 </root>

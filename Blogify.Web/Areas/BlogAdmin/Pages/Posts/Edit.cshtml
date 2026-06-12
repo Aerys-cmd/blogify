@@ -2,6 +2,7 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Posts.EditModel
 @{
     ViewData["Title"] = Localizer["Page.Title.BlogAdmin.EditPost"].Value + " — " + Model.PostTitle;
+    ViewData["EditorMode"] = true;
     string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
@@ -33,9 +34,16 @@
     </div>
 }
 
-<form method="post" id="editPostForm" novalidate>
+<form method="post" id="editPostForm" class="pe-studio" novalidate
+      data-post-editor-page data-editor-mode="edit" data-is-published="@Model.Input.IsPublished.ToString().ToLowerInvariant()"
+      data-unsaved-label="@Localizer["Editor.Unsaved"].Value"
+      data-remove-label="@Localizer["Action.Remove"].Value"
+      data-saved-label="@Localizer["Editor.Saved"].Value"
+      data-show-saved="@((Model.SavedToastType is not null).ToString().ToLowerInvariant())"
+      data-secondary-action-label="@(Model.Input.IsPublished ? Localizer["Action.Unpublish"].Value : Localizer["Action.SaveDraft"].Value)"
+      data-primary-action-label="@(Model.Input.IsPublished ? Localizer["Action.Update"].Value : Localizer["Action.Publish"].Value)">
 
-    <div class="pe-header py-2">
+    <div class="pe-header">
         <div class="d-flex align-items-center gap-2 flex-wrap">
             <a asp-area="BlogAdmin" asp-page="/Posts/Index"
                asp-route-blogSlug="@blogSlug"
@@ -55,7 +63,11 @@
                 <span class="badge bg-secondary">@Localizer["Post.Status.Draft"]</span>
             }
             <span class="pe-save-status ms-1" id="peSaveStatus" aria-live="polite"></span>
-            <div class="ms-auto d-none d-lg-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-auto pe-settings-open"
+                    aria-controls="postSettingsDrawer" aria-expanded="false">
+                @Localizer["Editor.Settings"]
+            </button>
+            <div class="d-none d-lg-flex gap-2">
                 @if (Model.Input.IsPublished)
                 {
                     <button type="submit" name="Input.IsPublished" value="false"
@@ -84,9 +96,9 @@
 
     <div asp-validation-summary="ModelOnly" class="alert alert-danger mt-2" role="alert"></div>
 
-    <div class="row g-4 pe-content-area">
+    <div class="pe-content-area">
 
-        <div class="col-lg-8">
+        <div class="pe-writing-column">
 
             <label for="postTitle" class="visually-hidden">@Localizer["Label.Title"]</label>
             <textarea id="postTitle" name="Input.Title" class="pe-title-input"
@@ -98,32 +110,6 @@
                 <span class="pe-slug-display">/&nbsp;<span id="slugDisplay">@Model.Input.Slug</span></span>
                 <button type="button" class="pe-slug-edit-btn" id="slugEditBtn"
                         aria-label="@Localizer["Action.EditUrl"].Value">&#9998;</button>
-            </div>
-
-            <div class="mb-3" id="slugEditWrap"
-                 @(Model.ModelState["Input.Slug"]?.Errors.Count > 0 ? "" : "hidden")>
-                <label asp-for="Input.Slug" class="form-label small fw-semibold">@Localizer["Label.Slug"]</label>
-                @if (Model.Input.IsPublished)
-                {
-                    <div class="pe-slug-warn mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                             viewBox="0 0 16 16" aria-hidden="true">
-                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
-                        </svg>
-                        @Localizer["Message.SlugChangeWarning"]
-                    </div>
-                }
-                <div class="input-group">
-                    <span class="input-group-text text-muted">/</span>
-                    <input asp-for="Input.Slug" class="form-control" id="postSlug"
-                           placeholder="my-post-slug" autocomplete="off" />
-                </div>
-                <div class="d-flex align-items-center justify-content-between mt-1">
-                    <div class="form-text">@Localizer["Label.Slug.Help.Edit"]</div>
-                    <button type="button" class="btn btn-link btn-sm p-0 text-muted" id="slugDoneBtn"
-                            aria-label="@Localizer["Action.Cancel"].Value">&#10005;</button>
-                </div>
-                <span asp-validation-for="Input.Slug" class="text-danger small"></span>
             </div>
 
             <label id="postEditorLabel" class="visually-hidden">@Localizer["Label.Content"]</label>
@@ -138,8 +124,15 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
+        <div class="pe-drawer-backdrop" data-settings-close tabindex="-1"></div>
+        <aside class="pe-settings-drawer" id="postSettingsDrawer" role="dialog" aria-modal="true"
+               aria-labelledby="postSettingsTitle" aria-hidden="true" inert>
+            <div class="pe-drawer-header">
+                <h2 id="postSettingsTitle">@Localizer["Editor.Settings"]</h2>
+                <button type="button" class="btn-close" data-settings-close aria-label="@Localizer["Action.Close"].Value"></button>
+            </div>
             <div class="pe-settings-sidebar">
+                <h3 class="pe-settings-group-title">@Localizer["Editor.PostDetails"]</h3>
 
                 <div class="pe-status-panel">
                     <div class="d-flex align-items-center gap-2 mb-1">
@@ -160,6 +153,32 @@
                     </div>
                 </div>
 
+                <div class="pe-settings-section pe-url-setting" id="slugEditWrap">
+                    <label asp-for="Input.Slug" class="form-label small fw-semibold">@Localizer["Label.Slug"]</label>
+                    @if (Model.Input.IsPublished)
+                    {
+                        <div class="pe-slug-warn mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                 viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                            </svg>
+                            @Localizer["Message.SlugChangeWarning"]
+                        </div>
+                    }
+                    <div class="input-group">
+                        <span class="input-group-text text-muted">/</span>
+                        <input asp-for="Input.Slug" class="form-control" id="postSlug"
+                               placeholder="my-post-slug" autocomplete="off" />
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mt-1">
+                        <div class="form-text">@Localizer["Label.Slug.Help.Edit"]</div>
+                        <button type="button" class="btn btn-link btn-sm p-0 text-muted" id="slugDoneBtn">
+                            @Localizer["Action.Close"]
+                        </button>
+                    </div>
+                    <span asp-validation-for="Input.Slug" class="text-danger small"></span>
+                </div>
+
                 <div class="pe-settings-section">
                     <button type="button" class="pe-settings-toggle"
                             data-bs-toggle="collapse" data-bs-target="#featuredImageCollapse"
@@ -173,6 +192,7 @@
                     </div>
                 </div>
 
+                <h3 class="pe-settings-group-title">@Localizer["Editor.Organization"]</h3>
                 <div class="pe-settings-section">
                     <button type="button" class="pe-settings-toggle"
                             data-bs-toggle="collapse" data-bs-target="#categoriesCollapse"
@@ -240,14 +260,15 @@
                     </div>
                 </div>
 
+                <h3 class="pe-settings-group-title">@Localizer["Editor.SearchSharing"]</h3>
                 <div class="pe-settings-section">
                     <button type="button" class="pe-settings-toggle"
                             data-bs-toggle="collapse" data-bs-target="#seoCollapse"
-                            aria-expanded="true" aria-controls="seoCollapse">
+                            aria-expanded="false" aria-controls="seoCollapse">
                         @Localizer["Label.Seo"]
                         <span class="pe-toggle-icon" aria-hidden="true">&#9660;</span>
                     </button>
-                    <div id="seoCollapse" class="collapse show pe-settings-body">
+                    <div id="seoCollapse" class="collapse pe-settings-body">
                         <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-baseline mb-1">
                                 <label asp-for="Input.MetaTitle"
@@ -280,7 +301,7 @@
                 </div>
 
             </div>
-        </div>
+        </aside>
     </div>
 
     <div class="pe-mobile-actions d-lg-none" aria-label="Post actions">
@@ -321,266 +342,5 @@
         import { initPostEditor } from '/js/post-editor.js';
         await initPostEditor('postEditorWrapper', 'postEditorHidden', 'editPostForm');
     </script>
-    <script>
-    (function () {
-        var titleInput      = document.getElementById('postTitle');
-        var slugInput       = document.getElementById('postSlug');
-        var slugDisplay     = document.getElementById('slugDisplay');
-        var slugDisplayWrap = document.getElementById('slugDisplayWrap');
-        var slugEditWrap    = document.getElementById('slugEditWrap');
-        var slugEditBtn     = document.getElementById('slugEditBtn');
-        var slugDoneBtn     = document.getElementById('slugDoneBtn');
-        var editorHidden    = document.getElementById('postEditorHidden');
-        var wordCountEl     = document.getElementById('wordCountDisplay');
-        var excerptInput    = document.getElementById('excerptInput');
-        var excerptCount    = document.getElementById('excerptCount');
-        var metaTitleInput  = document.getElementById('metaTitleInput');
-        var metaTitleCount  = document.getElementById('metaTitleCount');
-        var metaDescInput   = document.getElementById('metaDescInput');
-        var metaDescCount   = document.getElementById('metaDescCount');
-        var serpSlug        = document.getElementById('serpSlug');
-        var serpTitle       = document.getElementById('serpTitle');
-        var serpDesc        = document.getElementById('serpDesc');
-        var categoryCheckboxes = document.getElementById('categoryCheckboxes');
-        var categoryPills   = document.getElementById('categoryPills');
-        var categorySearch  = document.getElementById('categorySearch');
-        var categoryDropdown= document.getElementById('categoryDropdown');
-        var categoriesBadge = document.getElementById('categoriesBadge');
-        var saveStatusEl    = document.getElementById('peSaveStatus');
-
-        // Title auto-resize (no slug generation on edit)
-        function resizeTitle() {
-            if (!titleInput) return;
-            titleInput.style.height = 'auto';
-            titleInput.style.height = titleInput.scrollHeight + 'px';
-        }
-        if (titleInput) {
-            resizeTitle();
-            titleInput.addEventListener('input', function () {
-                resizeTitle();
-                updateSerp();
-                setSaveStatus('unsaved');
-            });
-        }
-
-        // Slug display helpers
-        function updateSlugDisplay() {
-            if (slugDisplay && slugInput) {
-                slugDisplay.textContent = slugInput.value || '\u2026';
-            }
-            updateSerp();
-        }
-
-        if (slugInput) {
-            slugInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
-            slugInput.addEventListener('input', function () { updateSlugDisplay(); setSaveStatus('unsaved'); });
-        }
-
-        // Slug toggle
-        if (slugEditBtn) {
-            slugEditBtn.addEventListener('click', function () {
-                if (slugDisplayWrap) slugDisplayWrap.hidden = true;
-                if (slugEditWrap) slugEditWrap.hidden = false;
-                if (slugInput) slugInput.focus();
-            });
-        }
-
-        if (slugDoneBtn) {
-            slugDoneBtn.addEventListener('click', function () {
-                if (slugDisplayWrap) slugDisplayWrap.hidden = false;
-                if (slugEditWrap) slugEditWrap.hidden = true;
-                updateSlugDisplay();
-            });
-        }
-
-        updateSlugDisplay();
-
-        // Word count
-        function extractTextFromBlockNote(jsonStr) {
-            try {
-                var blocks = JSON.parse(jsonStr);
-                return Array.isArray(blocks) ? extractFromBlocks(blocks) : '';
-            } catch (e) { return ''; }
-        }
-
-        function extractFromBlocks(blocks) {
-            var text = '';
-            for (var i = 0; i < blocks.length; i++) {
-                var block = blocks[i];
-                if (Array.isArray(block.content)) {
-                    for (var j = 0; j < block.content.length; j++) {
-                        var item = block.content[j];
-                        if (item.type === 'text' && item.text) text += item.text + ' ';
-                    }
-                }
-                if (Array.isArray(block.children) && block.children.length > 0) {
-                    text += extractFromBlocks(block.children);
-                }
-            }
-            return text;
-        }
-
-        function updateWordCount(jsonStr) {
-            if (!wordCountEl) return;
-            var text = extractTextFromBlockNote(jsonStr || '');
-            var words = text.trim() ? text.trim().split(/\s+/).length : 0;
-            var mins = Math.max(1, Math.ceil(words / 238));
-            wordCountEl.textContent = words + ' words \u00B7 ' + mins + ' min read';
-        }
-
-        if (editorHidden) {
-            var orig = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
-            if (orig) {
-                var initialEditorContent = null;
-                Object.defineProperty(editorHidden, 'value', {
-                    get: function () { return orig.get.call(this); },
-                    set: function (v) {
-                        orig.set.call(this, v);
-                        updateWordCount(v);
-                        if (initialEditorContent === null) {
-                            initialEditorContent = v;
-                        } else if (v !== initialEditorContent) {
-                            setSaveStatus('unsaved');
-                        }
-                    }
-                });
-            }
-            updateWordCount(editorHidden.value);
-        }
-
-        // Character counters
-        function updateCharCount(input, countEl, max) {
-            if (!input || !countEl) return;
-            var len = input.value.length;
-            countEl.textContent = len + '/' + max;
-            countEl.classList.toggle('warn', len > max * 0.8 && len < max);
-            countEl.classList.toggle('over', len >= max);
-        }
-
-        if (excerptInput) {
-            excerptInput.addEventListener('input', function () { updateCharCount(excerptInput, excerptCount, 500); setSaveStatus('unsaved'); });
-            updateCharCount(excerptInput, excerptCount, 500);
-        }
-        if (metaTitleInput) {
-            metaTitleInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
-            metaTitleInput.addEventListener('input', function () { updateCharCount(metaTitleInput, metaTitleCount, 60); updateSerp(); });
-            updateCharCount(metaTitleInput, metaTitleCount, 60);
-        }
-        if (metaDescInput) {
-            metaDescInput.addEventListener('input', function () { updateCharCount(metaDescInput, metaDescCount, 160); updateSerp(); });
-            updateCharCount(metaDescInput, metaDescCount, 160);
-        }
-
-        // SERP preview
-        function updateSerp() {
-            if (!serpSlug || !serpTitle || !serpDesc) return;
-            serpSlug.textContent = (slugInput && slugInput.value) || '\u2026';
-            serpTitle.textContent = (metaTitleInput && metaTitleInput.value)
-                || (titleInput && titleInput.value) || 'Your post title';
-            serpDesc.textContent = (metaDescInput && metaDescInput.value)
-                || 'Your meta description will appear here\u2026';
-        }
-
-        // Category pill picker
-        if (categoryCheckboxes && categoryPills && categorySearch && categoryDropdown) {
-            function getCategories() {
-                return Array.from(
-                    categoryCheckboxes.querySelectorAll('input[type="checkbox"]')
-                ).map(function (cb) {
-                    var lbl = categoryCheckboxes.querySelector('label[for="' + cb.id + '"]');
-                    return { id: cb.id, value: cb.value, name: lbl ? lbl.textContent.trim() : cb.value, el: cb };
-                });
-            }
-
-            function renderPills() {
-                categoryPills.innerHTML = '';
-                getCategories().filter(function (c) { return c.el.checked; }).forEach(function (cat) {
-                    var pill = document.createElement('span');
-                    pill.className = 'pe-category-pill';
-                    var removeBtn = document.createElement('button');
-                    removeBtn.type = 'button';
-                    removeBtn.className = 'pe-category-pill-remove';
-                    removeBtn.setAttribute('aria-label', 'Remove ' + cat.name);
-                    removeBtn.textContent = '\u00D7';
-                    removeBtn.addEventListener('click', function () {
-                        cat.el.checked = false;
-                        renderPills();
-                        renderDropdown('');
-                        updateBadge();
-                        setSaveStatus('unsaved');
-                    });
-                    pill.appendChild(document.createTextNode(cat.name + ' '));
-                    pill.appendChild(removeBtn);
-                    categoryPills.appendChild(pill);
-                });
-                updateBadge();
-            }
-
-            function renderDropdown(query) {
-                var filtered = getCategories().filter(function (c) {
-                    return !c.el.checked && c.name.toLowerCase().includes(query.toLowerCase());
-                });
-                categoryDropdown.innerHTML = '';
-                if (!filtered.length) { categoryDropdown.classList.remove('show'); return; }
-                filtered.forEach(function (cat) {
-                    var opt = document.createElement('div');
-                    opt.className = 'pe-category-option';
-                    opt.setAttribute('role', 'option');
-                    opt.textContent = cat.name;
-                    opt.addEventListener('click', function () {
-                        cat.el.checked = true;
-                        categorySearch.value = '';
-                        categoryDropdown.classList.remove('show');
-                        renderPills();
-                        renderDropdown('');
-                        setSaveStatus('unsaved');
-                    });
-                    categoryDropdown.appendChild(opt);
-                });
-                categoryDropdown.classList.add('show');
-            }
-
-            function updateBadge() {
-                if (!categoriesBadge) return;
-                var count = getCategories().filter(function (c) { return c.el.checked; }).length;
-                categoriesBadge.textContent = count;
-                categoriesBadge.style.display = count === 0 ? 'none' : '';
-            }
-
-            categorySearch.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    var first = categoryDropdown.querySelector('.pe-category-option');
-                    if (first) first.click();
-                }
-            });
-            categorySearch.addEventListener('input', function () { renderDropdown(categorySearch.value); });
-            categorySearch.addEventListener('focus', function () { renderDropdown(categorySearch.value); });
-            document.addEventListener('click', function (e) {
-                if (!e.target.closest('.pe-category-search-wrap')) {
-                    categoryDropdown.classList.remove('show');
-                }
-            });
-            renderPills();
-        }
-
-        // Save status indicator
-        function setSaveStatus(state) {
-            if (!saveStatusEl) return;
-            saveStatusEl.className = 'pe-save-status ms-1';
-            if (state === 'unsaved') {
-                saveStatusEl.classList.add('pe-unsaved');
-                saveStatusEl.textContent = '\u25CF Unsaved changes';
-            } else {
-                saveStatusEl.textContent = '';
-            }
-        }
-
-        // Show toast on page load if present
-        var toastEl = document.getElementById('saveToast');
-        if (toastEl) {
-            bootstrap.Toast.getOrCreateInstance(toastEl).show();
-        }
-    })();
-    </script>
+    <script src="~/js/post-editor-page.js" asp-append-version="true"></script>
 }

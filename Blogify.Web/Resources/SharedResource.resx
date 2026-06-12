@@ -467,4 +467,14 @@
   <data name="Dialog.Confirm.Title" xml:space="preserve"><value>Confirm action</value></data>
   <data name="Dashboard.Leave" xml:space="preserve"><value>Leave</value></data>
   <data name="Dashboard.LeaveConfirm" xml:space="preserve"><value>Leave '{0}'?</value></data>
+  <data name="Editor.Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Editor.PostDetails" xml:space="preserve"><value>Post details</value></data>
+  <data name="Editor.Organization" xml:space="preserve"><value>Organization</value></data>
+  <data name="Editor.SearchSharing" xml:space="preserve"><value>Search &amp; sharing</value></data>
+  <data name="Editor.Unsaved" xml:space="preserve"><value>Unsaved changes</value></data>
+  <data name="Editor.Saved" xml:space="preserve"><value>Saved</value></data>
+  <data name="Editor.RestoreDraft" xml:space="preserve"><value>Restore draft</value></data>
+  <data name="Editor.UnsavedDraft" xml:space="preserve"><value>Unsaved local draft</value></data>
+  <data name="Action.Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Action.Remove" xml:space="preserve"><value>Remove</value></data>
 </root>

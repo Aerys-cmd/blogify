@@ -2,6 +2,7 @@
 @inject Microsoft.Extensions.Options.IOptions<FeedbackHubOptions> FeedbackHubOptions
 @{
     string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
+    bool editorMode = ViewData["EditorMode"] as bool? == true;
 }
 <!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
@@ -14,7 +15,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Blogify.Web.styles.css" asp-append-version="true" />
 </head>
-<body class="ba-layout"
+<body class="ba-layout @(editorMode ? "ba-editor-mode" : "")"
       data-confirm-title="@Localizer["Dialog.Confirm.Title"].Value"
       data-confirm-cancel="@Localizer["Action.Cancel"].Value"
       data-confirm-action="@Localizer["Action.Confirm"].Value"
@@ -23,10 +24,15 @@
     <div id="ba-loader" aria-hidden="true"></div>
 
     <div class="d-flex">
-        <partial name="_Sidebar" />
+        @if (!editorMode)
+        {
+            <partial name="_Sidebar" />
+        }
 
         <div class="ba-main flex-grow-1 d-flex flex-column min-vh-100">
 
+            @if (!editorMode)
+            {
             <header class="ba-mobile-header d-flex d-lg-none align-items-center px-3 py-2 sticky-top">
                 <button class="btn btn-outline-secondary me-2"
                         type="button"
@@ -46,8 +52,9 @@
                     <partial name="_LanguageSwitcher" />
                 </div>
             </header>
+            }
 
-            <main class="container-fluid ba-content flex-grow-1">
+            <main class="container-fluid ba-content flex-grow-1 @(editorMode ? "ba-editor-content" : "")">
                 @RenderBody()
             </main>
 
