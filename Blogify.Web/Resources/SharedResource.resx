@@ -114,7 +114,6 @@
   <data name="Action.Back" xml:space="preserve"><value>Back</value></data>
   <data name="Action.Search" xml:space="preserve"><value>Search</value></data>
   <data name="Action.SignIn" xml:space="preserve"><value>Sign In</value></data>
-  <data name="Action.GetStarted" xml:space="preserve"><value>Get Started</value></data>
   <data name="Action.GoToBlogAdmin" xml:space="preserve"><value>Go to Blog Admin</value></data>
 
   <!-- Validation -->
@@ -150,7 +149,6 @@
   <data name="Page.Title.Blog.Home" xml:space="preserve"><value>Home</value></data>
   <data name="Page.Title.Landing.Home" xml:space="preserve"><value>Blogify — Your story. Your blog. Your way.</value></data>
   <data name="Page.Meta.Landing.Description" xml:space="preserve"><value>Blogify is a free multi-tenant blogging platform. Create your own blog on a custom subdomain, pick your theme, and start publishing — no technical setup required.</value></data>
-  <data name="Page.Title.Landing.GetStarted" xml:space="preserve"><value>Get Started</value></data>
   <data name="Page.Title.Landing.Privacy" xml:space="preserve"><value>Privacy Policy</value></data>
   <data name="Page.Title.Landing.Error" xml:space="preserve"><value>Error</value></data>
 
@@ -214,25 +212,6 @@
   <!-- Language switcher -->
   <data name="Lang.English" xml:space="preserve"><value>English</value></data>
   <data name="Lang.Turkish" xml:space="preserve"><value>Turkish</value></data>
-
-  <!-- GetStarted -->
-  <data name="GetStarted.Step1.StepBadge" xml:space="preserve"><value>Step 1 of 2</value></data>
-  <data name="GetStarted.Step1.Heading" xml:space="preserve"><value>Create your account</value></data>
-  <data name="GetStarted.Step1.AlreadyHaveAccount" xml:space="preserve"><value>Already have an account?</value></data>
-  <data name="GetStarted.Step1.Submit" xml:space="preserve"><value>Next: Set Up Your Blog &#x2192;</value></data>
-  <data name="GetStarted.Step2.StepBadge" xml:space="preserve"><value>Step 2 of 2</value></data>
-  <data name="GetStarted.Step2.Heading" xml:space="preserve"><value>Set up your blog</value></data>
-  <data name="GetStarted.Step2.Subheading" xml:space="preserve"><value>Give your blog a name and a home on the web.</value></data>
-  <data name="GetStarted.Step2.TitleLabel" xml:space="preserve"><value>Blog title</value></data>
-  <data name="GetStarted.Step2.DomainPreview" xml:space="preserve"><value>Your blog will be at:</value></data>
-  <data name="GetStarted.Step2.Submit" xml:space="preserve"><value>Launch My Blog &#x2192;</value></data>
-  <data name="GetStarted.Complete.Heading" xml:space="preserve"><value>Your blog is live!</value></data>
-  <data name="GetStarted.Complete.ReadyMessage" xml:space="preserve"><value>is all set and ready for your first post.</value></data>
-  <data name="GetStarted.Complete.OpenAdmin" xml:space="preserve"><value>Open Blog Admin</value></data>
-  <data name="GetStarted.Complete.ViewBlog" xml:space="preserve"><value>View Your Blog</value></data>
-  <data name="GetStarted.Complete.Note" xml:space="preserve"><value>Note:</value></data>
-  <data name="GetStarted.Complete.LocalNote" xml:space="preserve"><value>Your blog is available at</value></data>
-  <data name="GetStarted.Complete.LocalNoteSuffix" xml:space="preserve"><value>locally. In production, it will be accessible at</value></data>
 
   <!-- Index (Landing) -->
   <data name="Index.Hero.Heading" xml:space="preserve"><value>Your story. Your blog. Your way.</value></data>
@@ -432,4 +411,60 @@
   <data name="Action.CreateBlog" xml:space="preserve"><value>Create Blog</value></data>
   <data name="Message.InvalidRole" xml:space="preserve"><value>Invalid role selected.</value></data>
   <data name="Action.Redirecting" xml:space="preserve"><value>Redirecting…</value></data>
+  <!-- Shared shell and refreshed landing -->
+  <data name="Lang.ChangeLanguage" xml:space="preserve"><value>Change language</value></data>
+  <data name="Aria.OpenNavigation" xml:space="preserve"><value>Open navigation</value></data>
+  <data name="Aria.CloseNavigation" xml:space="preserve"><value>Close navigation</value></data>
+  <data name="Aria.ToggleNavigation" xml:space="preserve"><value>Toggle navigation</value></data>
+  <data name="Aria.AdminNavigation" xml:space="preserve"><value>Admin navigation</value></data>
+  <data name="Sidebar.CurrentBlog" xml:space="preserve"><value>Current blog</value></data>
+  <data name="Sidebar.SwitchBlog" xml:space="preserve"><value>Switch blog</value></data>
+  <data name="Sidebar.ViewBlog" xml:space="preserve"><value>View current blog</value></data>
+  <data name="Sidebar.AllBlogs" xml:space="preserve"><value>All blogs</value></data>
+  <data name="Sidebar.Workspace" xml:space="preserve"><value>Workspace</value></data>
+  <data name="Sidebar.Manage" xml:space="preserve"><value>Manage</value></data>
+  <data name="Sidebar.Account" xml:space="preserve"><value>Account</value></data>
+  <data name="Nav.Overview" xml:space="preserve"><value>Overview</value></data>
+  <data name="Nav.Appearance" xml:space="preserve"><value>Appearance</value></data>
+  <data name="Landing.Nav.Features" xml:space="preserve"><value>Features</value></data>
+  <data name="Landing.Nav.HowItWorks" xml:space="preserve"><value>How it works</value></data>
+  <data name="Landing.Nav.Examples" xml:space="preserve"><value>Examples</value></data>
+  <data name="Landing.Hero.Note" xml:space="preserve"><value>A focused publishing studio for independent creators.</value></data>
+  <data name="Landing.Hero.Heading" xml:space="preserve"><value>Make a place for your ideas.</value></data>
+  <data name="Landing.Hero.Copy" xml:space="preserve"><value>Write without distraction, publish to a home that feels yours, and learn what brings readers back. No technical setup required.</value></data>
+  <data name="Landing.Action.CreateFreeBlog" xml:space="preserve"><value>Create your free blog</value></data>
+  <data name="Landing.Action.SeePublishedBlog" xml:space="preserve"><value>See a published blog</value></data>
+  <data name="Landing.Aria.EditorPreview" xml:space="preserve"><value>Blogify editor preview</value></data>
+  <data name="Landing.Preview.Label" xml:space="preserve"><value>FIELD NOTES / JUNE</value></data>
+  <data name="Landing.Preview.Title" xml:space="preserve"><value>The quiet work behind a clear idea</value></data>
+  <data name="Landing.Preview.Copy" xml:space="preserve"><value>Good writing begins long before the first sentence. It starts by noticing what deserves your attention.</value></data>
+  <data name="Landing.Feature.Write.Label" xml:space="preserve"><value>Write</value></data>
+  <data name="Landing.Feature.Write.Title" xml:space="preserve"><value>Write without distraction.</value></data>
+  <data name="Landing.Feature.Write.Copy" xml:space="preserve"><value>A calm editor, thoughtful organization, and a workflow built around the next sentence rather than admin chores.</value></data>
+  <data name="Landing.Feature.Publish.Label" xml:space="preserve"><value>Publish</value></data>
+  <data name="Landing.Feature.Publish.Title" xml:space="preserve"><value>A home that feels yours.</value></data>
+  <data name="Landing.Feature.Publish.Copy" xml:space="preserve"><value>Choose a polished theme, claim your address, and publish a blog that is ready to share from day one.</value></data>
+  <data name="Landing.Feature.Understand.Label" xml:space="preserve"><value>Understand</value></data>
+  <data name="Landing.Feature.Understand.Title" xml:space="preserve"><value>Know what readers return for.</value></data>
+  <data name="Landing.Feature.Understand.Copy" xml:space="preserve"><value>See the posts and sources earning attention, then use that signal to decide what deserves another chapter.</value></data>
+  <data name="Landing.Examples.Title" xml:space="preserve"><value>One idea. Three distinct homes.</value></data>
+  <data name="Landing.Examples.Copy" xml:space="preserve"><value>Start polished, then shape the presentation around your voice.</value></data>
+  <data name="Landing.Examples.DefaultAlt" xml:space="preserve"><value>Default Blogify theme preview</value></data>
+  <data name="Landing.Examples.MinimalAlt" xml:space="preserve"><value>Minimal Blogify theme preview</value></data>
+  <data name="Landing.Examples.AuroraAlt" xml:space="preserve"><value>Aurora Blogify theme preview</value></data>
+  <data name="Landing.Process.Title" xml:space="preserve"><value>From first thought to public address.</value></data>
+  <data name="Landing.Final.Title" xml:space="preserve"><value>Your ideas deserve a home.</value></data>
+  <data name="Landing.Final.Action" xml:space="preserve"><value>Start writing</value></data>
+  <data name="Dashboard.CreateBlog.SubdomainHelp" xml:space="preserve"><value>Use lowercase letters, numbers, and hyphens.</value></data>
+  <data name="Label.Actions" xml:space="preserve"><value>Actions</value></data>
+  <data name="Categories.Count" xml:space="preserve"><value>{0} · {1} categories</value></data>
+  <data name="Categories.New" xml:space="preserve"><value>New category</value></data>
+  <data name="Categories.Empty.Title" xml:space="preserve"><value>Organize your first post</value></data>
+  <data name="Categories.Empty.Copy" xml:space="preserve"><value>Categories help readers find related writing as your blog grows.</value></data>
+  <data name="Categories.Empty.Action" xml:space="preserve"><value>Create your first category</value></data>
+  <data name="Categories.DeleteConfirm" xml:space="preserve"><value>Delete '{0}'? This cannot be undone.</value></data>
+  <data name="Action.Confirm" xml:space="preserve"><value>Confirm</value></data>
+  <data name="Dialog.Confirm.Title" xml:space="preserve"><value>Confirm action</value></data>
+  <data name="Dashboard.Leave" xml:space="preserve"><value>Leave</value></data>
+  <data name="Dashboard.LeaveConfirm" xml:space="preserve"><value>Leave '{0}'?</value></data>
 </root>

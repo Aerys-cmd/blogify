@@ -41,6 +41,7 @@ builder.Services.AddSingleton<IBlockNoteHtmlRenderer, BlockNoteHtmlRenderer>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<FeedService>();
 builder.Services.AddScoped<IBlogPermissionService, BlogPermissionService>();
+builder.Services.AddScoped<IAccessibleBlogService, AccessibleBlogService>();
 
 builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));

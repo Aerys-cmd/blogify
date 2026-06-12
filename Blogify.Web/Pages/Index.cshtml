@@ -7,20 +7,27 @@
 <section class="b-hero">
     <div class="container b-hero-grid">
         <div>
-            <p class="b-hero-note">A focused publishing studio for independent creators.</p>
-            <h1>Make a place for your ideas.</h1>
-            <p class="b-hero-copy">Write without distraction, publish to a home that feels yours, and learn what brings readers back. No technical setup required.</p>
+            <p class="b-hero-note">@Localizer["Landing.Hero.Note"]</p>
+            <h1>@Localizer["Landing.Hero.Heading"]</h1>
+            <p class="b-hero-copy">@Localizer["Landing.Hero.Copy"]</p>
             <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
-                <a class="btn btn-dark btn-lg" asp-page="/GetStarted/Step1">Create your free blog</a>
-                <a class="btn btn-outline-dark btn-lg" href="#examples">See a published blog</a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a class="btn btn-dark btn-lg" asp-page="/Dashboard/CreateBlog">@Localizer["Action.CreateBlog"]</a>
+                }
+                else
+                {
+                    <a class="btn btn-dark btn-lg" asp-area="Identity" asp-page="/Account/Register">@Localizer["Landing.Action.CreateFreeBlog"]</a>
+                }
+                <a class="btn btn-outline-dark btn-lg" href="#examples">@Localizer["Landing.Action.SeePublishedBlog"]</a>
             </div>
         </div>
-        <div class="b-product-composition" aria-label="Blogify editor preview">
-            <div class="b-composition-toolbar"><span></span><span>Draft saved</span><strong>Publish</strong></div>
+        <div class="b-product-composition" aria-label="@Localizer["Landing.Aria.EditorPreview"].Value">
+            <div class="b-composition-toolbar"><span></span><span>@Localizer["Message.PostSaved"]</span><strong>@Localizer["Action.Publish"]</strong></div>
             <div class="b-composition-body">
-                <small>FIELD NOTES / JUNE</small>
-                <h2>The quiet work behind a clear idea</h2>
-                <p>Good writing begins long before the first sentence. It starts by noticing what deserves your attention.</p>
+                <small>@Localizer["Landing.Preview.Label"]</small>
+                <h2>@Localizer["Landing.Preview.Title"]</h2>
+                <p>@Localizer["Landing.Preview.Copy"]</p>
                 <div class="b-composition-lines"><i></i><i></i><i></i></div>
             </div>
         </div>
@@ -29,37 +36,44 @@
 
 <section id="features" class="b-narrative">
     <div class="container">
-        <div class="b-narrative-row"><span>Write</span><div><h2>Write without distraction.</h2><p>A calm editor, thoughtful organization, and a workflow built around the next sentence rather than admin chores.</p></div></div>
-        <div class="b-narrative-row"><span>Publish</span><div><h2>A home that feels yours.</h2><p>Choose a polished theme, claim your address, and publish a blog that is ready to share from day one.</p></div></div>
-        <div class="b-narrative-row"><span>Understand</span><div><h2>Know what readers return for.</h2><p>See the posts and sources earning attention, then use that signal to decide what deserves another chapter.</p></div></div>
+        <div class="b-narrative-row"><span>@Localizer["Landing.Feature.Write.Label"]</span><div><h2>@Localizer["Landing.Feature.Write.Title"]</h2><p>@Localizer["Landing.Feature.Write.Copy"]</p></div></div>
+        <div class="b-narrative-row"><span>@Localizer["Landing.Feature.Publish.Label"]</span><div><h2>@Localizer["Landing.Feature.Publish.Title"]</h2><p>@Localizer["Landing.Feature.Publish.Copy"]</p></div></div>
+        <div class="b-narrative-row"><span>@Localizer["Landing.Feature.Understand.Label"]</span><div><h2>@Localizer["Landing.Feature.Understand.Title"]</h2><p>@Localizer["Landing.Feature.Understand.Copy"]</p></div></div>
     </div>
 </section>
 
 <section id="examples" class="b-examples">
     <div class="container">
-        <div class="b-section-heading"><h2>One idea. Three distinct homes.</h2><p>Start polished, then shape the presentation around your voice.</p></div>
+        <div class="b-section-heading"><h2>@Localizer["Landing.Examples.Title"]</h2><p>@Localizer["Landing.Examples.Copy"]</p></div>
         <div class="b-theme-gallery">
-            <figure><img src="/images/theme-previews/default.png" alt="Default Blogify theme preview" /><figcaption>Default</figcaption></figure>
-            <figure><img src="/images/theme-previews/minimal.png" alt="Minimal Blogify theme preview" /><figcaption>Minimal</figcaption></figure>
-            <figure><img src="/images/theme-previews/aurora.png" alt="Aurora Blogify theme preview" /><figcaption>Aurora</figcaption></figure>
+            <figure><img src="/images/theme-previews/default.png" alt="@Localizer["Landing.Examples.DefaultAlt"].Value" /><figcaption>Default</figcaption></figure>
+            <figure><img src="/images/theme-previews/minimal.png" alt="@Localizer["Landing.Examples.MinimalAlt"].Value" /><figcaption>Minimal</figcaption></figure>
+            <figure><img src="/images/theme-previews/aurora.png" alt="@Localizer["Landing.Examples.AuroraAlt"].Value" /><figcaption>Aurora</figcaption></figure>
         </div>
     </div>
 </section>
 
 <section id="how-it-works" class="b-process">
     <div class="container">
-        <h2>From first thought to public address.</h2>
+        <h2>@Localizer["Landing.Process.Title"]</h2>
         <div class="b-process-list">
-            <div><strong>01</strong><h3>Create your account</h3><p>No credit card. No setup checklist disguised as work.</p></div>
-            <div><strong>02</strong><h3>Name your blog</h3><p>Choose a title and an address readers can remember.</p></div>
-            <div><strong>03</strong><h3>Publish your first post</h3><p>Open the editor and give the idea a place to live.</p></div>
+            <div><strong>01</strong><h3>@Localizer["Index.HowItWorks.Step1.Title"]</h3><p>@Localizer["Index.HowItWorks.Step1.Description"]</p></div>
+            <div><strong>02</strong><h3>@Localizer["Index.HowItWorks.Step2.Title"]</h3><p>@Localizer["Index.HowItWorks.Step2.Description"]</p></div>
+            <div><strong>03</strong><h3>@Localizer["Index.HowItWorks.Step3.Title"]</h3><p>@Localizer["Index.HowItWorks.Step3.Description"]</p></div>
         </div>
     </div>
 </section>
 
 <section class="b-final-cta">
     <div class="container">
-        <h2>Your ideas deserve a home.</h2>
-        <a class="btn btn-dark btn-lg" asp-page="/GetStarted/Step1">Start writing</a>
+        <h2>@Localizer["Landing.Final.Title"]</h2>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a class="btn btn-dark btn-lg" asp-page="/Dashboard/CreateBlog">@Localizer["Action.CreateBlog"]</a>
+        }
+        else
+        {
+            <a class="btn btn-dark btn-lg" asp-area="Identity" asp-page="/Account/Register">@Localizer["Landing.Final.Action"]</a>
+        }
     </div>
 </section>

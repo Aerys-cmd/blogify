@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,30 +14,33 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body class="b-site">
+<body class="b-site"
+      data-confirm-title="@Localizer["Dialog.Confirm.Title"].Value"
+      data-confirm-cancel="@Localizer["Action.Cancel"].Value"
+      data-confirm-action="@Localizer["Action.Confirm"].Value">
     <nav class="navbar navbar-expand-md b-marketing-nav sticky-top">
         <div class="container">
             <a class="navbar-brand" asp-area="" asp-page="/Index"><img src="~/blogify.svg" alt="Blogify" width="150" height="40" /></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#landingNav" aria-controls="landingNav"
-                    aria-expanded="false" aria-label="Toggle navigation">
+                    aria-expanded="false" aria-label="@Localizer["Aria.ToggleNavigation"].Value">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="landingNav">
                 <div class="navbar-nav me-auto ms-md-4">
-                    <a class="nav-link" href="/#features">Features</a>
-                    <a class="nav-link" href="/#how-it-works">How it works</a>
-                    <a class="nav-link" href="/#examples">Examples</a>
+                    <a class="nav-link" href="/#features">@Localizer["Landing.Nav.Features"]</a>
+                    <a class="nav-link" href="/#how-it-works">@Localizer["Landing.Nav.HowItWorks"]</a>
+                    <a class="nav-link" href="/#examples">@Localizer["Landing.Nav.Examples"]</a>
                 </div>
                 <div class="ms-auto d-flex gap-2 align-items-center">
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <a class="btn btn-primary" asp-page="/MyAdmin">@Localizer["Action.GoToBlogAdmin"]</a>
+                        <a class="btn btn-primary" asp-page="/Dashboard/CreateBlog">@Localizer["Action.CreateBlog"]</a>
                     }
                     else
                     {
                         <a class="btn btn-link" asp-area="Identity" asp-page="/Account/Login">@Localizer["Action.SignIn"]</a>
-                        <a class="btn btn-primary" asp-page="/GetStarted/Step1">@Localizer["Action.GetStarted"]</a>
+                        <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">@Localizer["Auth.Register.Submit"]</a>
                     }
                     <partial name="_LanguageSwitcher" />
                 </div>
@@ -52,8 +55,8 @@
     <footer class="b-footer py-4">
         <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
             <span>&copy; @DateTime.UtcNow.Year Blogify</span>
-            <span class="b-footer-tagline">Make a place for your ideas.</span>
-            <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <span class="b-footer-tagline">@Localizer["Landing.Hero.Heading"]</span>
+            <a asp-area="" asp-page="/Privacy">@Localizer["Nav.Privacy"]</a>
         </div>
     </footer>
 

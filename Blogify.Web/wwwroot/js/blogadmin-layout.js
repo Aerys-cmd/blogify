@@ -29,12 +29,14 @@
         if (e.persisted) { finish(); }
     });
 
-    // Delete confirmation via data-confirm-message attribute (event delegation)
-    document.addEventListener('submit', function (e) {
-        var form = e.target;
-        if (!form || !form.dataset.confirmMessage) { return; }
-        if (!window.confirm(form.dataset.confirmMessage)) {
-            e.preventDefault();
-        }
-    });
+    var sidebarElement = document.getElementById('adminSidebar');
+    if (sidebarElement) {
+        sidebarElement.addEventListener('click', function (e) {
+            var link = e.target.closest('a[href]');
+            if (!link || window.matchMedia('(min-width: 992px)').matches) { return; }
+            var sidebar = bootstrap.Offcanvas.getInstance(sidebarElement);
+            if (sidebar) { sidebar.hide(); }
+        });
+    }
+
 }());

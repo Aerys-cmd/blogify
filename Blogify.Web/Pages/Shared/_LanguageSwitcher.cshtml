@@ -3,17 +3,18 @@
     string currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     string returnUrl = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
 }
-<form method="post" action="/culture" class="d-inline-flex gap-1 align-items-center">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="redirectUri" value="@returnUrl" />
-    <button type="submit" name="culture" value="en"
-            class="btn btn-sm @(currentCulture == "en" ? "btn-primary" : "btn-outline-secondary")"
-            aria-pressed="@(currentCulture == "en" ? "true" : "false")">
-        @Localizer["Lang.English"]
+<div class="dropdown b-language-switcher">
+    <button class="b-language-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="@Localizer["Lang.ChangeLanguage"].Value">
+        <span aria-hidden="true">文</span><span>@currentCulture.ToUpperInvariant()</span>
     </button>
-    <button type="submit" name="culture" value="tr"
-            class="btn btn-sm @(currentCulture == "tr" ? "btn-primary" : "btn-outline-secondary")"
-            aria-pressed="@(currentCulture == "tr" ? "true" : "false")">
-        @Localizer["Lang.Turkish"]
-    </button>
-</form>
+    <form method="post" action="/culture" class="dropdown-menu dropdown-menu-end">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="redirectUri" value="@returnUrl" />
+        <button type="submit" name="culture" value="en" class="dropdown-item" aria-current="@(currentCulture == "en" ? "true" : null)">
+            <span>@Localizer["Lang.English"]</span><span aria-hidden="true">@(currentCulture == "en" ? "✓" : "")</span>
+        </button>
+        <button type="submit" name="culture" value="tr" class="dropdown-item" aria-current="@(currentCulture == "tr" ? "true" : null)">
+            <span>@Localizer["Lang.Turkish"]</span><span aria-hidden="true">@(currentCulture == "tr" ? "✓" : "")</span>
+        </button>
+    </form>
+</div>

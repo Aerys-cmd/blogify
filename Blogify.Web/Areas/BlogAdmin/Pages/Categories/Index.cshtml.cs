@@ -1,4 +1,5 @@
 using Blogify.Web.Data;
+using Blogify.Web.Models;
 using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,19 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
         return Page();
     }
+
+    public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken ct = default)
+    {
+        Category? category = await dbContext.Categories.FirstOrDefaultAsync(item => item.Id == id, ct);
+        if (category is null)
+        {
+            return NotFound();
+        }
+
+        category.SoftDelete();
+        await dbContext.SaveChangesAsync(ct);
+        return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });
+    }
 }
 
 public sealed record CategoryListItem(Guid Id, string Name, string Slug);
-

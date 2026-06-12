@@ -4,48 +4,86 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject Blogify.Web.Services.TenantContext TenantCtx
 @inject Blogify.Web.Services.IBlogPermissionService PermissionService
+@inject Blogify.Web.Services.IAccessibleBlogService AccessibleBlogService
 @{
     string? page = ViewContext.RouteData.Values["page"]?.ToString();
     string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
-    string blogTitle = TenantCtx.CurrentTenant?.Title ?? "Blog Admin";
+    string blogTitle = TenantCtx.CurrentTenant?.Title ?? Localizer["Page.Title.BlogAdmin.Dashboard"].Value;
     string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
     bool canManageUsers = userId is not null && await PermissionService.CanManageUsersAsync(userId, TenantCtx.RequiredTenant.Id);
+    IReadOnlyList<Blogify.Web.Services.AccessibleBlog> blogs = userId is null
+        ? []
+        : await AccessibleBlogService.GetForUserAsync(userId, Context.Request.Scheme, Context.Request.Host);
+    Blogify.Web.Services.AccessibleBlog? currentBlog = blogs.FirstOrDefault(blog => blog.Subdomain == blogSlug);
     string Active(string prefix) => page?.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) == true ? "ba-nav-active" : "";
+    string? Current(string prefix) => page?.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) == true ? "page" : null;
 }
 <div class="offcanvas-lg offcanvas-start ba-sidebar" tabindex="-1" id="adminSidebar" aria-labelledby="adminSidebarLabel">
     <div class="ba-sidebar-inner d-flex flex-column">
-        <div class="ba-blog-switcher">
-            <a asp-area="BlogAdmin" asp-page="/Index" asp-route-blogSlug="@blogSlug" id="adminSidebarLabel">
-                <img src="~/blogify-mark.svg" alt="" width="32" height="32" />
-                <span><small>Current blog</small><strong>@blogTitle</strong></span>
+        <div class="ba-blog-switcher dropdown">
+            <button class="ba-blog-switcher-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="adminSidebarLabel">
+                <img src="~/blogify-mark.svg" alt="" width="30" height="30" />
+                <span><small>@Localizer["Sidebar.CurrentBlog"]</small><strong>@blogTitle</strong></span>
+            </button>
+            <button type="button" class="btn-close d-lg-none" data-bs-dismiss="offcanvas" aria-label="@Localizer["Aria.CloseNavigation"].Value"></button>
+            <div class="dropdown-menu ba-blog-menu">
+                <h2 class="dropdown-header">@Localizer["Sidebar.SwitchBlog"]</h2>
+                @foreach (Blogify.Web.Services.AccessibleBlog blog in blogs)
+                {
+                    <a class="dropdown-item @(blog.Subdomain == blogSlug ? "active" : "")" href="/app/admin/@blog.Subdomain" aria-current="@(blog.Subdomain == blogSlug ? "page" : null)">
+                        <span>@blog.Title<small>@($"{blog.Subdomain}.blogify.com")</small></span>
+                        @if (blog.Subdomain == blogSlug) { <span aria-hidden="true">✓</span> }
+                    </a>
+                }
+                <div class="dropdown-divider"></div>
+                @if (currentBlog is not null)
+                {
+                    <a class="dropdown-item" href="@currentBlog.PublicUrl" target="_blank" rel="noopener">@Localizer["Sidebar.ViewBlog"]</a>
+                }
+                <a class="dropdown-item" href="/dashboard">@Localizer["Sidebar.AllBlogs"]</a>
+                <a class="dropdown-item" asp-page="/Dashboard/CreateBlog" asp-area="">@Localizer["Action.CreateBlog"]</a>
+            </div>
+        </div>
+
+        <div class="ba-compose-wrap">
+            <a class="ba-compose-link" asp-area="BlogAdmin" asp-page="/Posts/Create" asp-route-blogSlug="@blogSlug">
+                <span aria-hidden="true">＋</span>@Localizer["Action.NewPost"]
             </a>
-            <button type="button" class="btn-close d-lg-none" data-bs-dismiss="offcanvas" aria-label="Close navigation"></button>
         </div>
-        <div class="px-3">
-            <a class="btn btn-primary w-100" asp-area="BlogAdmin" asp-page="/Posts/Create" asp-route-blogSlug="@blogSlug">Write new post</a>
-        </div>
-        <nav class="flex-grow-1 px-2 py-3" aria-label="Admin navigation">
-            <a class="ba-nav-link @Active("/Index")" asp-area="BlogAdmin" asp-page="/Index" asp-route-blogSlug="@blogSlug">Overview</a>
-            <p class="ba-sidebar-section-label">Create</p>
-            <a class="ba-nav-link @Active("/Posts")" asp-area="BlogAdmin" asp-page="/Posts/Index" asp-route-blogSlug="@blogSlug">Posts</a>
-            <a class="ba-nav-link @Active("/Media")" asp-area="BlogAdmin" asp-page="/Media/Index" asp-route-blogSlug="@blogSlug">Media</a>
-            <p class="ba-sidebar-section-label">Grow</p>
-            <a class="ba-nav-link @Active("/Analytics")" asp-area="BlogAdmin" asp-page="/Analytics/Index" asp-route-blogSlug="@blogSlug">Analytics</a>
-            <p class="ba-sidebar-section-label">Manage</p>
-            <a class="ba-nav-link @Active("/Themes")" asp-area="BlogAdmin" asp-page="/Themes/Index" asp-route-blogSlug="@blogSlug">Appearance</a>
-            <a class="ba-nav-link @Active("/Categories")" asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug">Categories</a>
+
+        <nav class="flex-grow-1 ba-sidebar-nav" aria-label="@Localizer["Aria.AdminNavigation"].Value">
+            <p class="ba-sidebar-section-label">@Localizer["Sidebar.Workspace"]</p>
+            <a class="ba-nav-link @Active("/Index")" aria-current="@Current("/Index")" asp-area="BlogAdmin" asp-page="/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">⌂</span>@Localizer["Nav.Overview"]</a>
+            <a class="ba-nav-link @Active("/Posts")" aria-current="@Current("/Posts")" asp-area="BlogAdmin" asp-page="/Posts/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">▤</span>@Localizer["Nav.Posts"]</a>
+            <a class="ba-nav-link @Active("/Media")" aria-current="@Current("/Media")" asp-area="BlogAdmin" asp-page="/Media/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">▧</span>@Localizer["Nav.Media"]</a>
+            <a class="ba-nav-link @Active("/Analytics")" aria-current="@Current("/Analytics")" asp-area="BlogAdmin" asp-page="/Analytics/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">↗</span>@Localizer["Nav.Analytics"]</a>
+            <p class="ba-sidebar-section-label">@Localizer["Sidebar.Manage"]</p>
+            <a class="ba-nav-link @Active("/Themes")" aria-current="@Current("/Themes")" asp-area="BlogAdmin" asp-page="/Themes/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">◐</span>@Localizer["Nav.Appearance"]</a>
+            <a class="ba-nav-link @Active("/Categories")" aria-current="@Current("/Categories")" asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">#</span>@Localizer["Nav.Categories"]</a>
             @if (canManageUsers)
             {
-                <a class="ba-nav-link @Active("/Members")" asp-area="BlogAdmin" asp-page="/Members/Index" asp-route-blogSlug="@blogSlug">@Localizer["Nav.Members"]</a>
+                <a class="ba-nav-link @Active("/Members")" aria-current="@Current("/Members")" asp-area="BlogAdmin" asp-page="/Members/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">♙</span>@Localizer["Nav.Members"]</a>
             }
-            <a class="ba-nav-link @Active("/Settings")" asp-area="BlogAdmin" asp-page="/Settings/Index" asp-route-blogSlug="@blogSlug">@Localizer["Nav.Settings"]</a>
+            <a class="ba-nav-link @Active("/Settings")" aria-current="@Current("/Settings")" asp-area="BlogAdmin" asp-page="/Settings/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">⚙</span>@Localizer["Nav.Settings"]</a>
         </nav>
+
         <div class="ba-sidebar-footer">
-            <a href="/dashboard">All blogs</a>
+            <partial name="_LanguageSwitcher" />
             @if (SignInManager.IsSignedIn(User))
             {
-                <span title="@User.Identity?.Name">@User.Identity?.Name</span>
-                <form asp-area="Identity" asp-page="/Account/Logout" method="post"><button type="submit" class="btn btn-link">Sign out</button></form>
+                <div class="dropdown dropup">
+                    <button class="ba-account-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="ba-account-avatar" aria-hidden="true">@((User.Identity?.Name ?? "?")[0].ToString().ToUpperInvariant())</span>
+                        <span><strong>@Localizer["Sidebar.Account"]</strong><small>@User.Identity?.Name</small></span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/dashboard">@Localizer["Sidebar.AllBlogs"]</a>
+                        <div class="dropdown-divider"></div>
+                        <form asp-area="Identity" asp-page="/Account/Logout" method="post">
+                            <button type="submit" class="dropdown-item">@Localizer["Nav.SignOut"]</button>
+                        </form>
+                    </div>
+                </div>
             }
         </div>
     </div>

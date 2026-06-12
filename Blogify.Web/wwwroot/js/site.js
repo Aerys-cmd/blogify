@@ -13,7 +13,13 @@ document.addEventListener('submit', function (event) {
         dialog = document.createElement('dialog');
         dialog.id = 'b-confirm-dialog';
         dialog.className = 'b-dialog';
-        dialog.innerHTML = '<form method="dialog"><h2>Confirm action</h2><p data-message></p><div><button value="cancel" class="btn btn-outline-secondary">Cancel</button><button value="confirm" class="btn btn-danger">Confirm</button></div></form>';
+        var title = document.body.dataset.confirmTitle || 'Confirm action';
+        var cancel = document.body.dataset.confirmCancel || 'Cancel';
+        var confirmAction = document.body.dataset.confirmAction || 'Confirm';
+        dialog.innerHTML = '<form method="dialog"><h2></h2><p data-message></p><div><button value="cancel" class="btn btn-outline-secondary"></button><button value="confirm" class="btn btn-danger"></button></div></form>';
+        dialog.querySelector('h2').textContent = title;
+        dialog.querySelector('[value="cancel"]').textContent = cancel;
+        dialog.querySelector('[value="confirm"]').textContent = confirmAction;
         document.body.appendChild(dialog);
     }
     dialog.querySelector('[data-message]').textContent = message;

@@ -114,7 +114,6 @@
   <data name="Action.Back" xml:space="preserve"><value>Geri</value></data>
   <data name="Action.Search" xml:space="preserve"><value>Ara</value></data>
   <data name="Action.SignIn" xml:space="preserve"><value>Giriş yap</value></data>
-  <data name="Action.GetStarted" xml:space="preserve"><value>Başla</value></data>
   <data name="Action.GoToBlogAdmin" xml:space="preserve"><value>Blog Yönetimine Git</value></data>
 
   <!-- Validation -->
@@ -150,7 +149,6 @@
   <data name="Page.Title.Blog.Home" xml:space="preserve"><value>Ana Sayfa</value></data>
   <data name="Page.Title.Landing.Home" xml:space="preserve"><value>Blogify — Hikâyeni anlat. Blogun olsun.</value></data>
   <data name="Page.Meta.Landing.Description" xml:space="preserve"><value>Blogify, ücretsiz çok kiracılı bir blog platformudur. Özel bir alt alan adında blogunuzu oluşturun, temanızı seçin ve yayınlamaya başlayın — teknik kurulum gerektirmez.</value></data>
-  <data name="Page.Title.Landing.GetStarted" xml:space="preserve"><value>Başla</value></data>
   <data name="Page.Title.Landing.Privacy" xml:space="preserve"><value>Gizlilik Politikası</value></data>
   <data name="Page.Title.Landing.Error" xml:space="preserve"><value>Hata</value></data>
 
@@ -214,25 +212,6 @@
   <!-- Language switcher -->
   <data name="Lang.English" xml:space="preserve"><value>İngilizce</value></data>
   <data name="Lang.Turkish" xml:space="preserve"><value>Türkçe</value></data>
-
-  <!-- GetStarted -->
-  <data name="GetStarted.Step1.StepBadge" xml:space="preserve"><value>Adım 1 / 2</value></data>
-  <data name="GetStarted.Step1.Heading" xml:space="preserve"><value>Hesabınızı oluşturun</value></data>
-  <data name="GetStarted.Step1.AlreadyHaveAccount" xml:space="preserve"><value>Zaten hesabınız var mı?</value></data>
-  <data name="GetStarted.Step1.Submit" xml:space="preserve"><value>Sonraki: Blogunuzu Kurun &#x2192;</value></data>
-  <data name="GetStarted.Step2.StepBadge" xml:space="preserve"><value>Adım 2 / 2</value></data>
-  <data name="GetStarted.Step2.Heading" xml:space="preserve"><value>Blogunuzu kurun</value></data>
-  <data name="GetStarted.Step2.Subheading" xml:space="preserve"><value>Blogunuza bir ad ve internet adresi verin.</value></data>
-  <data name="GetStarted.Step2.TitleLabel" xml:space="preserve"><value>Blog başlığı</value></data>
-  <data name="GetStarted.Step2.DomainPreview" xml:space="preserve"><value>Blogunuzun adresi:</value></data>
-  <data name="GetStarted.Step2.Submit" xml:space="preserve"><value>Blogumu Başlat &#x2192;</value></data>
-  <data name="GetStarted.Complete.Heading" xml:space="preserve"><value>Blogunuz yayında!</value></data>
-  <data name="GetStarted.Complete.ReadyMessage" xml:space="preserve"><value>hazır, ilk yazınızı bekliyoruz.</value></data>
-  <data name="GetStarted.Complete.OpenAdmin" xml:space="preserve"><value>Blog Yönetimini Aç</value></data>
-  <data name="GetStarted.Complete.ViewBlog" xml:space="preserve"><value>Blogu Görüntüle</value></data>
-  <data name="GetStarted.Complete.Note" xml:space="preserve"><value>Not:</value></data>
-  <data name="GetStarted.Complete.LocalNote" xml:space="preserve"><value>Blogunuz yerel ortamda</value></data>
-  <data name="GetStarted.Complete.LocalNoteSuffix" xml:space="preserve"><value>adresinde kullanılabilir. Üretim ortamında</value></data>
 
   <!-- Index (Landing) -->
   <data name="Index.Hero.Heading" xml:space="preserve"><value>Hikâyeni anlat. Blogun olsun. Kendi yolunla.</value></data>
@@ -433,4 +412,60 @@
   <data name="Action.CreateBlog" xml:space="preserve"><value>Blog Oluştur</value></data>
   <data name="Message.InvalidRole" xml:space="preserve"><value>Geçersiz rol seçildi.</value></data>
   <data name="Action.Redirecting" xml:space="preserve"><value>Yönlendiriliyor…</value></data>
+  <!-- Shared shell and refreshed landing -->
+  <data name="Lang.ChangeLanguage" xml:space="preserve"><value>Dili değiştir</value></data>
+  <data name="Aria.OpenNavigation" xml:space="preserve"><value>Gezinmeyi aç</value></data>
+  <data name="Aria.CloseNavigation" xml:space="preserve"><value>Gezinmeyi kapat</value></data>
+  <data name="Aria.ToggleNavigation" xml:space="preserve"><value>Gezinmeyi aç veya kapat</value></data>
+  <data name="Aria.AdminNavigation" xml:space="preserve"><value>Yönetim gezintisi</value></data>
+  <data name="Sidebar.CurrentBlog" xml:space="preserve"><value>Geçerli blog</value></data>
+  <data name="Sidebar.SwitchBlog" xml:space="preserve"><value>Blog değiştir</value></data>
+  <data name="Sidebar.ViewBlog" xml:space="preserve"><value>Geçerli blogu görüntüle</value></data>
+  <data name="Sidebar.AllBlogs" xml:space="preserve"><value>Tüm bloglar</value></data>
+  <data name="Sidebar.Workspace" xml:space="preserve"><value>Çalışma alanı</value></data>
+  <data name="Sidebar.Manage" xml:space="preserve"><value>Yönet</value></data>
+  <data name="Sidebar.Account" xml:space="preserve"><value>Hesap</value></data>
+  <data name="Nav.Overview" xml:space="preserve"><value>Genel bakış</value></data>
+  <data name="Nav.Appearance" xml:space="preserve"><value>Görünüm</value></data>
+  <data name="Landing.Nav.Features" xml:space="preserve"><value>Özellikler</value></data>
+  <data name="Landing.Nav.HowItWorks" xml:space="preserve"><value>Nasıl çalışır</value></data>
+  <data name="Landing.Nav.Examples" xml:space="preserve"><value>Örnekler</value></data>
+  <data name="Landing.Hero.Note" xml:space="preserve"><value>Bağımsız içerik üreticileri için odaklı bir yayın stüdyosu.</value></data>
+  <data name="Landing.Hero.Heading" xml:space="preserve"><value>Fikirlerinize bir yer açın.</value></data>
+  <data name="Landing.Hero.Copy" xml:space="preserve"><value>Dikkatiniz dağılmadan yazın, size ait hissettiren bir yerde yayımlayın ve okurları neyin geri getirdiğini öğrenin. Teknik kurulum gerekmez.</value></data>
+  <data name="Landing.Action.CreateFreeBlog" xml:space="preserve"><value>Ücretsiz blogunuzu oluşturun</value></data>
+  <data name="Landing.Action.SeePublishedBlog" xml:space="preserve"><value>Yayımlanmış bir blog görün</value></data>
+  <data name="Landing.Aria.EditorPreview" xml:space="preserve"><value>Blogify editör önizlemesi</value></data>
+  <data name="Landing.Preview.Label" xml:space="preserve"><value>SAHA NOTLARI / HAZİRAN</value></data>
+  <data name="Landing.Preview.Title" xml:space="preserve"><value>Net bir fikrin ardındaki sessiz çalışma</value></data>
+  <data name="Landing.Preview.Copy" xml:space="preserve"><value>İyi yazı ilk cümleden çok önce başlar. İlginizi neyin hak ettiğini fark etmekle başlar.</value></data>
+  <data name="Landing.Feature.Write.Label" xml:space="preserve"><value>Yazın</value></data>
+  <data name="Landing.Feature.Write.Title" xml:space="preserve"><value>Dikkatiniz dağılmadan yazın.</value></data>
+  <data name="Landing.Feature.Write.Copy" xml:space="preserve"><value>Sakin bir editör, düşünülmüş düzenleme ve yönetim işleri yerine sıradaki cümleye odaklanan bir iş akışı.</value></data>
+  <data name="Landing.Feature.Publish.Label" xml:space="preserve"><value>Yayımlayın</value></data>
+  <data name="Landing.Feature.Publish.Title" xml:space="preserve"><value>Size ait hissettiren bir yer.</value></data>
+  <data name="Landing.Feature.Publish.Copy" xml:space="preserve"><value>Özenli bir tema seçin, adresinizi alın ve ilk günden paylaşmaya hazır bir blog yayımlayın.</value></data>
+  <data name="Landing.Feature.Understand.Label" xml:space="preserve"><value>Anlayın</value></data>
+  <data name="Landing.Feature.Understand.Title" xml:space="preserve"><value>Okurların ne için döndüğünü bilin.</value></data>
+  <data name="Landing.Feature.Understand.Copy" xml:space="preserve"><value>İlgi gören yazıları ve kaynakları görün, sonra hangi fikrin yeni bir bölümü hak ettiğine karar verin.</value></data>
+  <data name="Landing.Examples.Title" xml:space="preserve"><value>Tek fikir. Üç ayrı yuva.</value></data>
+  <data name="Landing.Examples.Copy" xml:space="preserve"><value>Özenli başlayın, ardından sunumu kendi sesinize göre şekillendirin.</value></data>
+  <data name="Landing.Examples.DefaultAlt" xml:space="preserve"><value>Varsayılan Blogify tema önizlemesi</value></data>
+  <data name="Landing.Examples.MinimalAlt" xml:space="preserve"><value>Minimal Blogify tema önizlemesi</value></data>
+  <data name="Landing.Examples.AuroraAlt" xml:space="preserve"><value>Aurora Blogify tema önizlemesi</value></data>
+  <data name="Landing.Process.Title" xml:space="preserve"><value>İlk düşünceden herkese açık adrese.</value></data>
+  <data name="Landing.Final.Title" xml:space="preserve"><value>Fikirleriniz bir yuvayı hak ediyor.</value></data>
+  <data name="Landing.Final.Action" xml:space="preserve"><value>Yazmaya başlayın</value></data>
+  <data name="Dashboard.CreateBlog.SubdomainHelp" xml:space="preserve"><value>Küçük harf, sayı ve kısa çizgi kullanın.</value></data>
+  <data name="Label.Actions" xml:space="preserve"><value>İşlemler</value></data>
+  <data name="Categories.Count" xml:space="preserve"><value>{0} · {1} kategori</value></data>
+  <data name="Categories.New" xml:space="preserve"><value>Yeni kategori</value></data>
+  <data name="Categories.Empty.Title" xml:space="preserve"><value>İlk yazınızı düzenleyin</value></data>
+  <data name="Categories.Empty.Copy" xml:space="preserve"><value>Kategoriler, blogunuz büyürken okurların ilgili yazıları bulmasına yardımcı olur.</value></data>
+  <data name="Categories.Empty.Action" xml:space="preserve"><value>İlk kategorinizi oluşturun</value></data>
+  <data name="Categories.DeleteConfirm" xml:space="preserve"><value>'{0}' silinsin mi? Bu işlem geri alınamaz.</value></data>
+  <data name="Action.Confirm" xml:space="preserve"><value>Onayla</value></data>
+  <data name="Dialog.Confirm.Title" xml:space="preserve"><value>İşlemi onayla</value></data>
+  <data name="Dashboard.Leave" xml:space="preserve"><value>Ayrıl</value></data>
+  <data name="Dashboard.LeaveConfirm" xml:space="preserve"><value>'{0}' blogundan ayrılsın mı?</value></data>
 </root>

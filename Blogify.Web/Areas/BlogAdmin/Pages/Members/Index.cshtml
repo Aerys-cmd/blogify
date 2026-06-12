@@ -82,10 +82,10 @@
                             <td>
                                 @if (member.CanManage)
                                 {
-                                    <form method="post" asp-page-handler="Remove" asp-route-blogSlug="@blogSlug" class="d-inline">
+                                    <form method="post" asp-page-handler="Remove" asp-route-blogSlug="@blogSlug" class="d-inline"
+                                          data-confirm-message="@Localizer["BlogAdmin.Members.RemoveConfirm"].Value">
                                         <input type="hidden" name="memberId" value="@member.MembershipId" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('@Localizer["BlogAdmin.Members.RemoveConfirm"].Value')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
                                             @Localizer["BlogAdmin.Members.Remove"]
                                         </button>
                                     </form>

@@ -1175,3 +1175,108 @@ a { color: var(--bs-link-color); }
 @media (prefers-reduced-motion: reduce) {
   *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
 }
+
+/* BlogAdmin shell */
+#adminSidebar { --bs-offcanvas-width: 224px; }
+.ba-sidebar-inner { width: 224px; }
+.ba-blog-switcher { padding: 12px; gap: 6px; }
+.ba-blog-switcher-button,
+.ba-account-button {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  text-align: left;
+}
+.ba-blog-switcher-button:hover,
+.ba-account-button:hover { background: var(--color-subtle); }
+.ba-blog-switcher-button > span,
+.ba-account-button > span:not(.ba-account-avatar) { display: grid; min-width: 0; flex: 1; }
+.ba-blog-switcher-button small,
+.ba-account-button small { color: var(--color-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ba-blog-switcher-button strong,
+.ba-account-button strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ba-blog-menu { width: min(320px, calc(100vw - 24px)); max-height: min(70vh, 520px); overflow-y: auto; }
+.ba-blog-menu .dropdown-item { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.ba-blog-menu .dropdown-item > span:first-child { display: grid; min-width: 0; }
+.ba-blog-menu .dropdown-item small { color: var(--color-muted); font-size: .75rem; }
+.ba-blog-menu .dropdown-item.active small { color: rgba(255,255,255,.8); }
+.ba-compose-wrap { padding: 4px 12px 8px; }
+.ba-compose-link {
+  min-height: 44px;
+  padding: 9px 11px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border-radius: 7px;
+  background: var(--color-brand);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+.ba-compose-link:hover { background: #972f14; color: #fff; }
+.ba-compose-link span { font-size: 1.25rem; line-height: 1; }
+.ba-sidebar-nav { padding: 4px 8px 12px; overflow-y: auto; }
+.ba-sidebar-section-label { margin: 14px 10px 4px; }
+.ba-nav-link { min-height: 44px; gap: 10px; padding: 9px 10px; }
+.ba-nav-link > span { width: 18px; color: currentColor; text-align: center; font-size: 1rem; }
+.ba-nav-link.ba-nav-active { box-shadow: inset 2px 0 var(--color-brand); }
+.ba-sidebar-footer { padding: 10px 12px; gap: 8px; }
+.ba-account-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--color-ink);
+  color: #fff;
+  font-weight: 700;
+}
+.b-language-switcher { display: inline-block; }
+.b-language-button {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--color-line);
+  border-radius: 7px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  font-weight: 700;
+}
+.b-language-switcher .dropdown-menu { min-width: 170px; }
+.b-language-switcher .dropdown-item { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.ba-sidebar-footer > .b-language-switcher,
+.ba-sidebar-footer .b-language-button { width: 100%; }
+.ba-mobile-header { min-height: 60px; }
+.ba-mobile-header .btn { width: 44px; padding: 0; color: var(--color-ink); }
+.ba-mobile-header .btn svg { color: currentColor !important; }
+.dropdown-item:focus,
+.dropdown-item:hover { background: var(--color-subtle); color: var(--color-ink); }
+.dropdown-item.active,
+.dropdown-item:active { background: var(--color-brand); color: #fff; }
+
+.b-data-list { border-top: 1px solid var(--color-line); background: var(--color-surface); }
+.b-data-row { border-bottom: 1px solid var(--color-line); padding: 16px; }
+.b-confirm-dialog form { margin: 0; }
+
+@media (min-width: 992px) {
+  .ba-sidebar-inner { position: fixed; inset: 0 auto 0 0; }
+  .ba-main { margin-left: 224px; }
+}
+
+@media (max-width: 575.98px) {
+  .ba-content { padding: 20px 16px; }
+  .b-page-header { margin-bottom: 28px; }
+  .b-page-header h1 { font-size: 1.75rem; }
+  .pl-row { padding-inline: 12px; gap: 8px; }
+}

@@ -4,7 +4,7 @@
     string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="~/Blogify.Web.styles.css" asp-append-version="true" />
 </head>
 <body class="ba-layout"
+      data-confirm-title="@Localizer["Dialog.Confirm.Title"].Value"
+      data-confirm-cancel="@Localizer["Action.Cancel"].Value"
+      data-confirm-action="@Localizer["Action.Confirm"].Value"
       hx-headers='{"RequestVerificationToken": "@Antiforgery.GetAndStoreTokens(Context).RequestToken"}'>
 
     <div id="ba-loader" aria-hidden="true"></div>
@@ -30,7 +33,7 @@
                         data-bs-toggle="offcanvas"
                         data-bs-target="#adminSidebar"
                         aria-controls="adminSidebar"
-                        aria-label="Open navigation">
+                        aria-label="@Localizer["Aria.OpenNavigation"].Value">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                          class="text-white" viewBox="0 0 16 16" aria-hidden="true">
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
