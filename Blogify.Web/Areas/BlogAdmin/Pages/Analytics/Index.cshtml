@@ -4,96 +4,60 @@
     ViewData["Title"] = "Analytics";
 }
 
-<div class="mb-4">
-    <h1 class="display-6">Analytics</h1>
-    <p class="text-muted">Page view statistics for the last 7 and 30 days.</p>
-</div>
-
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h6 text-uppercase text-muted">Views (7 days)</h2>
-                <p class="display-6 mb-0">@Model.TotalViews7Days</p>
-            </div>
-        </div>
+<header class="b-page-header"><div><p class="b-page-context">Audience</p><h1>Analytics</h1><p>See what readers return for and where they find you.</p></div><span class="b-segmented"><strong>30 days</strong></span></header>
+<section class="b-section">
+    <div class="b-section-heading"><h2>Audience overview</h2><span>Last 30 days</span></div>
+    <div class="b-inline-metrics">
+        <div><strong>@Model.TotalViews30Days</strong><span>Total views</span><small>@Model.TotalViews7Days in the last 7 days</small></div>
+        <div><strong>@Model.UniqueVisitors30Days</strong><span>Unique visitors</span><small>@Model.UniqueVisitors7Days in the last 7 days</small></div>
     </div>
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h6 text-uppercase text-muted">Views (30 days)</h2>
-                <p class="display-6 mb-0">@Model.TotalViews30Days</p>
-            </div>
-        </div>
+    <div class="b-trend-placeholder" role="img" aria-label="Views trend visualization">
+        <span style="height:18%"></span><span style="height:28%"></span><span style="height:22%"></span><span style="height:44%"></span><span style="height:38%"></span><span style="height:62%"></span><span style="height:52%"></span><span style="height:72%"></span><span style="height:66%"></span><span style="height:84%"></span><span style="height:76%"></span><span style="height:94%"></span>
     </div>
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h6 text-uppercase text-muted">Unique Visitors (7 days)</h2>
-                <p class="display-6 mb-0">@Model.UniqueVisitors7Days</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h6 text-uppercase text-muted">Unique Visitors (30 days)</h2>
-                <p class="display-6 mb-0">@Model.UniqueVisitors30Days</p>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 
 <div class="row g-4">
     <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="h6 mb-0">Top Posts (last 30 days)</h2>
-            </div>
+        <section class="b-section">
+            <div class="b-section-heading"><h2>Top posts</h2><span>Last 30 days</span></div>
             @if (Model.TopPosts.Count == 0)
             {
-                <div class="card-body">
-                    <p class="text-muted mb-0">No post views recorded yet.</p>
-                </div>
+                <div class="b-empty-state"><h3>Publish to start learning</h3><p>Post views will appear here after readers visit your published work.</p></div>
             }
             else
             {
-                <ul class="list-group list-group-flush">
+                <ol class="b-ranked-list">
                     @foreach (var post in Model.TopPosts)
                     {
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <li>
                             <span class="text-truncate me-2">@post.Title</span>
                             <span class="badge bg-primary rounded-pill">@post.Views</span>
                         </li>
                     }
-                </ul>
+                </ol>
             }
-        </div>
+        </section>
     </div>
 
     <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="h6 mb-0">Top Referrers (last 30 days)</h2>
-            </div>
+        <section class="b-section">
+            <div class="b-section-heading"><h2>Top referrers</h2><span>Last 30 days</span></div>
             @if (Model.TopReferrers.Count == 0)
             {
-                <div class="card-body">
-                    <p class="text-muted mb-0">No referrer data recorded yet.</p>
-                </div>
+                <div class="b-empty-state"><h3>No referrers yet</h3><p>Share a published post to begin seeing where readers arrive from.</p></div>
             }
             else
             {
-                <ul class="list-group list-group-flush">
+                <ol class="b-ranked-list">
                     @foreach (var referrer in Model.TopReferrers)
                     {
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <li>
                             <span class="text-truncate me-2" title="@referrer.Referrer">@referrer.Referrer</span>
                             <span class="badge bg-secondary rounded-pill">@referrer.Views</span>
                         </li>
                     }
-                </ul>
+                </ol>
             }
-        </div>
+        </section>
     </div>
 </div>

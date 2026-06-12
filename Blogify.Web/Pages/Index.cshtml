@@ -4,129 +4,62 @@
     Layout = "_LandingLayout";
 }
 
-<!-- Hero Section -->
-<section class="d-flex align-items-center justify-content-center text-center text-white bg-dark"
-         style="min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
-    <div class="container py-5">
-        <h1 class="display-3 fw-bold mb-3">@Localizer["Index.Hero.Heading"]</h1>
-        <p class="lead mb-4" style="max-width: 600px; margin: 0 auto;">
-            @Localizer["Index.Hero.Subheading"]
-        </p>
-        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
-            <a class="btn btn-primary btn-lg px-5" asp-page="/GetStarted/Step1">@Localizer["Index.Hero.PrimaryButton"]</a>
-            <a class="btn btn-outline-light btn-lg px-5" href="#features">@Localizer["Index.Hero.SecondaryButton"]</a>
+<section class="b-hero">
+    <div class="container b-hero-grid">
+        <div>
+            <p class="b-hero-note">A focused publishing studio for independent creators.</p>
+            <h1>Make a place for your ideas.</h1>
+            <p class="b-hero-copy">Write without distraction, publish to a home that feels yours, and learn what brings readers back. No technical setup required.</p>
+            <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+                <a class="btn btn-dark btn-lg" asp-page="/GetStarted/Step1">Create your free blog</a>
+                <a class="btn btn-outline-dark btn-lg" href="#examples">See a published blog</a>
+            </div>
         </div>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section id="features" class="py-5">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-5">@Localizer["Index.Features.Heading"]</h2>
-        <div class="row g-4">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm p-3">
-                    <div class="card-body">
-                        <div class="fs-1 mb-3" aria-hidden="true">🌐</div>
-                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Subdomain.Title"]</h5>
-                        <p class="card-text text-muted">@Localizer["Index.Features.Subdomain.Description"]</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm p-3">
-                    <div class="card-body">
-                        <div class="fs-1 mb-3" aria-hidden="true">🎨</div>
-                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Themes.Title"]</h5>
-                        <p class="card-text text-muted">@Localizer["Index.Features.Themes.Description"]</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm p-3">
-                    <div class="card-body">
-                        <div class="fs-1 mb-3" aria-hidden="true">🗂️</div>
-                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Categories.Title"]</h5>
-                        <p class="card-text text-muted">@Localizer["Index.Features.Categories.Description"]</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm p-3">
-                    <div class="card-body">
-                        <div class="fs-1 mb-3" aria-hidden="true">✍️</div>
-                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Editor.Title"]</h5>
-                        <p class="card-text text-muted">@Localizer["Index.Features.Editor.Description"]</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm p-3">
-                    <div class="card-body">
-                        <div class="fs-1 mb-3" aria-hidden="true">🖼️</div>
-                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Media.Title"]</h5>
-                        <p class="card-text text-muted">@Localizer["Index.Features.Media.Description"]</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm p-3">
-                    <div class="card-body">
-                        <div class="fs-1 mb-3" aria-hidden="true">📝</div>
-                        <h5 class="card-title fw-semibold">@Localizer["Index.Features.Markdown.Title"]</h5>
-                        <p class="card-text text-muted">@Localizer["Index.Features.Markdown.Description"]</p>
-                    </div>
-                </div>
+        <div class="b-product-composition" aria-label="Blogify editor preview">
+            <div class="b-composition-toolbar"><span></span><span>Draft saved</span><strong>Publish</strong></div>
+            <div class="b-composition-body">
+                <small>FIELD NOTES / JUNE</small>
+                <h2>The quiet work behind a clear idea</h2>
+                <p>Good writing begins long before the first sentence. It starts by noticing what deserves your attention.</p>
+                <div class="b-composition-lines"><i></i><i></i><i></i></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- How It Works Section -->
-<section class="py-5 bg-light">
+<section id="features" class="b-narrative">
     <div class="container">
-        <h2 class="text-center fw-bold mb-5">@Localizer["Index.HowItWorks.Heading"]</h2>
-        <div class="row g-4 justify-content-center">
-            <div class="col-12 col-md-4 text-center">
-                <div class="display-4 fw-bold text-primary mb-3">①</div>
-                <h5 class="fw-semibold">@Localizer["Index.HowItWorks.Step1.Title"]</h5>
-                <p class="text-muted">@Localizer["Index.HowItWorks.Step1.Description"]</p>
-            </div>
-            <div class="col-12 col-md-4 text-center">
-                <div class="display-4 fw-bold text-primary mb-3">②</div>
-                <h5 class="fw-semibold">@Localizer["Index.HowItWorks.Step2.Title"]</h5>
-                <p class="text-muted">@Localizer["Index.HowItWorks.Step2.Description"]</p>
-            </div>
-            <div class="col-12 col-md-4 text-center">
-                <div class="display-4 fw-bold text-primary mb-3">③</div>
-                <h5 class="fw-semibold">@Localizer["Index.HowItWorks.Step3.Title"]</h5>
-                <p class="text-muted">@Localizer["Index.HowItWorks.Step3.Description"]</p>
-            </div>
+        <div class="b-narrative-row"><span>Write</span><div><h2>Write without distraction.</h2><p>A calm editor, thoughtful organization, and a workflow built around the next sentence rather than admin chores.</p></div></div>
+        <div class="b-narrative-row"><span>Publish</span><div><h2>A home that feels yours.</h2><p>Choose a polished theme, claim your address, and publish a blog that is ready to share from day one.</p></div></div>
+        <div class="b-narrative-row"><span>Understand</span><div><h2>Know what readers return for.</h2><p>See the posts and sources earning attention, then use that signal to decide what deserves another chapter.</p></div></div>
+    </div>
+</section>
+
+<section id="examples" class="b-examples">
+    <div class="container">
+        <div class="b-section-heading"><h2>One idea. Three distinct homes.</h2><p>Start polished, then shape the presentation around your voice.</p></div>
+        <div class="b-theme-gallery">
+            <figure><img src="/images/theme-previews/default.png" alt="Default Blogify theme preview" /><figcaption>Default</figcaption></figure>
+            <figure><img src="/images/theme-previews/minimal.png" alt="Minimal Blogify theme preview" /><figcaption>Minimal</figcaption></figure>
+            <figure><img src="/images/theme-previews/aurora.png" alt="Aurora Blogify theme preview" /><figcaption>Aurora</figcaption></figure>
         </div>
     </div>
 </section>
 
-<!-- Social Proof Stats Bar -->
-<section class="py-4 bg-primary text-white text-center">
+<section id="how-it-works" class="b-process">
     <div class="container">
-        @if (Model.TotalBlogCount > 0)
-        {
-            <p class="fs-4 mb-0 fw-semibold">
-                @Localizer["Index.Stats.JoinPrefix"] <strong>@Model.TotalBlogCount</strong> @Localizer[Model.TotalBlogCount == 1 ? "Index.Stats.BlogSingular" : "Index.Stats.BlogPlural"]
-            </p>
-        }
-        else
-        {
-            <p class="fs-4 mb-0 fw-semibold">@Localizer["Index.Stats.BeFirst"]</p>
-        }
+        <h2>From first thought to public address.</h2>
+        <div class="b-process-list">
+            <div><strong>01</strong><h3>Create your account</h3><p>No credit card. No setup checklist disguised as work.</p></div>
+            <div><strong>02</strong><h3>Name your blog</h3><p>Choose a title and an address readers can remember.</p></div>
+            <div><strong>03</strong><h3>Publish your first post</h3><p>Open the editor and give the idea a place to live.</p></div>
+        </div>
     </div>
 </section>
 
-<!-- Final CTA Section -->
-<section class="py-5 text-center">
-    <div class="container" style="max-width: 640px;">
-        <h2 class="fw-bold mb-3">@Localizer["Index.CTA.Heading"]</h2>
-        <p class="text-muted mb-4">@Localizer["Index.CTA.Description"]</p>
-        <a class="btn btn-primary btn-lg px-5" asp-page="/GetStarted/Step1">@Localizer["Index.CTA.Button"]</a>
+<section class="b-final-cta">
+    <div class="container">
+        <h2>Your ideas deserve a home.</h2>
+        <a class="btn btn-dark btn-lg" asp-page="/GetStarted/Step1">Start writing</a>
     </div>
 </section>

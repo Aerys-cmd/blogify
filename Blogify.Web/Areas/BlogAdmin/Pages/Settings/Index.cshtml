@@ -4,9 +4,13 @@
     ViewData["Title"] = @Localizer["Page.Title.BlogAdmin.Settings"].Value;
 }
 
-<div class="mb-4">
-    <h1 class="h3 mb-0">@Localizer["Page.Title.BlogAdmin.Settings"]</h1>
-</div>
+<header class="b-page-header"><div><p class="b-page-context">Manage</p><h1>@Localizer["Page.Title.BlogAdmin.Settings"]</h1><p>Shape how your blog is described and discovered.</p></div></header>
+<nav class="b-settings-nav" aria-label="Settings sections">
+    <span>General</span>
+    <a asp-area="BlogAdmin" asp-page="/Themes/Index" asp-route-blogSlug="@ViewContext.RouteData.Values["blogSlug"]">Appearance</a>
+    <strong>SEO</strong>
+    <a asp-area="BlogAdmin" asp-page="/Members/Index" asp-route-blogSlug="@ViewContext.RouteData.Values["blogSlug"]">Members</a>
+</nav>
 
 @if (TempData["SuccessMessage"] is string success)
 {
@@ -16,11 +20,10 @@
     </div>
 }
 
-<div class="row">
-    <div class="col-lg-7">
-        <div class="card shadow-sm">
-            <div class="card-header fw-semibold">@Localizer["Label.Seo"]</div>
-            <div class="card-body">
+<div class="b-settings-layout">
+        <section class="b-form-section">
+            <div><h2>@Localizer["Label.Seo"]</h2><p>Set the summary people see in search results and link previews.</p></div>
+            <div>
                 <form method="post" novalidate>
                     @if (!Model.ModelState.IsValid)
                     {
@@ -40,8 +43,7 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
+        </section>
 </div>
 
 @section Scripts {

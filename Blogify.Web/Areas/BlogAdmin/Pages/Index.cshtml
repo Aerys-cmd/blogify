@@ -5,43 +5,27 @@
     string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
-<div class="mb-4">
-    <h1 class="display-6">@Model.TenantTitle Admin</h1>
-    <p class="text-muted">Manage content, design, and settings for this blog.</p>
-</div>
-
-<div class="row g-3 mb-4">
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h6 text-uppercase text-muted">Total Posts</h2>
-                <p class="display-6 mb-0">@Model.TotalPostCount</p>
-            </div>
-        </div>
+<header class="b-page-header">
+    <div><p class="b-page-context">@Model.TenantTitle</p><h1>Keep the momentum.</h1><p>Your workspace is ready for the next idea.</p></div>
+    <a class="btn btn-primary" asp-area="BlogAdmin" asp-page="/Posts/Create" asp-route-blogSlug="@blogSlug">Write a new post</a>
+</header>
+<section class="b-action-panel">
+    <div><span class="b-status b-status-draft">@Model.DraftPostCount draft@(Model.DraftPostCount == 1 ? "" : "s")</span><h2>Continue writing</h2><p>Pick up a draft or begin with a clean page.</p></div>
+    <a class="btn btn-dark" asp-area="BlogAdmin" asp-page="/Posts/Index" asp-route-blogSlug="@blogSlug">Open posts</a>
+</section>
+<section class="b-section">
+    <div class="b-section-heading"><h2>Publishing snapshot</h2><a asp-area="BlogAdmin" asp-page="/Analytics/Index" asp-route-blogSlug="@blogSlug">View analytics</a></div>
+    <div class="b-inline-metrics">
+        <div><strong>@Model.PublishedPostCount</strong><span>Published posts</span></div>
+        <div><strong>@Model.DraftPostCount</strong><span>Drafts in progress</span></div>
+        <div><strong>@Model.TotalPostCount</strong><span>Total posts</span></div>
     </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h6 text-uppercase text-muted">Published</h2>
-                <p class="display-6 mb-0">@Model.PublishedPostCount</p>
-            </div>
-        </div>
+</section>
+<section class="b-section">
+    <div class="b-section-heading"><h2>Set up your publishing home</h2><span>Recommended next steps</span></div>
+    <div class="b-checklist">
+        <a asp-area="BlogAdmin" asp-page="/Posts/Create" asp-route-blogSlug="@blogSlug"><span>1</span><strong>Write your next post</strong><small>Open the focused editor</small></a>
+        <a asp-area="BlogAdmin" asp-page="/Themes/Index" asp-route-blogSlug="@blogSlug"><span>2</span><strong>Choose your appearance</strong><small>Make the public site feel yours</small></a>
+        <a asp-area="BlogAdmin" asp-page="/Settings/Index" asp-route-blogSlug="@blogSlug"><span>3</span><strong>Add a blog description</strong><small>Help readers know what to expect</small></a>
     </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h6 text-uppercase text-muted">Drafts</h2>
-                <p class="display-6 mb-0">@Model.DraftPostCount</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="list-group">
-    <a class="list-group-item list-group-item-action" asp-area="BlogAdmin" asp-page="/Posts/Index" asp-route-blogSlug="@blogSlug">
-        <strong>Posts</strong> - Create and manage posts for this blog.
-    </a>
-    <a class="list-group-item list-group-item-action" asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug">
-        <strong>Categories</strong> - Organize posts into categories.
-    </a>
-</div>
+</section>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" role="img" aria-labelledby="title">
+  <title id="title">Blogify</title>
+  <g fill="none" stroke="#B83A18" stroke-width="7" stroke-linecap="square">
+    <path d="M15 14v68M15 16h32c15 0 24 8 24 20S62 55 47 55H15M15 55h36c16 0 25 8 25 21"/>
+    <path d="M82 14v68"/>
+  </g>
+  <text x="104" y="67" fill="#17191F" font-family="Source Sans 3,Arial,sans-serif" font-size="58" font-weight="700">Blogify</text>
+</svg>
