@@ -7,10 +7,15 @@ using Blogify.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.Blog.Pages;
 
-public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tenantContext, IBlockNoteHtmlRenderer htmlRenderer) : PageModel
+public sealed class PostModel(
+    ApplicationDbContext dbContext,
+    TenantContext tenantContext,
+    IBlockNoteHtmlRenderer htmlRenderer,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     public Guid PostId { get; private set; }
     public string PostTitle { get; private set; } = string.Empty;
@@ -65,7 +70,7 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
 
             if (parentComment is null)
             {
-                ModelState.AddModelError(nameof(Input.ParentCommentId), "The selected parent comment is invalid.");
+                ModelState.AddModelError(nameof(Input.ParentCommentId), localizer["Blog.InvalidParentComment"]);
                 return Page();
             }
         }
@@ -166,12 +171,12 @@ public sealed class PostModel(ApplicationDbContext dbContext, TenantContext tena
         return null;
     }
 
-    private static CommentViewModel BuildCommentViewModel(
+    private CommentViewModel BuildCommentViewModel(
         Comment comment,
         Dictionary<Guid, List<Comment>> repliesByParent,
         Dictionary<string, string> authorNames)
     {
-        string authorName = authorNames.GetValueOrDefault(comment.AuthorId, "Anonymous");
+        string authorName = authorNames.GetValueOrDefault(comment.AuthorId, localizer["Blog.Anonymous"]);
 
         List<CommentViewModel> replies = repliesByParent.TryGetValue(comment.Id, out List<Comment>? children)
             ? children.Select(c => BuildCommentViewModel(c, repliesByParent, authorNames)).ToList()
@@ -190,8 +195,8 @@ public sealed record CommentViewModel(
 
 public sealed record CommentInput
 {
-    [Required(ErrorMessage = "Comment content is required.")]
-    [MaxLength(2000, ErrorMessage = "Comment must not exceed 2000 characters.")]
+    [Required(ErrorMessage = "Blog.CommentRequired")]
+    [MaxLength(2000, ErrorMessage = "Blog.CommentTooLong")]
     public string Content { get; init; } = string.Empty;
 
     public Guid? ParentCommentId { get; init; }

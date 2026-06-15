@@ -1,72 +1,33 @@
 @inject Blogify.Web.Services.TenantContext TenantContext
 <!DOCTYPE html>
-<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<html lang="@TenantContext.RequiredTenant.PublicLanguage">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     @{
-        string blogTitle = TenantContext.CurrentTenant?.Title ?? string.Empty;
+        string blogTitle = TenantContext.RequiredTenant.Title;
         string pageTitle = ViewData["Title"] as string ?? blogTitle;
         string? metaTitle = ViewData["MetaTitle"] as string ?? pageTitle;
-        string? metaDescription = ViewData["MetaDescription"] as string ?? TenantContext.CurrentTenant?.MetaDescription;
+        string? metaDescription = ViewData["MetaDescription"] as string ?? TenantContext.RequiredTenant.MetaDescription;
         string? ogImage = ViewData["OgImage"] as string;
-        string? ogType = ViewData["OgType"] as string ?? "website";
         string? canonicalUrl = ViewData["CanonicalUrl"] as string;
     }
     <title>@pageTitle — @blogTitle</title>
-    @if (!string.IsNullOrEmpty(metaDescription))
-    {
-        <meta name="description" content="@metaDescription" />
-    }
+    @if (!string.IsNullOrEmpty(metaDescription)) { <meta name="description" content="@metaDescription" /> }
     <meta property="og:title" content="@metaTitle" />
     <meta property="og:site_name" content="@blogTitle" />
-    <meta property="og:type" content="@ogType" />
-    @if (!string.IsNullOrEmpty(metaDescription))
-    {
-        <meta property="og:description" content="@metaDescription" />
-    }
-    @if (!string.IsNullOrEmpty(ogImage))
-    {
-        <meta property="og:image" content="@ogImage" />
-    }
-    @if (!string.IsNullOrEmpty(canonicalUrl))
-    {
-        <link rel="canonical" href="@canonicalUrl" />
-        <meta property="og:url" content="@canonicalUrl" />
-    }
-    <meta name="twitter:card" content="@(string.IsNullOrEmpty(ogImage) ? "summary" : "summary_large_image")" />
-    <meta name="twitter:title" content="@metaTitle" />
-    @if (!string.IsNullOrEmpty(metaDescription))
-    {
-        <meta name="twitter:description" content="@metaDescription" />
-    }
-    @if (!string.IsNullOrEmpty(ogImage))
-    {
-        <meta name="twitter:image" content="@ogImage" />
-    }
+    @if (!string.IsNullOrEmpty(metaDescription)) { <meta property="og:description" content="@metaDescription" /> }
+    @if (!string.IsNullOrEmpty(ogImage)) { <meta property="og:image" content="@ogImage" /> }
+    @if (!string.IsNullOrEmpty(canonicalUrl)) { <link rel="canonical" href="@canonicalUrl" /> }
     <link rel="stylesheet" href="~/css/themes/minimal.css" asp-append-version="true" />
 </head>
-<body class="bg-white text-stone-800 antialiased">
-    <header class="border-b border-stone-200 py-6">
-        <div class="max-w-2xl mx-auto px-4">
-            <a asp-area="Blog" asp-page="/Index" class="no-underline text-stone-900">
-                <h1 class="text-xl font-semibold tracking-tight">@TenantContext.CurrentTenant?.Title</h1>
-            </a>
-            <partial name="_LanguageSwitcher" />
-        </div>
+<body class="journal-theme">
+    <header class="journal-header">
+        <a asp-area="Blog" asp-page="/Index" class="journal-title">@TenantContext.RequiredTenant.Title</a>
+        <span>@Localizer["Blog.LatestWriting"]</span>
     </header>
-
-    <main class="max-w-2xl mx-auto px-4 py-10">
-        @RenderBody()
-        @RenderSection("Sidebar", required: false)
-    </main>
-
-    <footer class="border-t border-stone-200 py-6 mt-10">
-        <div class="max-w-2xl mx-auto px-4 text-center text-sm text-stone-400">
-            &copy; @TenantContext.CurrentTenant?.CreatedAt.Year — @TenantContext.CurrentTenant?.Title
-        </div>
-    </footer>
-
+    <main class="journal-main">@RenderBody()@await RenderSectionAsync("Sidebar", required: false)</main>
+    <footer class="journal-footer">&copy; @TenantContext.RequiredTenant.CreatedAt.Year @TenantContext.RequiredTenant.Title</footer>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

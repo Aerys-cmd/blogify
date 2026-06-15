@@ -6,11 +6,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Themes;
 
 [Authorize]
-public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class IndexModel(
+    ApplicationDbContext dbContext,
+    TenantContext tenantContext,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     public string CurrentTheme { get; private set; } = string.Empty;
     public IReadOnlyList<ThemeOptionViewModel> AvailableThemes { get; private set; } = [];
@@ -58,22 +62,22 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
         return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });
     }
 
-    private static IReadOnlyList<ThemeOptionViewModel> BuildAvailableThemes() =>
+    private IReadOnlyList<ThemeOptionViewModel> BuildAvailableThemes() =>
     [
         new ThemeOptionViewModel(
             "default",
-            "Default",
-            "Classic Bootstrap 5 layout with a responsive card grid and dark navbar.",
+            localizer["Themes.Default.Name"],
+            localizer["Themes.Default.Description"],
             "/images/theme-previews/default.png"),
         new ThemeOptionViewModel(
             "minimal",
-            "Minimal",
-            "Typography-first, single-column layout with generous whitespace and a neutral palette.",
+            localizer["Themes.Minimal.Name"],
+            localizer["Themes.Minimal.Description"],
             "/images/theme-previews/minimal.png"),
         new ThemeOptionViewModel(
             "aurora",
-            "Aurora",
-            "Bold magazine style with a dark indigo header, card grid, and vibrant accent colours.",
+            localizer["Themes.Aurora.Name"],
+            localizer["Themes.Aurora.Description"],
             "/images/theme-previews/aurora.png"),
     ];
 }

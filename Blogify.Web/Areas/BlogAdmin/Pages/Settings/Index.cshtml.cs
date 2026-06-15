@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
+using Blogify.Web.Models.Exceptions;
 using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
         BlogTitle = tenant.Title;
         Input = new BlogSettingsInput
         {
+            PublicLanguage = tenant.PublicLanguage,
             MetaDescription = tenant.MetaDescription
         };
 
@@ -47,7 +49,18 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
             return NotFound();
         }
 
-        tenant.UpdateSeoMetadata(Input.MetaDescription);
+        try
+        {
+            tenant.ChangePublicLanguage(Input.PublicLanguage);
+            tenant.UpdateSeoMetadata(Input.MetaDescription);
+        }
+        catch (DomainException ex)
+        {
+            ModelState.AddModelError(nameof(Input.PublicLanguage), ex.Message);
+            BlogTitle = tenant.Title;
+            return Page();
+        }
+
         await dbContext.SaveChangesAsync(ct);
 
         TempData["SuccessMessage"] = localizer["Message.SaveSuccess"].Value;
@@ -57,6 +70,9 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
 public sealed class BlogSettingsInput
 {
+    [Required]
+    public string PublicLanguage { get; set; } = "tr";
+
     [MaxLength(160)]
     public string? MetaDescription { get; set; }
 }

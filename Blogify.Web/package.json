@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build:editor": "vite build",
+    "build:css:default": "tailwindcss -i styles/themes/default.css -o wwwroot/css/themes/default.css --minify",
     "build:css:minimal": "tailwindcss -i styles/themes/minimal.css -o wwwroot/css/themes/minimal.css --minify",
     "build:css:aurora": "tailwindcss -i styles/themes/aurora.css -o wwwroot/css/themes/aurora.css --minify"
   },

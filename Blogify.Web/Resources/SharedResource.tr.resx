@@ -464,6 +464,18 @@
   <data name="Categories.Empty.Copy" xml:space="preserve"><value>Kategoriler, blogunuz büyürken okurların ilgili yazıları bulmasına yardımcı olur.</value></data>
   <data name="Categories.Empty.Action" xml:space="preserve"><value>İlk kategorinizi oluşturun</value></data>
   <data name="Categories.DeleteConfirm" xml:space="preserve"><value>'{0}' silinsin mi? Bu işlem geri alınamaz.</value></data>
+  <data name="Categories.Back" xml:space="preserve"><value>Kategorilere dön</value></data>
+  <data name="Categories.Form.CreateDescription" xml:space="preserve"><value>Okurların ilgili yazıları keşfetmesine yardımcı olacak anlaşılır bir konu oluşturun.</value></data>
+  <data name="Categories.Form.EditDescription" xml:space="preserve"><value>Bu konunun okurlara ve arama sonuçlarına nasıl görüneceğini düzenleyin.</value></data>
+  <data name="Categories.Form.DetailsTitle" xml:space="preserve"><value>Kategori ayrıntıları</value></data>
+  <data name="Categories.Form.DetailsDescription" xml:space="preserve"><value>Konuyu adlandırın ve bağlantılarda kullanılacak adresi seçin.</value></data>
+  <data name="Categories.Form.SearchSharingTitle" xml:space="preserve"><value>Arama ve paylaşım</value></data>
+  <data name="Categories.Form.SearchSharingDescription" xml:space="preserve"><value>Bu kategorinin arama sonuçlarında ve bağlantı önizlemelerinde nasıl görüneceğini belirleyin.</value></data>
+  <data name="Categories.Form.NamePlaceholder" xml:space="preserve"><value>Örneğin, Saha notları</value></data>
+  <data name="Categories.Form.NameHelp" xml:space="preserve"><value>Okurların tanıyacağı kısa bir konu adı kullanın.</value></data>
+  <data name="Categories.Form.SlugPlaceholder" xml:space="preserve"><value>saha-notlari</value></data>
+  <data name="Categories.Form.SlugHelpCreate" xml:space="preserve"><value>Siz düzenleyene kadar addan oluşturulur. Küçük harf, sayı ve kısa çizgi kullanın.</value></data>
+  <data name="Categories.Form.SlugHelpEdit" xml:space="preserve"><value>Küçük harf, sayı ve kısa çizgi kullanın. Bunu değiştirmek mevcut bağlantıları bozabilir.</value></data>
   <data name="Action.Confirm" xml:space="preserve"><value>Onayla</value></data>
   <data name="Dialog.Confirm.Title" xml:space="preserve"><value>İşlemi onayla</value></data>
   <data name="Dashboard.Leave" xml:space="preserve"><value>Ayrıl</value></data>
@@ -478,4 +490,48 @@
   <data name="Editor.UnsavedDraft" xml:space="preserve"><value>Kaydedilmemiş yerel taslak</value></data>
   <data name="Action.Close" xml:space="preserve"><value>Kapat</value></data>
   <data name="Action.Remove" xml:space="preserve"><value>Kaldır</value></data>
+  <data name="Settings.General" xml:space="preserve"><value>Genel</value></data>
+  <data name="Settings.PublicLanguage.Title" xml:space="preserve"><value>Herkese açık blog dili</value></data>
+  <data name="Settings.PublicLanguage.Description" xml:space="preserve"><value>Okurların gezinme, tarihler, yorumlar ve diğer tema metinlerinde göreceği dili seçin.</value></data>
+  <data name="Settings.PublicLanguage.Label" xml:space="preserve"><value>Dil</value></data>
+  <data name="Settings.PublicLanguage.TurkishHelp" xml:space="preserve"><value>Herkese açık blog arayüzünü Türkçe gösterir.</value></data>
+  <data name="Settings.PublicLanguage.EnglishHelp" xml:space="preserve"><value>Herkese açık blog arayüzünü İngilizce gösterir.</value></data>
+  <data name="Themes.Heading" xml:space="preserve"><value>Okuma deneyiminizi seçin</value></data>
+  <data name="Themes.Description" xml:space="preserve"><value>Her tema aynı yazılara farklı bir ritim kazandırır. İstediğiniz zaman değiştirebilirsiniz.</value></data>
+  <data name="Themes.Active" xml:space="preserve"><value>Etkin</value></data>
+  <data name="Themes.Current" xml:space="preserve"><value>Geçerli tema</value></data>
+  <data name="Themes.Activate" xml:space="preserve"><value>Bu temayı kullan</value></data>
+  <data name="Themes.Default.Name" xml:space="preserve"><value>Editoryal</value></data>
+  <data name="Themes.Default.Description" xml:space="preserve"><value>En yeni yazıya öne çıkması için alan veren, güçlü bir yayın düzeni.</value></data>
+  <data name="Themes.Minimal.Name" xml:space="preserve"><value>Günlük</value></data>
+  <data name="Themes.Minimal.Description" xml:space="preserve"><value>Denemeler, notlar ve odaklı yazılar için sakin, metin öncelikli bir okuma deneyimi.</value></data>
+  <data name="Themes.Aurora.Name" xml:space="preserve"><value>Magazin</value></data>
+  <data name="Themes.Aurora.Description" xml:space="preserve"><value>Görsel hikâyeler ve çeşitli konular için güçlü ritme sahip, görsel odaklı bir düzen.</value></data>
+  <data name="Blog.Home" xml:space="preserve"><value>Ana sayfa</value></data>
+  <data name="Blog.LatestWriting" xml:space="preserve"><value>Son yazılar</value></data>
+  <data name="Blog.AllWriting" xml:space="preserve"><value>Tüm yazılar</value></data>
+  <data name="Blog.ReadStory" xml:space="preserve"><value>Yazıyı oku</value></data>
+  <data name="Blog.Published" xml:space="preserve"><value>{0} tarihinde yayımlandı</value></data>
+  <data name="Blog.CategoryHeading" xml:space="preserve"><value>“{0}” konusundaki yazılar</value></data>
+  <data name="Blog.Categories" xml:space="preserve"><value>Konuları keşfedin</value></data>
+  <data name="Blog.NoCategories" xml:space="preserve"><value>Henüz konu eklenmedi.</value></data>
+  <data name="Blog.NoPosts" xml:space="preserve"><value>Henüz yayımlanmış bir yazı yok.</value></data>
+  <data name="Blog.NoCategoryPosts" xml:space="preserve"><value>Bu konuda henüz yayımlanmış bir yazı yok.</value></data>
+  <data name="Blog.BackToPosts" xml:space="preserve"><value>Tüm yazılara dön</value></data>
+  <data name="Blog.Comments" xml:space="preserve"><value>Yorumlar ({0})</value></data>
+  <data name="Blog.Reply" xml:space="preserve"><value>Yanıtla</value></data>
+  <data name="Blog.ReplyTo" xml:space="preserve"><value>{0} adlı kişiye yanıt ver</value></data>
+  <data name="Blog.PostReply" xml:space="preserve"><value>Yanıtı gönder</value></data>
+  <data name="Blog.NoComments" xml:space="preserve"><value>Henüz yorum yok. Sohbeti başlatın.</value></data>
+  <data name="Blog.LeaveComment" xml:space="preserve"><value>Yorum bırakın</value></data>
+  <data name="Blog.YourComment" xml:space="preserve"><value>Yorumunuz</value></data>
+  <data name="Blog.CommentPlaceholder" xml:space="preserve"><value>Düşüncelerinizi paylaşın…</value></data>
+  <data name="Blog.ReplyPlaceholder" xml:space="preserve"><value>Bir yanıt yazın…</value></data>
+  <data name="Blog.PostComment" xml:space="preserve"><value>Yorumu gönder</value></data>
+  <data name="Blog.SignIn" xml:space="preserve"><value>Giriş yapın</value></data>
+  <data name="Blog.SignInSuffix" xml:space="preserve"><value>ve yorum bırakın.</value></data>
+  <data name="Blog.Anonymous" xml:space="preserve"><value>Anonim</value></data>
+  <data name="Blog.CommentRequired" xml:space="preserve"><value>Lütfen bir yorum yazın.</value></data>
+  <data name="Blog.CommentTooLong" xml:space="preserve"><value>Yorumlar 2.000 karakteri aşamaz.</value></data>
+  <data name="Blog.InvalidParentComment" xml:space="preserve"><value>Yanıtladığınız yorum artık kullanılamıyor.</value></data>
 </root>

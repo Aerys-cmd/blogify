@@ -187,6 +187,9 @@ app.UseAuthentication();
 // Tenant resolution must run after authentication but before authorization.
 app.UseTenantResolution();
 
+// Public blogs use the language selected by their owner, not the visitor culture cookie.
+app.UsePublicBlogCulture();
+
 // Unified access control: host-based routing + blog ownership/membership checks.
 app.UseAccessControl();
 

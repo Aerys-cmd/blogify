@@ -1,43 +1,22 @@
 @model Blogify.Web.Areas.Blog.Pages.IndexModel
-
+<header class="journal-intro">
+    <h1>@Model.BlogTitle</h1>
+</header>
 @if (Model.Posts.Count == 0)
 {
-    <p class="text-stone-500 py-10 text-center">No posts published yet.</p>
+    <div class="empty-state">@Localizer["Blog.NoPosts"]</div>
 }
 else
 {
-    <div class="space-y-10">
-        @foreach (PostCardViewModel post in Model.Posts)
-        {
-            <article class="py-6 border-b border-stone-200 last:border-0">
-                <h2 class="text-lg font-medium mb-1">
-                    <a asp-area="Blog"
-                       asp-page="/Post"
-                       asp-route-slug="@post.Slug"
-                       class="text-stone-900 hover:text-stone-600 no-underline">
-                        @post.Title
-                    </a>
-                </h2>
-                <p class="text-sm text-stone-400 mb-2">@post.PublishedAt.ToString("MMMM d, yyyy")</p>
-                @if (post.Excerpt is not null)
-                {
-                    <p class="text-stone-600 text-sm leading-relaxed">@post.Excerpt</p>
-                }
-                @if (post.Categories.Count > 0)
-                {
-                    <div class="mt-2 flex flex-wrap gap-1">
-                        @foreach (CategoryLinkViewModel cat in post.Categories)
-                        {
-                            <a asp-area="Blog"
-                               asp-page="/Category"
-                               asp-route-slug="@cat.Slug"
-                               class="text-xs text-stone-500 hover:text-stone-800 no-underline">
-                                @cat.Name
-                            </a>
-                        }
-                    </div>
-                }
-            </article>
-        }
+    <div class="journal-list">
+    @foreach (PostCardViewModel post in Model.Posts)
+    {
+        <article class="journal-entry">
+            <time datetime="@post.PublishedAt.ToString("O")">@post.PublishedAt.ToString("D")</time>
+            <div><h2><a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug">@post.Title</a></h2>
+            @if (post.Excerpt is not null) { <p>@post.Excerpt</p> }
+            @if (post.Categories.Count > 0) { <div class="topic-links">@foreach (CategoryLinkViewModel cat in post.Categories) { <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a> }</div> }</div>
+        </article>
+    }
     </div>
 }

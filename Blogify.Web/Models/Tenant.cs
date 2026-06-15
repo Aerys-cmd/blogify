@@ -9,6 +9,7 @@ public sealed class Tenant
         new Regex(@"^[a-z0-9-]+$", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
 
     private static readonly HashSet<string> AllowedThemes = ["default", "minimal", "aurora"];
+    private static readonly HashSet<string> AllowedPublicLanguages = ["en", "tr"];
 
     private Tenant() { }
 
@@ -32,6 +33,7 @@ public sealed class Tenant
     public string Subdomain { get; private set; } = string.Empty;
     public string OwnerId { get; private set; } = string.Empty;
     public string ActiveTheme { get; private set; } = "default";
+    public string PublicLanguage { get; private set; } = "tr";
     public string? MetaDescription { get; private set; }
     public DateTimeOffset CreatedAt { get; private init; }
     public DateTimeOffset? DeletedAt { get; private set; }
@@ -98,6 +100,18 @@ public sealed class Tenant
             throw new DomainException($"'{normalized}' is not a recognised theme.");
 
         ActiveTheme = normalized;
+    }
+
+    public void ChangePublicLanguage(string language)
+    {
+        if (string.IsNullOrWhiteSpace(language))
+            throw new ArgumentException("Public language is required.", nameof(language));
+
+        string normalized = language.Trim().ToLowerInvariant();
+        if (!AllowedPublicLanguages.Contains(normalized))
+            throw new DomainException($"'{normalized}' is not a supported public language.");
+
+        PublicLanguage = normalized;
     }
 
     public void UpdateSeoMetadata(string? metaDescription)

@@ -463,6 +463,18 @@
   <data name="Categories.Empty.Copy" xml:space="preserve"><value>Categories help readers find related writing as your blog grows.</value></data>
   <data name="Categories.Empty.Action" xml:space="preserve"><value>Create your first category</value></data>
   <data name="Categories.DeleteConfirm" xml:space="preserve"><value>Delete '{0}'? This cannot be undone.</value></data>
+  <data name="Categories.Back" xml:space="preserve"><value>Back to categories</value></data>
+  <data name="Categories.Form.CreateDescription" xml:space="preserve"><value>Create a clear topic that helps readers explore related writing.</value></data>
+  <data name="Categories.Form.EditDescription" xml:space="preserve"><value>Refine how this topic appears to readers and in search.</value></data>
+  <data name="Categories.Form.DetailsTitle" xml:space="preserve"><value>Category details</value></data>
+  <data name="Categories.Form.DetailsDescription" xml:space="preserve"><value>Name the topic and choose the address used in links.</value></data>
+  <data name="Categories.Form.SearchSharingTitle" xml:space="preserve"><value>Search &amp; sharing</value></data>
+  <data name="Categories.Form.SearchSharingDescription" xml:space="preserve"><value>Shape how this category appears in search results and link previews.</value></data>
+  <data name="Categories.Form.NamePlaceholder" xml:space="preserve"><value>For example, Field notes</value></data>
+  <data name="Categories.Form.NameHelp" xml:space="preserve"><value>Use a short topic readers will recognize.</value></data>
+  <data name="Categories.Form.SlugPlaceholder" xml:space="preserve"><value>field-notes</value></data>
+  <data name="Categories.Form.SlugHelpCreate" xml:space="preserve"><value>Generated from the name until you edit it. Use lowercase letters, numbers, and hyphens.</value></data>
+  <data name="Categories.Form.SlugHelpEdit" xml:space="preserve"><value>Use lowercase letters, numbers, and hyphens. Changing this may break existing links.</value></data>
   <data name="Action.Confirm" xml:space="preserve"><value>Confirm</value></data>
   <data name="Dialog.Confirm.Title" xml:space="preserve"><value>Confirm action</value></data>
   <data name="Dashboard.Leave" xml:space="preserve"><value>Leave</value></data>
@@ -477,4 +489,48 @@
   <data name="Editor.UnsavedDraft" xml:space="preserve"><value>Unsaved local draft</value></data>
   <data name="Action.Close" xml:space="preserve"><value>Close</value></data>
   <data name="Action.Remove" xml:space="preserve"><value>Remove</value></data>
+  <data name="Settings.General" xml:space="preserve"><value>General</value></data>
+  <data name="Settings.PublicLanguage.Title" xml:space="preserve"><value>Public blog language</value></data>
+  <data name="Settings.PublicLanguage.Description" xml:space="preserve"><value>Choose the language readers see in navigation, dates, comments, and other theme interface text.</value></data>
+  <data name="Settings.PublicLanguage.Label" xml:space="preserve"><value>Language</value></data>
+  <data name="Settings.PublicLanguage.TurkishHelp" xml:space="preserve"><value>Show the public blog interface in Turkish.</value></data>
+  <data name="Settings.PublicLanguage.EnglishHelp" xml:space="preserve"><value>Show the public blog interface in English.</value></data>
+  <data name="Themes.Heading" xml:space="preserve"><value>Choose your reading experience</value></data>
+  <data name="Themes.Description" xml:space="preserve"><value>Each theme gives the same writing a distinct rhythm. Change it any time.</value></data>
+  <data name="Themes.Active" xml:space="preserve"><value>Active</value></data>
+  <data name="Themes.Current" xml:space="preserve"><value>Current theme</value></data>
+  <data name="Themes.Activate" xml:space="preserve"><value>Use this theme</value></data>
+  <data name="Themes.Default.Name" xml:space="preserve"><value>Editorial</value></data>
+  <data name="Themes.Default.Description" xml:space="preserve"><value>A confident publication layout that gives the newest story room to lead.</value></data>
+  <data name="Themes.Minimal.Name" xml:space="preserve"><value>Journal</value></data>
+  <data name="Themes.Minimal.Description" xml:space="preserve"><value>A quiet, text-first reading experience for essays, notes, and focused writing.</value></data>
+  <data name="Themes.Aurora.Name" xml:space="preserve"><value>Magazine</value></data>
+  <data name="Themes.Aurora.Description" xml:space="preserve"><value>An image-led layout with bold pacing for visual stories and varied topics.</value></data>
+  <data name="Blog.Home" xml:space="preserve"><value>Home</value></data>
+  <data name="Blog.LatestWriting" xml:space="preserve"><value>Latest writing</value></data>
+  <data name="Blog.AllWriting" xml:space="preserve"><value>All writing</value></data>
+  <data name="Blog.ReadStory" xml:space="preserve"><value>Read story</value></data>
+  <data name="Blog.Published" xml:space="preserve"><value>Published {0}</value></data>
+  <data name="Blog.CategoryHeading" xml:space="preserve"><value>Writing filed under “{0}”</value></data>
+  <data name="Blog.Categories" xml:space="preserve"><value>Explore topics</value></data>
+  <data name="Blog.NoCategories" xml:space="preserve"><value>No topics have been added yet.</value></data>
+  <data name="Blog.NoPosts" xml:space="preserve"><value>No stories have been published yet.</value></data>
+  <data name="Blog.NoCategoryPosts" xml:space="preserve"><value>No stories have been published in this topic yet.</value></data>
+  <data name="Blog.BackToPosts" xml:space="preserve"><value>Back to all writing</value></data>
+  <data name="Blog.Comments" xml:space="preserve"><value>Comments ({0})</value></data>
+  <data name="Blog.Reply" xml:space="preserve"><value>Reply</value></data>
+  <data name="Blog.ReplyTo" xml:space="preserve"><value>Reply to {0}</value></data>
+  <data name="Blog.PostReply" xml:space="preserve"><value>Post reply</value></data>
+  <data name="Blog.NoComments" xml:space="preserve"><value>No comments yet. Start the conversation.</value></data>
+  <data name="Blog.LeaveComment" xml:space="preserve"><value>Leave a comment</value></data>
+  <data name="Blog.YourComment" xml:space="preserve"><value>Your comment</value></data>
+  <data name="Blog.CommentPlaceholder" xml:space="preserve"><value>Share your thoughts…</value></data>
+  <data name="Blog.ReplyPlaceholder" xml:space="preserve"><value>Write a reply…</value></data>
+  <data name="Blog.PostComment" xml:space="preserve"><value>Post comment</value></data>
+  <data name="Blog.SignIn" xml:space="preserve"><value>Sign in</value></data>
+  <data name="Blog.SignInSuffix" xml:space="preserve"><value>to leave a comment.</value></data>
+  <data name="Blog.Anonymous" xml:space="preserve"><value>Anonymous</value></data>
+  <data name="Blog.CommentRequired" xml:space="preserve"><value>Please write a comment.</value></data>
+  <data name="Blog.CommentTooLong" xml:space="preserve"><value>Comments cannot exceed 2,000 characters.</value></data>
+  <data name="Blog.InvalidParentComment" xml:space="preserve"><value>The comment you are replying to is no longer available.</value></data>
 </root>

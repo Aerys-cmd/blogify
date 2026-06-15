@@ -35,6 +35,11 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<Tenant>
             .HasMaxLength(50)
             .HasDefaultValue("default");
 
+        builder.Property(t => t.PublicLanguage)
+            .IsRequired()
+            .HasMaxLength(2)
+            .HasDefaultValue("tr");
+
         builder.Property(t => t.MetaDescription)
             .HasMaxLength(160);
 

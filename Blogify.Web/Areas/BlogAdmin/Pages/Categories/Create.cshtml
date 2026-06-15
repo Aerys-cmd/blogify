@@ -1,76 +1,86 @@
 @page
 @model Blogify.Web.Areas.BlogAdmin.Pages.Categories.CreateModel
 @{
-    ViewData["Title"] = "New Category";
+    ViewData["Title"] = Localizer["Page.Title.BlogAdmin.NewCategory"].Value;
     string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
-<div class="mb-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-1">
-            <li class="breadcrumb-item">
-                <a asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug">Categories</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">New Category</li>
-        </ol>
-    </nav>
-    <h1 class="h3 mb-0">New Category</h1>
-</div>
+<header class="b-page-header">
+    <div>
+        <p class="b-page-context">@Localizer["Nav.Categories"]</p>
+        <h1>@Localizer["Page.Title.BlogAdmin.NewCategory"]</h1>
+        <p>@Localizer["Categories.Form.CreateDescription"]</p>
+    </div>
+    <a asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug" class="btn btn-outline-secondary">
+        @Localizer["Categories.Back"]
+    </a>
+</header>
 
-<div class="row">
-    <div class="col-lg-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <form method="post" novalidate>
-                    @if (!Model.ModelState.IsValid)
-                    {
-                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
-                    }
+<form method="post" class="b-form-layout" novalidate>
+    @if (!Model.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+    }
 
-                    <div class="mb-3">
-                        <label asp-for="Input.Name" class="form-label fw-semibold">Name <span class="text-danger">*</span></label>
-                        <input asp-for="Input.Name" class="form-control" id="categoryName"
-                               placeholder="e.g. ASP.NET Core" autocomplete="off" />
-                        <span asp-validation-for="Input.Name" class="text-danger small"></span>
-                    </div>
+    <section class="b-form-section">
+        <div>
+            <h2>@Localizer["Categories.Form.DetailsTitle"]</h2>
+            <p>@Localizer["Categories.Form.DetailsDescription"]</p>
+        </div>
+        <div class="b-form-section-fields">
+            <div>
+                <label asp-for="Input.Name" class="form-label fw-semibold">@Localizer["Label.Name"] <span class="text-danger">*</span></label>
+                <input asp-for="Input.Name" class="form-control" id="categoryName"
+                       placeholder="@Localizer["Categories.Form.NamePlaceholder"].Value" autocomplete="off" />
+                <div class="form-text">@Localizer["Categories.Form.NameHelp"]</div>
+                <span asp-validation-for="Input.Name" class="text-danger small"></span>
+            </div>
 
-                    <div class="mb-4">
-                        <label asp-for="Input.Slug" class="form-label fw-semibold">Slug</label>
-                        <input asp-for="Input.Slug" class="form-control font-monospace" id="categorySlug"
-                               placeholder="e.g. asp-net-core (auto-generated if left blank)" autocomplete="off" />
-                        <div class="form-text">Lowercase letters, digits, and hyphens only. Auto-generated from the name if left blank.</div>
-                        <span asp-validation-for="Input.Slug" class="text-danger small"></span>
-                    </div>
-
-                    <hr class="my-3" />
-
-                    <p class="fw-semibold small text-muted text-uppercase mb-2">@Localizer["Label.Seo"]</p>
-
-                    <div class="mb-3">
-                        <label asp-for="Input.MetaTitle" class="form-label fw-semibold">@Localizer["Label.MetaTitle"]</label>
-                        <input asp-for="Input.MetaTitle" class="form-control"
-                               placeholder="@Localizer["Label.MetaTitle.Placeholder"].Value" autocomplete="off" />
-                        <div class="form-text">@Localizer["Label.MetaTitle.Help.Category"]</div>
-                        <span asp-validation-for="Input.MetaTitle" class="text-danger small"></span>
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
-                        <textarea asp-for="Input.MetaDescription" class="form-control" rows="3"
-                                  placeholder="@Localizer["Label.MetaDescription.Placeholder"].Value"></textarea>
-                        <div class="form-text">@Localizer["Label.MetaDescription.Help.Category"]</div>
-                        <span asp-validation-for="Input.MetaDescription" class="text-danger small"></span>
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">@Localizer["Action.Create"]</button>
-                        <a asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug" class="btn btn-outline-secondary">@Localizer["Action.Cancel"]</a>
-                    </div>
-                </form>
+            <div>
+                <label asp-for="Input.Slug" class="form-label fw-semibold">@Localizer["Label.Slug"]</label>
+                <input asp-for="Input.Slug" class="form-control font-monospace" id="categorySlug"
+                       placeholder="@Localizer["Categories.Form.SlugPlaceholder"].Value" autocomplete="off" />
+                <div class="form-text">@Localizer["Categories.Form.SlugHelpCreate"]</div>
+                <span asp-validation-for="Input.Slug" class="text-danger small"></span>
             </div>
         </div>
+    </section>
+
+    <section class="b-form-section">
+        <div>
+            <h2>@Localizer["Categories.Form.SearchSharingTitle"]</h2>
+            <p>@Localizer["Categories.Form.SearchSharingDescription"]</p>
+        </div>
+        <div class="b-form-section-fields">
+            <div>
+                <div class="b-form-label-row">
+                    <label asp-for="Input.MetaTitle" class="form-label fw-semibold">@Localizer["Label.MetaTitle"]</label>
+                    <span class="b-character-count" id="metaTitleCount" aria-live="polite">0/60</span>
+                </div>
+                <input asp-for="Input.MetaTitle" class="form-control" id="metaTitleInput"
+                       placeholder="@Localizer["Label.MetaTitle.Placeholder"].Value" autocomplete="off" />
+                <div class="form-text">@Localizer["Label.MetaTitle.Help.Category"]</div>
+                <span asp-validation-for="Input.MetaTitle" class="text-danger small"></span>
+            </div>
+
+            <div>
+                <div class="b-form-label-row">
+                    <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
+                    <span class="b-character-count" id="metaDescriptionCount" aria-live="polite">0/160</span>
+                </div>
+                <textarea asp-for="Input.MetaDescription" class="form-control" id="metaDescriptionInput" rows="4"
+                          placeholder="@Localizer["Label.MetaDescription.Placeholder"].Value"></textarea>
+                <div class="form-text">@Localizer["Label.MetaDescription.Help.Category"]</div>
+                <span asp-validation-for="Input.MetaDescription" class="text-danger small"></span>
+            </div>
+        </div>
+    </section>
+
+    <div class="b-form-actions">
+        <a asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug" class="btn btn-outline-secondary">@Localizer["Action.Cancel"]</a>
+        <button type="submit" class="btn btn-primary">@Localizer["Action.Create"]</button>
     </div>
-</div>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -90,6 +100,16 @@
                     .replace(/^-|-$/g, '');
             }
 
+            function bindCharacterCount(inputId, countId, maxLength) {
+                const input = document.getElementById(inputId);
+                const count = document.getElementById(countId);
+                const update = function () {
+                    count.textContent = `${input.value.length}/${maxLength}`;
+                };
+                input.addEventListener('input', update);
+                update();
+            }
+
             slugInput.addEventListener('input', function () {
                 slugManuallyEdited = slugInput.value.length > 0;
             });
@@ -99,6 +119,9 @@
                     slugInput.value = generateSlug(nameInput.value);
                 }
             });
+
+            bindCharacterCount('metaTitleInput', 'metaTitleCount', 60);
+            bindCharacterCount('metaDescriptionInput', 'metaDescriptionCount', 160);
         })();
     </script>
 }

@@ -6,9 +6,9 @@
 
 <header class="b-page-header"><div><p class="b-page-context">Manage</p><h1>@Localizer["Page.Title.BlogAdmin.Settings"]</h1><p>Shape how your blog is described and discovered.</p></div></header>
 <nav class="b-settings-nav" aria-label="Settings sections">
-    <span>General</span>
+    <strong>@Localizer["Settings.General"]</strong>
     <a asp-area="BlogAdmin" asp-page="/Themes/Index" asp-route-blogSlug="@ViewContext.RouteData.Values["blogSlug"]">Appearance</a>
-    <strong>SEO</strong>
+    <span>@Localizer["Label.Seo"]</span>
     <a asp-area="BlogAdmin" asp-page="/Members/Index" asp-route-blogSlug="@ViewContext.RouteData.Values["blogSlug"]">Members</a>
 </nav>
 
@@ -22,6 +22,38 @@
 
 <div class="b-settings-layout">
         <section class="b-form-section">
+            <div><h2>@Localizer["Settings.PublicLanguage.Title"]</h2><p>@Localizer["Settings.PublicLanguage.Description"]</p></div>
+            <div>
+                <form method="post" novalidate>
+                    @if (!Model.ModelState.IsValid)
+                    {
+                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+                    }
+
+                    <fieldset>
+                        <legend class="form-label fw-semibold">@Localizer["Settings.PublicLanguage.Label"]</legend>
+                        <div class="b-language-choice-list">
+                            <label class="b-language-choice">
+                                <input asp-for="Input.PublicLanguage" type="radio" value="tr" />
+                                <span><strong>Türkçe</strong><small>@Localizer["Settings.PublicLanguage.TurkishHelp"]</small></span>
+                            </label>
+                            <label class="b-language-choice">
+                                <input asp-for="Input.PublicLanguage" type="radio" value="en" />
+                                <span><strong>English</strong><small>@Localizer["Settings.PublicLanguage.EnglishHelp"]</small></span>
+                            </label>
+                        </div>
+                        <span asp-validation-for="Input.PublicLanguage" class="text-danger small"></span>
+                    </fieldset>
+
+                    <input asp-for="Input.MetaDescription" type="hidden" />
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">@Localizer["Action.Save"]</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="b-form-section">
             <div><h2>@Localizer["Label.Seo"]</h2><p>Set the summary people see in search results and link previews.</p></div>
             <div>
                 <form method="post" novalidate>
@@ -30,6 +62,7 @@
                         <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
                     }
 
+                    <input asp-for="Input.PublicLanguage" type="hidden" />
                     <div class="mb-4">
                         <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
                         <textarea asp-for="Input.MetaDescription" class="form-control" rows="3"
