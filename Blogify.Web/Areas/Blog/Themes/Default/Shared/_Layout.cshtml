@@ -1,34 +1,26 @@
 @inject Blogify.Web.Services.TenantContext TenantContext
+@inject Blogify.Web.Services.BlogBrandingService BrandingService
 <!DOCTYPE html>
 <html lang="@TenantContext.RequiredTenant.PublicLanguage">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    @{
-        string blogTitle = TenantContext.RequiredTenant.Title;
-        string pageTitle = ViewData["Title"] as string ?? blogTitle;
-        string? metaTitle = ViewData["MetaTitle"] as string ?? pageTitle;
-        string? metaDescription = ViewData["MetaDescription"] as string ?? TenantContext.RequiredTenant.MetaDescription;
-        string? ogImage = ViewData["OgImage"] as string;
-        string? ogType = ViewData["OgType"] as string ?? "website";
-        string? canonicalUrl = ViewData["CanonicalUrl"] as string;
-    }
-    <title>@pageTitle — @blogTitle</title>
-    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
-    <link rel="alternate icon" href="~/favicon.ico" />
-    @if (!string.IsNullOrEmpty(metaDescription)) { <meta name="description" content="@metaDescription" /> }
-    <meta property="og:title" content="@metaTitle" />
-    <meta property="og:site_name" content="@blogTitle" />
-    <meta property="og:type" content="@ogType" />
-    @if (!string.IsNullOrEmpty(metaDescription)) { <meta property="og:description" content="@metaDescription" /> }
-    @if (!string.IsNullOrEmpty(ogImage)) { <meta property="og:image" content="@ogImage" /> }
-    @if (!string.IsNullOrEmpty(canonicalUrl)) { <link rel="canonical" href="@canonicalUrl" /><meta property="og:url" content="@canonicalUrl" /> }
+    @await Html.PartialAsync("~/Areas/Blog/Themes/Shared/_BlogMeta.cshtml")
     <link rel="stylesheet" href="~/css/themes/default.css" asp-append-version="true" />
 </head>
 <body class="editorial-theme">
+    @{
+        Blogify.Web.Services.BlogBrandingAssets branding = await BrandingService.GetAssetsAsync();
+    }
     <header class="site-header">
         <div class="site-shell header-row">
-            <a asp-area="Blog" asp-page="/Index" class="site-title">@TenantContext.RequiredTenant.Title</a>
+            <a asp-area="Blog" asp-page="/Index" class="site-title site-brand">
+                @if (!string.IsNullOrWhiteSpace(branding.LogoUrl))
+                {
+                    <img src="@branding.LogoUrl" alt="" class="site-logo" />
+                }
+                <span>@TenantContext.RequiredTenant.Title</span>
+            </a>
             <a asp-area="Blog" asp-page="/Index" class="home-link">@Localizer["Blog.AllWriting"]</a>
         </div>
     </header>

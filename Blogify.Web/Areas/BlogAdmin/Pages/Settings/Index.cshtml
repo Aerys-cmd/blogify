@@ -1,84 +1,173 @@
 @page
 @model Blogify.Web.Areas.BlogAdmin.Pages.Settings.IndexModel
 @{
-    ViewData["Title"] = @Localizer["Page.Title.BlogAdmin.Settings"].Value;
+    ViewData["Title"] = Localizer["Page.Title.BlogAdmin.Settings"].Value;
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
 }
 
-<header class="b-page-header"><div><p class="b-page-context">Manage</p><h1>@Localizer["Page.Title.BlogAdmin.Settings"]</h1><p>Shape how your blog is described and discovered.</p></div></header>
-<nav class="b-settings-nav" aria-label="Settings sections">
+<header class="b-page-header">
+    <div>
+        <p class="b-page-context">@Localizer["Settings.General"]</p>
+        <h1>@Localizer["Page.Title.BlogAdmin.Settings"]</h1>
+        <p>@Localizer["Settings.Page.Description"]</p>
+    </div>
+</header>
+
+<nav class="b-settings-nav" aria-label="@Localizer["Settings.Nav.Aria"].Value">
     <strong>@Localizer["Settings.General"]</strong>
-    <a asp-area="BlogAdmin" asp-page="/Themes/Index" asp-route-blogSlug="@ViewContext.RouteData.Values["blogSlug"]">Appearance</a>
+    <a asp-area="BlogAdmin" asp-page="/Themes/Index" asp-route-blogSlug="@blogSlug">@Localizer["Nav.Appearance"]</a>
     <span>@Localizer["Label.Seo"]</span>
-    <a asp-area="BlogAdmin" asp-page="/Members/Index" asp-route-blogSlug="@ViewContext.RouteData.Values["blogSlug"]">Members</a>
+    <a asp-area="BlogAdmin" asp-page="/Members/Index" asp-route-blogSlug="@blogSlug">@Localizer["Nav.Members"]</a>
 </nav>
 
 @if (TempData["SuccessMessage"] is string success)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         @success
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="@Localizer["Action.Close"].Value"></button>
     </div>
 }
 
-<div class="b-settings-layout">
-        <section class="b-form-section">
-            <div><h2>@Localizer["Settings.PublicLanguage.Title"]</h2><p>@Localizer["Settings.PublicLanguage.Description"]</p></div>
+<form method="post" class="b-settings-layout" novalidate>
+    @if (!Model.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+    }
+
+    <section class="b-form-section">
+        <div>
+            <h2>@Localizer["Settings.PublicLanguage.Title"]</h2>
+            <p>@Localizer["Settings.PublicLanguage.Description"]</p>
+        </div>
+        <div>
+            <fieldset>
+                <legend class="form-label fw-semibold">@Localizer["Settings.PublicLanguage.Label"]</legend>
+                <div class="b-language-choice-list">
+                    <label class="b-language-choice">
+                        <input asp-for="Input.PublicLanguage" type="radio" value="tr" />
+                        <span><strong>Türkçe</strong><small>@Localizer["Settings.PublicLanguage.TurkishHelp"]</small></span>
+                    </label>
+                    <label class="b-language-choice">
+                        <input asp-for="Input.PublicLanguage" type="radio" value="en" />
+                        <span><strong>English</strong><small>@Localizer["Settings.PublicLanguage.EnglishHelp"]</small></span>
+                    </label>
+                </div>
+                <span asp-validation-for="Input.PublicLanguage" class="text-danger small"></span>
+            </fieldset>
+        </div>
+    </section>
+
+    <section class="b-form-section">
+        <div>
+            <h2>@Localizer["Settings.Branding.Title"]</h2>
+            <p>@Localizer["Settings.Branding.Description"]</p>
+        </div>
+        <div class="b-branding-grid">
             <div>
-                <form method="post" novalidate>
-                    @if (!Model.ModelState.IsValid)
-                    {
-                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
-                    }
-
-                    <fieldset>
-                        <legend class="form-label fw-semibold">@Localizer["Settings.PublicLanguage.Label"]</legend>
-                        <div class="b-language-choice-list">
-                            <label class="b-language-choice">
-                                <input asp-for="Input.PublicLanguage" type="radio" value="tr" />
-                                <span><strong>Türkçe</strong><small>@Localizer["Settings.PublicLanguage.TurkishHelp"]</small></span>
-                            </label>
-                            <label class="b-language-choice">
-                                <input asp-for="Input.PublicLanguage" type="radio" value="en" />
-                                <span><strong>English</strong><small>@Localizer["Settings.PublicLanguage.EnglishHelp"]</small></span>
-                            </label>
-                        </div>
-                        <span asp-validation-for="Input.PublicLanguage" class="text-danger small"></span>
-                    </fieldset>
-
-                    <input asp-for="Input.MetaDescription" type="hidden" />
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">@Localizer["Action.Save"]</button>
-                    </div>
-                </form>
+                <label class="form-label fw-semibold">@Localizer["Settings.Branding.Logo"]</label>
+                <partial name="_MediaPickerField"
+                         model="@(new MediaPickerFieldVm("logoMediaId", "Input.LogoMediaId", Model.Input.LogoMediaId, Model.LogoPreviewUrl, "logoMediaPickerModal", Localizer["Settings.Branding.Logo.Select"].Value, Localizer["Settings.Branding.Logo.Help"].Value, Localizer["Settings.Branding.Logo"].Value))" />
             </div>
-        </section>
-
-        <section class="b-form-section">
-            <div><h2>@Localizer["Label.Seo"]</h2><p>Set the summary people see in search results and link previews.</p></div>
             <div>
-                <form method="post" novalidate>
-                    @if (!Model.ModelState.IsValid)
-                    {
-                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
-                    }
-
-                    <input asp-for="Input.PublicLanguage" type="hidden" />
-                    <div class="mb-4">
-                        <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
-                        <textarea asp-for="Input.MetaDescription" class="form-control" rows="3"
-                                  placeholder="@Localizer["Label.MetaDescription.Blog.Placeholder"].Value"></textarea>
-                        <div class="form-text">@Localizer["Label.MetaDescription.Help.Blog"]</div>
-                        <span asp-validation-for="Input.MetaDescription" class="text-danger small"></span>
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">@Localizer["Action.Save"]</button>
-                    </div>
-                </form>
+                <label class="form-label fw-semibold">@Localizer["Settings.Branding.Favicon"]</label>
+                <partial name="_MediaPickerField"
+                         model="@(new MediaPickerFieldVm("faviconMediaId", "Input.FaviconMediaId", Model.Input.FaviconMediaId, Model.FaviconPreviewUrl, "faviconMediaPickerModal", Localizer["Settings.Branding.Favicon.Select"].Value, Localizer["Settings.Branding.Favicon.Help"].Value, Localizer["Settings.Branding.Favicon"].Value))" />
             </div>
-        </section>
-</div>
+            <div>
+                <label class="form-label fw-semibold">@Localizer["Settings.Branding.SocialImage"]</label>
+                <partial name="_MediaPickerField"
+                         model="@(new MediaPickerFieldVm("socialPreviewImageMediaId", "Input.SocialPreviewImageMediaId", Model.Input.SocialPreviewImageMediaId, Model.SocialPreviewImageUrl, "socialPreviewImageMediaPickerModal", Localizer["Settings.Branding.SocialImage.Select"].Value, Localizer["Settings.Branding.SocialImage.Help"].Value, Localizer["Settings.Branding.SocialImage"].Value))" />
+            </div>
+        </div>
+    </section>
+
+    <section class="b-form-section">
+        <div>
+            <h2>@Localizer["Label.Seo"]</h2>
+            <p>@Localizer["Settings.Seo.Description"]</p>
+        </div>
+        <div class="b-form-section-fields">
+            <div>
+                <div class="b-form-label-row">
+                    <label asp-for="Input.MetaTitle" class="form-label fw-semibold">@Localizer["Label.MetaTitle"]</label>
+                    <span class="b-character-count" id="metaTitleCount" aria-live="polite">0/60</span>
+                </div>
+                <input asp-for="Input.MetaTitle" class="form-control" id="metaTitleInput"
+                       placeholder="@Localizer["Label.MetaTitle.Blog.Placeholder"].Value" autocomplete="off" />
+                <div class="form-text">@Localizer["Label.MetaTitle.Help.Blog"]</div>
+                <span asp-validation-for="Input.MetaTitle" class="text-danger small"></span>
+            </div>
+
+            <div>
+                <div class="b-form-label-row">
+                    <label asp-for="Input.MetaDescription" class="form-label fw-semibold">@Localizer["Label.MetaDescription"]</label>
+                    <span class="b-character-count" id="metaDescriptionCount" aria-live="polite">0/160</span>
+                </div>
+                <textarea asp-for="Input.MetaDescription" class="form-control" id="metaDescriptionInput" rows="3"
+                          placeholder="@Localizer["Label.MetaDescription.Blog.Placeholder"].Value"></textarea>
+                <div class="form-text">@Localizer["Label.MetaDescription.Help.Blog"]</div>
+                <span asp-validation-for="Input.MetaDescription" class="text-danger small"></span>
+            </div>
+
+            <div class="b-serp-preview" aria-label="@Localizer["Settings.Seo.Preview.Aria"].Value">
+                <div class="b-serp-url">@($"{blogSlug}.blogify.com")</div>
+                <div class="b-serp-title" id="settingsSerpTitle">@(Model.Input.MetaTitle ?? Model.BlogTitle)</div>
+                <div class="b-serp-desc" id="settingsSerpDesc">@(Model.Input.MetaDescription ?? Localizer["Label.MetaDescription.Blog.Placeholder"].Value)</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="b-form-actions">
+        <button type="submit" class="btn btn-primary">@Localizer["Action.Save"]</button>
+    </div>
+</form>
+
+<partial name="_MediaPickerDialog"
+         model="@(new MediaPickerFieldVm("logoMediaId", "Input.LogoMediaId", Model.Input.LogoMediaId, Model.LogoPreviewUrl, "logoMediaPickerModal", Localizer["Settings.Branding.Logo.Select"].Value, null, Localizer["Settings.Branding.Logo"].Value))" />
+<partial name="_MediaPickerDialog"
+         model="@(new MediaPickerFieldVm("faviconMediaId", "Input.FaviconMediaId", Model.Input.FaviconMediaId, Model.FaviconPreviewUrl, "faviconMediaPickerModal", Localizer["Settings.Branding.Favicon.Select"].Value, null, Localizer["Settings.Branding.Favicon"].Value))" />
+<partial name="_MediaPickerDialog"
+         model="@(new MediaPickerFieldVm("socialPreviewImageMediaId", "Input.SocialPreviewImageMediaId", Model.Input.SocialPreviewImageMediaId, Model.SocialPreviewImageUrl, "socialPreviewImageMediaPickerModal", Localizer["Settings.Branding.SocialImage.Select"].Value, null, Localizer["Settings.Branding.SocialImage"].Value))" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            function bindCharacterCount(inputId, countId, maxLength) {
+                const input = document.getElementById(inputId);
+                const count = document.getElementById(countId);
+                if (!input || !count) { return; }
+
+                const update = function () {
+                    count.textContent = `${input.value.length}/${maxLength}`;
+                };
+
+                input.addEventListener('input', update);
+                update();
+            }
+
+            const titleInput = document.getElementById('metaTitleInput');
+            const descInput = document.getElementById('metaDescriptionInput');
+            const titlePreview = document.getElementById('settingsSerpTitle');
+            const descPreview = document.getElementById('settingsSerpDesc');
+            const fallbackTitle = @Json.Serialize(Model.BlogTitle);
+            const fallbackDescription = @Json.Serialize(Localizer["Label.MetaDescription.Blog.Placeholder"].Value);
+
+            function updatePreview() {
+                if (titlePreview && titleInput) {
+                    titlePreview.textContent = titleInput.value.trim() || fallbackTitle;
+                }
+
+                if (descPreview && descInput) {
+                    descPreview.textContent = descInput.value.trim() || fallbackDescription;
+                }
+            }
+
+            bindCharacterCount('metaTitleInput', 'metaTitleCount', 60);
+            bindCharacterCount('metaDescriptionInput', 'metaDescriptionCount', 160);
+            titleInput?.addEventListener('input', updatePreview);
+            descInput?.addEventListener('input', updatePreview);
+            updatePreview();
+        })();
+    </script>
 }

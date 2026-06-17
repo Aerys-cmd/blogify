@@ -1,8 +1,13 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 @inject Microsoft.Extensions.Options.IOptions<FeedbackHubOptions> FeedbackHubOptions
+@inject Blogify.Web.Services.TenantContext TenantContext
+@inject Blogify.Web.Services.BlogBrandingService BrandingService
 @{
     string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
     bool editorMode = ViewData["EditorMode"] as bool? == true;
+    Blogify.Web.Services.BlogBrandingAssets? branding = TenantContext.IsTenantResolved
+        ? await BrandingService.GetAssetsAsync()
+        : null;
 }
 <!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
@@ -48,7 +53,8 @@
                     </svg>
                 </button>
                 <a asp-area="BlogAdmin" asp-page="/Index" asp-route-blogSlug="@blogSlug" class="text-dark text-decoration-none fw-semibold">
-                    <img src="~/blogify-mark.svg" alt="" width="28" height="28" /> Blogify
+                    <img src="@(branding?.LogoUrl ?? Url.Content("~/blogify-mark.svg"))" alt="" width="28" height="28" class="ba-mobile-logo" />
+                    @(TenantContext.CurrentTenant?.Title ?? "Blogify")
                 </a>
                 <div class="ms-auto">
                     <partial name="_LanguageSwitcher" />

@@ -537,7 +537,8 @@ public sealed record MediaPickerFieldVm(
     string? CurrentThumbnailUrl,
     string ModalId,
     string? ModalTitle = null,
-    string? RecommendedDimensionsHint = null);
+    string? RecommendedDimensionsHint = null,
+    string? FieldLabel = null);
 
 public sealed record MediaPickerModalVm(
     string ModalId,

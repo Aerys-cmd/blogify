@@ -1,4 +1,7 @@
 @model Blogify.Web.Areas.BlogAdmin.Pages.Media.MediaPickerFieldVm
+@{
+    string fieldLabel = Model.FieldLabel ?? Localizer["Label.FeaturedImage"].Value;
+}
 
 <input type="hidden" id="@Model.InputId" name="@Model.InputName"
        value="@(Model.CurrentMediaId.HasValue ? Model.CurrentMediaId.Value.ToString() : string.Empty)" />
@@ -7,7 +10,7 @@
 {
     <div id="@(Model.InputId)-preview" class="mb-2">
         <div class="pe-featured-image-set position-relative">
-            <img src="@Model.CurrentThumbnailUrl" alt="@Localizer["Label.FeaturedImage"].Value"
+            <img src="@Model.CurrentThumbnailUrl" alt="@fieldLabel"
                  class="img-fluid rounded border w-100"
                  style="max-height: 160px; object-fit: cover;" />
             <div class="pe-featured-image-overlay">
@@ -27,7 +30,7 @@ else
 {
     <div id="@(Model.InputId)-preview" class="d-none mb-2">
         <div class="pe-featured-image-set position-relative">
-            <img src="" alt="@Localizer["Label.FeaturedImage"].Value"
+            <img src="" alt="@fieldLabel"
                  class="img-fluid rounded border w-100"
                  style="max-height: 160px; object-fit: cover;" />
             <div class="pe-featured-image-overlay">
@@ -52,7 +55,7 @@ else
             <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
             <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z"/>
         </svg>
-        <span class="d-block">@Localizer["Label.FeaturedImage"]</span>
+        <span class="d-block">@fieldLabel</span>
     </button>
 }
 

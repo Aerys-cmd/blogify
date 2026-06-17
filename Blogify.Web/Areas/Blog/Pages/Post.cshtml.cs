@@ -163,6 +163,7 @@ public sealed class PostModel(
             ?? "/Identity/Account/Login";
 
         ViewData["MetaTitle"] = post.MetaTitle ?? publishedRevision.Title;
+        ViewData["Title"] = publishedRevision.Title;
         ViewData["MetaDescription"] = post.MetaDescription ?? post.Excerpt;
         ViewData["OgImage"] = CoverImageUrl;
         ViewData["OgType"] = "article";

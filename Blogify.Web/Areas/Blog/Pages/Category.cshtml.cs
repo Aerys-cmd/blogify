@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blogify.Web.Areas.Blog.Pages;
 
-public sealed class CategoryModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class CategoryModel(ApplicationDbContext dbContext) : PageModel
 {
     public string CategoryName { get; private set; } = string.Empty;
     public string CategorySlug { get; private set; } = string.Empty;
@@ -28,8 +28,10 @@ public sealed class CategoryModel(ApplicationDbContext dbContext, TenantContext 
         CategoryName = category.Name;
         CategorySlug = category.Slug;
 
+        ViewData["Title"] = category.Name;
         ViewData["MetaTitle"] = category.MetaTitle ?? category.Name;
         ViewData["MetaDescription"] = category.MetaDescription;
+        ViewData["CanonicalUrl"] = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{Request.Path}";
 
         List<CategoryLinkViewModel> sidebarCategories = await dbContext.Categories
             .AsNoTracking()

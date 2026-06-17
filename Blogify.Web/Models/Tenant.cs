@@ -34,6 +34,10 @@ public sealed class Tenant
     public string OwnerId { get; private set; } = string.Empty;
     public string ActiveTheme { get; private set; } = "default";
     public string PublicLanguage { get; private set; } = "tr";
+    public Guid? LogoMediaId { get; private set; }
+    public Guid? FaviconMediaId { get; private set; }
+    public Guid? SocialPreviewImageMediaId { get; private set; }
+    public string? MetaTitle { get; private set; }
     public string? MetaDescription { get; private set; }
     public DateTimeOffset CreatedAt { get; private init; }
     public DateTimeOffset? DeletedAt { get; private set; }
@@ -114,8 +118,23 @@ public sealed class Tenant
         PublicLanguage = normalized;
     }
 
-    public void UpdateSeoMetadata(string? metaDescription)
+    public void UpdateSeoMetadata(string? metaTitle, string? metaDescription)
     {
+        if (metaTitle is not null)
+        {
+            string trimmedTitle = metaTitle.Trim();
+            if (trimmedTitle.Length > 60)
+            {
+                throw new ArgumentException("Meta title must not exceed 60 characters.", nameof(metaTitle));
+            }
+
+            MetaTitle = string.IsNullOrEmpty(trimmedTitle) ? null : trimmedTitle;
+        }
+        else
+        {
+            MetaTitle = null;
+        }
+
         if (metaDescription is not null)
         {
             string trimmed = metaDescription.Trim();
@@ -130,5 +149,12 @@ public sealed class Tenant
         {
             MetaDescription = null;
         }
+    }
+
+    public void UpdateBranding(Guid? logoMediaId, Guid? faviconMediaId, Guid? socialPreviewImageMediaId)
+    {
+        LogoMediaId = logoMediaId;
+        FaviconMediaId = faviconMediaId;
+        SocialPreviewImageMediaId = socialPreviewImageMediaId;
     }
 }

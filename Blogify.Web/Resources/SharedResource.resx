@@ -75,8 +75,10 @@
   <data name="Label.BlogMembership" xml:space="preserve"><value>Blog Membership</value></data>
   <data name="Label.MetaTitle" xml:space="preserve"><value>Meta Title</value></data>
   <data name="Label.MetaTitle.Placeholder" xml:space="preserve"><value>Custom SEO title (optional)…</value></data>
+  <data name="Label.MetaTitle.Blog.Placeholder" xml:space="preserve"><value>Custom blog SEO title (optional)…</value></data>
   <data name="Label.MetaTitle.Help.Post" xml:space="preserve"><value>Max 60 characters. Defaults to post title if left blank.</value></data>
   <data name="Label.MetaTitle.Help.Category" xml:space="preserve"><value>Max 60 characters. Defaults to category name if left blank.</value></data>
+  <data name="Label.MetaTitle.Help.Blog" xml:space="preserve"><value>Max 60 characters. Defaults to the blog title if left blank.</value></data>
   <data name="Label.MetaDescription" xml:space="preserve"><value>Meta Description</value></data>
   <data name="Label.MetaDescription.Placeholder" xml:space="preserve"><value>A short description for search engines (optional)…</value></data>
   <data name="Label.MetaDescription.Help.Post" xml:space="preserve"><value>Max 160 characters. Defaults to excerpt if left blank.</value></data>
@@ -490,11 +492,27 @@
   <data name="Action.Close" xml:space="preserve"><value>Close</value></data>
   <data name="Action.Remove" xml:space="preserve"><value>Remove</value></data>
   <data name="Settings.General" xml:space="preserve"><value>General</value></data>
+  <data name="Settings.Page.Description" xml:space="preserve"><value>Control how your blog appears to readers, browsers, and link previews.</value></data>
+  <data name="Settings.Nav.Aria" xml:space="preserve"><value>Settings sections</value></data>
   <data name="Settings.PublicLanguage.Title" xml:space="preserve"><value>Public blog language</value></data>
   <data name="Settings.PublicLanguage.Description" xml:space="preserve"><value>Choose the language readers see in navigation, dates, comments, and other theme interface text.</value></data>
   <data name="Settings.PublicLanguage.Label" xml:space="preserve"><value>Language</value></data>
   <data name="Settings.PublicLanguage.TurkishHelp" xml:space="preserve"><value>Show the public blog interface in Turkish.</value></data>
   <data name="Settings.PublicLanguage.EnglishHelp" xml:space="preserve"><value>Show the public blog interface in English.</value></data>
+  <data name="Settings.Branding.Title" xml:space="preserve"><value>Branding</value></data>
+  <data name="Settings.Branding.Description" xml:space="preserve"><value>Add the visual identity used in themes, admin navigation, browser tabs, and shared links.</value></data>
+  <data name="Settings.Branding.Logo" xml:space="preserve"><value>Logo</value></data>
+  <data name="Settings.Branding.Logo.Help" xml:space="preserve"><value>Recommended: a transparent PNG or WebP with a wide layout.</value></data>
+  <data name="Settings.Branding.Logo.Select" xml:space="preserve"><value>Select logo</value></data>
+  <data name="Settings.Branding.Favicon" xml:space="preserve"><value>Favicon</value></data>
+  <data name="Settings.Branding.Favicon.Help" xml:space="preserve"><value>Recommended: a square image that stays clear at small sizes.</value></data>
+  <data name="Settings.Branding.Favicon.Select" xml:space="preserve"><value>Select favicon</value></data>
+  <data name="Settings.Branding.SocialImage" xml:space="preserve"><value>Social preview image</value></data>
+  <data name="Settings.Branding.SocialImage.Help" xml:space="preserve"><value>Recommended: 1200×630 px for link previews.</value></data>
+  <data name="Settings.Branding.SocialImage.Select" xml:space="preserve"><value>Select social image</value></data>
+  <data name="Settings.Branding.InvalidMedia" xml:space="preserve"><value>Choose branding images from this blog's media library.</value></data>
+  <data name="Settings.Seo.Description" xml:space="preserve"><value>Set the default search result and sharing copy for your blog home page.</value></data>
+  <data name="Settings.Seo.Preview.Aria" xml:space="preserve"><value>Search result preview</value></data>
   <data name="Themes.Heading" xml:space="preserve"><value>Choose your reading experience</value></data>
   <data name="Themes.Description" xml:space="preserve"><value>Each theme gives the same writing a distinct rhythm. Change it any time.</value></data>
   <data name="Themes.Active" xml:space="preserve"><value>Active</value></data>

@@ -75,8 +75,10 @@
   <data name="Label.BlogMembership" xml:space="preserve"><value>Blog üyeliği</value></data>
   <data name="Label.MetaTitle" xml:space="preserve"><value>Meta Başlık</value></data>
   <data name="Label.MetaTitle.Placeholder" xml:space="preserve"><value>Özel SEO başlığı (isteğe bağlı)…</value></data>
+  <data name="Label.MetaTitle.Blog.Placeholder" xml:space="preserve"><value>Özel blog SEO başlığı (isteğe bağlı)…</value></data>
   <data name="Label.MetaTitle.Help.Post" xml:space="preserve"><value>Maksimum 60 karakter. Boş bırakılırsa yazı başlığı kullanılır.</value></data>
   <data name="Label.MetaTitle.Help.Category" xml:space="preserve"><value>Maksimum 60 karakter. Boş bırakılırsa kategori adı kullanılır.</value></data>
+  <data name="Label.MetaTitle.Help.Blog" xml:space="preserve"><value>Maksimum 60 karakter. Boş bırakılırsa blog başlığı kullanılır.</value></data>
   <data name="Label.MetaDescription" xml:space="preserve"><value>Meta Açıklama</value></data>
   <data name="Label.MetaDescription.Placeholder" xml:space="preserve"><value>Arama motorları için kısa bir açıklama (isteğe bağlı)…</value></data>
   <data name="Label.MetaDescription.Help.Post" xml:space="preserve"><value>Maksimum 160 karakter. Boş bırakılırsa özet kullanılır.</value></data>
@@ -491,11 +493,27 @@
   <data name="Action.Close" xml:space="preserve"><value>Kapat</value></data>
   <data name="Action.Remove" xml:space="preserve"><value>Kaldır</value></data>
   <data name="Settings.General" xml:space="preserve"><value>Genel</value></data>
+  <data name="Settings.Page.Description" xml:space="preserve"><value>Blogunuzun okurlara, tarayıcılara ve bağlantı önizlemelerine nasıl görüneceğini yönetin.</value></data>
+  <data name="Settings.Nav.Aria" xml:space="preserve"><value>Ayar bölümleri</value></data>
   <data name="Settings.PublicLanguage.Title" xml:space="preserve"><value>Herkese açık blog dili</value></data>
   <data name="Settings.PublicLanguage.Description" xml:space="preserve"><value>Okurların gezinme, tarihler, yorumlar ve diğer tema metinlerinde göreceği dili seçin.</value></data>
   <data name="Settings.PublicLanguage.Label" xml:space="preserve"><value>Dil</value></data>
   <data name="Settings.PublicLanguage.TurkishHelp" xml:space="preserve"><value>Herkese açık blog arayüzünü Türkçe gösterir.</value></data>
   <data name="Settings.PublicLanguage.EnglishHelp" xml:space="preserve"><value>Herkese açık blog arayüzünü İngilizce gösterir.</value></data>
+  <data name="Settings.Branding.Title" xml:space="preserve"><value>Marka kimliği</value></data>
+  <data name="Settings.Branding.Description" xml:space="preserve"><value>Temalarda, yönetim gezinmesinde, tarayıcı sekmelerinde ve paylaşılan bağlantılarda kullanılan görsel kimliği ekleyin.</value></data>
+  <data name="Settings.Branding.Logo" xml:space="preserve"><value>Logo</value></data>
+  <data name="Settings.Branding.Logo.Help" xml:space="preserve"><value>Önerilen: geniş yerleşimli, şeffaf PNG veya WebP.</value></data>
+  <data name="Settings.Branding.Logo.Select" xml:space="preserve"><value>Logo seç</value></data>
+  <data name="Settings.Branding.Favicon" xml:space="preserve"><value>Favicon</value></data>
+  <data name="Settings.Branding.Favicon.Help" xml:space="preserve"><value>Önerilen: küçük boyutlarda da net kalan kare bir görsel.</value></data>
+  <data name="Settings.Branding.Favicon.Select" xml:space="preserve"><value>Favicon seç</value></data>
+  <data name="Settings.Branding.SocialImage" xml:space="preserve"><value>Sosyal önizleme görseli</value></data>
+  <data name="Settings.Branding.SocialImage.Help" xml:space="preserve"><value>Önerilen: bağlantı önizlemeleri için 1200×630 piksel.</value></data>
+  <data name="Settings.Branding.SocialImage.Select" xml:space="preserve"><value>Sosyal görsel seç</value></data>
+  <data name="Settings.Branding.InvalidMedia" xml:space="preserve"><value>Marka görsellerini bu blogun medya kütüphanesinden seçin.</value></data>
+  <data name="Settings.Seo.Description" xml:space="preserve"><value>Blog ana sayfanız için varsayılan arama sonucu ve paylaşım metnini ayarlayın.</value></data>
+  <data name="Settings.Seo.Preview.Aria" xml:space="preserve"><value>Arama sonucu önizlemesi</value></data>
   <data name="Themes.Heading" xml:space="preserve"><value>Okuma deneyiminizi seçin</value></data>
   <data name="Themes.Description" xml:space="preserve"><value>Her tema aynı yazılara farklı bir ritim kazandırır. İstediğiniz zaman değiştirebilirsiniz.</value></data>
   <data name="Themes.Active" xml:space="preserve"><value>Etkin</value></data>

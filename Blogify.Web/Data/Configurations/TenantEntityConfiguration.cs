@@ -40,8 +40,35 @@ public sealed class TenantEntityConfiguration : IEntityTypeConfiguration<Tenant>
             .HasMaxLength(2)
             .HasDefaultValue("tr");
 
+        builder.Property(t => t.LogoMediaId);
+
+        builder.Property(t => t.FaviconMediaId);
+
+        builder.Property(t => t.SocialPreviewImageMediaId);
+
+        builder.Property(t => t.MetaTitle)
+            .HasMaxLength(60);
+
         builder.Property(t => t.MetaDescription)
             .HasMaxLength(160);
+
+        builder.HasOne<Media>()
+            .WithMany()
+            .HasForeignKey(t => t.LogoMediaId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        builder.HasOne<Media>()
+            .WithMany()
+            .HasForeignKey(t => t.FaviconMediaId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        builder.HasOne<Media>()
+            .WithMany()
+            .HasForeignKey(t => t.SocialPreviewImageMediaId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
 
         builder.HasIndex(t => t.Subdomain).IsUnique();
 

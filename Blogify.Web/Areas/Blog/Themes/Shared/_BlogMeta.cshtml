@@ -1,0 +1,73 @@
+@inject Blogify.Web.Services.TenantContext TenantContext
+@inject Blogify.Web.Services.BlogBrandingService BrandingService
+@{
+    Blogify.Web.Models.Tenant tenant = TenantContext.RequiredTenant;
+    BlogBrandingAssets branding = await BrandingService.GetAssetsAsync();
+    string blogTitle = tenant.Title;
+    string pageTitle = ViewData["Title"] as string ?? blogTitle;
+    string metaTitle = ViewData["MetaTitle"] as string ?? (string.Equals(pageTitle, blogTitle, StringComparison.Ordinal) ? tenant.MetaTitle ?? blogTitle : pageTitle);
+    string browserTitle = string.Equals(pageTitle, blogTitle, StringComparison.Ordinal)
+        ? metaTitle
+        : $"{metaTitle} - {blogTitle}";
+    string? metaDescription = ViewData["MetaDescription"] as string ?? tenant.MetaDescription;
+    string? ogImage = ViewData["OgImage"] as string ?? branding.SocialPreviewImageUrl;
+    string ogType = ViewData["OgType"] as string ?? "website";
+    string canonicalUrl = ViewData["CanonicalUrl"] as string ?? $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}{Context.Request.Path}";
+    string? absoluteOgImage = AbsoluteUrl(ogImage);
+    string twitterCard = string.IsNullOrWhiteSpace(absoluteOgImage) ? "summary" : "summary_large_image";
+}
+<title>@browserTitle</title>
+@if (!string.IsNullOrWhiteSpace(branding.FaviconUrl))
+{
+    <link rel="icon" href="@branding.FaviconUrl" />
+}
+else
+{
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
+    <link rel="alternate icon" href="~/favicon.ico" />
+}
+@if (!string.IsNullOrWhiteSpace(metaDescription))
+{
+    <meta name="description" content="@metaDescription" />
+}
+<link rel="canonical" href="@canonicalUrl" />
+<meta property="og:title" content="@metaTitle" />
+<meta property="og:site_name" content="@blogTitle" />
+<meta property="og:type" content="@ogType" />
+<meta property="og:url" content="@canonicalUrl" />
+@if (!string.IsNullOrWhiteSpace(metaDescription))
+{
+    <meta property="og:description" content="@metaDescription" />
+}
+@if (!string.IsNullOrWhiteSpace(absoluteOgImage))
+{
+    <meta property="og:image" content="@absoluteOgImage" />
+}
+<meta name="twitter:card" content="@twitterCard" />
+<meta name="twitter:title" content="@metaTitle" />
+@if (!string.IsNullOrWhiteSpace(metaDescription))
+{
+    <meta name="twitter:description" content="@metaDescription" />
+}
+@if (!string.IsNullOrWhiteSpace(absoluteOgImage))
+{
+    <meta name="twitter:image" content="@absoluteOgImage" />
+}
+
+@functions {
+    private string? AbsoluteUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return null;
+        }
+
+        if (Uri.TryCreate(url, UriKind.Absolute, out Uri? absolute))
+        {
+            return absolute.ToString();
+        }
+
+        string path = url.StartsWith('/') ? url : "/" + url;
+        return $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}{path}";
+    }
+}

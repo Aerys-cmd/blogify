@@ -3,6 +3,7 @@
 @using System.Security.Claims
 @inject SignInManager<ApplicationUser> SignInManager
 @inject Blogify.Web.Services.TenantContext TenantCtx
+@inject Blogify.Web.Services.BlogBrandingService BrandingService
 @inject Blogify.Web.Services.IBlogPermissionService PermissionService
 @inject Blogify.Web.Services.IAccessibleBlogService AccessibleBlogService
 @{
@@ -15,6 +16,7 @@
         ? []
         : await AccessibleBlogService.GetForUserAsync(userId, Context.Request.Scheme, Context.Request.Host);
     Blogify.Web.Services.AccessibleBlog? currentBlog = blogs.FirstOrDefault(blog => blog.Subdomain == blogSlug);
+    Blogify.Web.Services.BlogBrandingAssets branding = await BrandingService.GetAssetsAsync();
     string Active(string prefix) => page?.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) == true ? "ba-nav-active" : "";
     string? Current(string prefix) => page?.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) == true ? "page" : null;
 }
@@ -22,7 +24,7 @@
     <div class="ba-sidebar-inner d-flex flex-column">
         <div class="ba-blog-switcher dropdown">
             <button class="ba-blog-switcher-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="adminSidebarLabel">
-                <img src="~/blogify-mark.svg" alt="" width="30" height="30" />
+                <img src="@(branding.LogoUrl ?? Url.Content("~/blogify-mark.svg"))" alt="" width="30" height="30" class="ba-blog-switcher-logo" />
                 <span><small>@Localizer["Sidebar.CurrentBlog"]</small><strong>@blogTitle</strong></span>
             </button>
             <button type="button" class="btn-close d-lg-none" data-bs-dismiss="offcanvas" aria-label="@Localizer["Aria.CloseNavigation"].Value"></button>

@@ -18,8 +18,11 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
         Tenant tenant = tenantContext.RequiredTenant;
         BlogTitle = tenant.Title;
 
+        ViewData["Title"] = tenant.Title;
+        ViewData["MetaTitle"] = tenant.MetaTitle ?? tenant.Title;
         ViewData["MetaDescription"] = tenant.MetaDescription;
         ViewData["OgType"] = "website";
+        ViewData["CanonicalUrl"] = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{Request.Path}";
 
         List<CategoryLinkViewModel> sidebarCategories = await dbContext.Categories
             .AsNoTracking()
@@ -107,4 +110,3 @@ public sealed record PostCardViewModel(
 public sealed record CategoryLinkViewModel(string Name, string Slug);
 
 public sealed record BlogSidebarViewModel(IReadOnlyList<CategoryLinkViewModel> Categories);
-
