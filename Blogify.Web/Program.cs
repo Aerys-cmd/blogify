@@ -1,3 +1,5 @@
+using Amazon.Runtime;
+using Amazon.S3;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -37,7 +39,7 @@ builder.Services.AddScoped<TenantContext>();
 builder.Services.AddScoped<DatabaseMigrator>();
 builder.Services.AddScoped<DatabaseSeeder>();
 StorageOptions storageOptions = builder.Configuration.GetSection("Storage").Get<StorageOptions>() ?? new StorageOptions();
-builder.Services.AddSingleton(storageOptions);
+builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection("Storage"));
 builder.Services.AddSingleton<ImageStorageProcessor>();
 
 bool useR2Storage =
@@ -61,6 +63,20 @@ if (hasAnyR2Settings && !useR2Storage)
 
 if (useR2Storage)
 {
+    builder.Services.AddSingleton<IAmazonS3>(_ =>
+    {
+        StorageOptions.R2Options r2Options = storageOptions.R2;
+        BasicAWSCredentials credentials = new(
+            r2Options.AccessKeyId!,
+            r2Options.SecretAccessKey!);
+
+        return new AmazonS3Client(credentials, new AmazonS3Config
+        {
+            ServiceURL = $"https://{r2Options.AccountId}.r2.cloudflarestorage.com",
+            AuthenticationRegion = "auto",
+            ForcePathStyle = true
+        });
+    });
     builder.Services.AddHttpClient<IFileStorageService, R2FileStorageService>();
 }
 else
