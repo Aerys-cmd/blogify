@@ -229,12 +229,69 @@
                             <div class="pe-category-pills mb-2" id="categoryPills"
                                  aria-live="polite"
                                  aria-label="@Localizer["Nav.Categories"].Value"></div>
-                            <div class="pe-category-search-wrap">
+                            <div class="pe-category-search-wrap" data-taxonomy-picker
+                                 data-checkboxes="categoryCheckboxes"
+                                 data-pills="categoryPills"
+                                 data-search="categorySearch"
+                                 data-dropdown="categoryDropdown"
+                                 data-badge="categoriesBadge">
                                 <input type="text" class="form-control form-control-sm"
                                        id="categorySearch" autocomplete="off"
                                        placeholder="@Localizer["Label.Categories.Search"].Value"
                                        aria-label="@Localizer["Label.Categories.Search"].Value" />
                                 <div id="categoryDropdown" class="pe-category-dropdown" role="listbox"></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="pe-settings-section">
+                    <button type="button" class="pe-settings-toggle"
+                            data-bs-toggle="collapse" data-bs-target="#tagsCollapse"
+                            aria-expanded="true" aria-controls="tagsCollapse">
+                        @Localizer["Nav.Tags"]
+                        <span class="badge bg-secondary ms-1" id="tagsBadge"
+                              aria-live="polite"
+                              style="@(Model.AvailableTags.Count(t => t.IsSelected) == 0 ? "display:none" : "")">
+                            @Model.AvailableTags.Count(t => t.IsSelected)
+                        </span>
+                        <span class="pe-toggle-icon" aria-hidden="true">&#9660;</span>
+                    </button>
+                    <div id="tagsCollapse" class="collapse show pe-settings-body">
+                        @if (Model.AvailableTags.Count == 0)
+                        {
+                            <p class="text-muted small mb-0">
+                                @Localizer["Label.Tags.None"]
+                                <a asp-area="BlogAdmin" asp-page="/Tags/Create" asp-route-blogSlug="@blogSlug">@Localizer["Label.Tags.Create"]</a>.
+                            </p>
+                        }
+                        else
+                        {
+                            <div aria-hidden="true" style="display:none" id="tagCheckboxes">
+                                @foreach (TagSelectItem tag in Model.AvailableTags)
+                                {
+                                    <div>
+                                        <input type="checkbox" name="SelectedTagIds"
+                                               value="@tag.Id" id="tag_@tag.Id"
+                                               @(tag.IsSelected ? "checked" : "") />
+                                        <label for="tag_@tag.Id">@tag.Name</label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="pe-category-pills mb-2" id="tagPills"
+                                 aria-live="polite"
+                                 aria-label="@Localizer["Nav.Tags"].Value"></div>
+                            <div class="pe-category-search-wrap" data-taxonomy-picker
+                                 data-checkboxes="tagCheckboxes"
+                                 data-pills="tagPills"
+                                 data-search="tagSearch"
+                                 data-dropdown="tagDropdown"
+                                 data-badge="tagsBadge">
+                                <input type="text" class="form-control form-control-sm"
+                                       id="tagSearch" autocomplete="off"
+                                       placeholder="@Localizer["Label.Tags.Search"].Value"
+                                       aria-label="@Localizer["Label.Tags.Search"].Value" />
+                                <div id="tagDropdown" class="pe-category-dropdown" role="listbox"></div>
                             </div>
                         }
                     </div>

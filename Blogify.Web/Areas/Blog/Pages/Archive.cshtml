@@ -1,0 +1,10 @@
+@page "/archive/{year:int}/{month:int}"
+@model Blogify.Web.Areas.Blog.Pages.ArchiveModel
+@{
+    ViewData["Title"] = Localizer["Blog.ArchiveHeading", Model.MonthStart.ToString("MMMM yyyy")].Value;
+}
+@await Html.PartialAsync("_Archive", Model)
+
+@section Sidebar {
+    @await Html.PartialAsync("_Sidebar", Model.Sidebar)
+}

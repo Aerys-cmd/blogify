@@ -1,0 +1,25 @@
+@page "/categories"
+@model Blogify.Web.Areas.Blog.Pages.CategoriesModel
+@{
+    ViewData["Title"] = Localizer["Blog.Categories"].Value;
+}
+<header class="blog-list-header">
+    <h1>@Localizer["Blog.Categories"]</h1>
+</header>
+@if (Model.Categories.Count == 0)
+{
+    <div class="empty-state">@Localizer["Blog.NoCategories"]</div>
+}
+else
+{
+    <nav class="topic-links" aria-label="@Localizer["Blog.Categories"].Value">
+        @foreach (CategoryLinkViewModel category in Model.Categories)
+        {
+            <a asp-area="Blog" asp-page="/Category" asp-route-slug="@category.Slug">@category.Name</a>
+        }
+    </nav>
+}
+
+@section Sidebar {
+    @await Html.PartialAsync("_Sidebar", Model.Sidebar)
+}

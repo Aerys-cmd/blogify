@@ -477,6 +477,31 @@
   <data name="Categories.Form.SlugPlaceholder" xml:space="preserve"><value>field-notes</value></data>
   <data name="Categories.Form.SlugHelpCreate" xml:space="preserve"><value>Generated from the name until you edit it. Use lowercase letters, numbers, and hyphens.</value></data>
   <data name="Categories.Form.SlugHelpEdit" xml:space="preserve"><value>Use lowercase letters, numbers, and hyphens. Changing this may break existing links.</value></data>
+  <data name="Page.Title.BlogAdmin.Tags" xml:space="preserve"><value>Tags</value></data>
+  <data name="Page.Title.BlogAdmin.NewTag" xml:space="preserve"><value>New Tag</value></data>
+  <data name="Page.Title.BlogAdmin.EditTag" xml:space="preserve"><value>Edit Tag</value></data>
+  <data name="Nav.Tags" xml:space="preserve"><value>Tags</value></data>
+  <data name="Label.Tags.None" xml:space="preserve"><value>No tags yet.</value></data>
+  <data name="Label.Tags.Create" xml:space="preserve"><value>Create one</value></data>
+  <data name="Label.Tags.Search" xml:space="preserve"><value>Search tags…</value></data>
+  <data name="Message.TagSlugTaken" xml:space="preserve"><value>A tag with this slug already exists for this blog.</value></data>
+  <data name="Message.TagNameTaken" xml:space="preserve"><value>A tag with this name already exists for this blog.</value></data>
+  <data name="Tags.Count" xml:space="preserve"><value>{0} · {1} tags</value></data>
+  <data name="Tags.New" xml:space="preserve"><value>New tag</value></data>
+  <data name="Tags.Empty.Title" xml:space="preserve"><value>Add your first tag</value></data>
+  <data name="Tags.Empty.Copy" xml:space="preserve"><value>Tags give readers a lighter way to discover related writing across categories.</value></data>
+  <data name="Tags.Empty.Action" xml:space="preserve"><value>Create your first tag</value></data>
+  <data name="Tags.DeleteConfirm" xml:space="preserve"><value>Delete '{0}'? This cannot be undone.</value></data>
+  <data name="Tags.Back" xml:space="preserve"><value>Back to tags</value></data>
+  <data name="Tags.Form.CreateDescription" xml:space="preserve"><value>Create a short discovery label for posts that share a theme.</value></data>
+  <data name="Tags.Form.EditDescription" xml:space="preserve"><value>Refine how this tag appears to readers.</value></data>
+  <data name="Tags.Form.DetailsTitle" xml:space="preserve"><value>Tag details</value></data>
+  <data name="Tags.Form.DetailsDescription" xml:space="preserve"><value>Name the tag and choose the address used in links.</value></data>
+  <data name="Tags.Form.NamePlaceholder" xml:space="preserve"><value>For example, Research</value></data>
+  <data name="Tags.Form.NameHelp" xml:space="preserve"><value>Use a short label that can apply across categories.</value></data>
+  <data name="Tags.Form.SlugPlaceholder" xml:space="preserve"><value>research</value></data>
+  <data name="Tags.Form.SlugHelpCreate" xml:space="preserve"><value>Generated from the name until you edit it. Use lowercase letters, numbers, and hyphens.</value></data>
+  <data name="Tags.Form.SlugHelpEdit" xml:space="preserve"><value>Use lowercase letters, numbers, and hyphens. Changing this may break existing links.</value></data>
   <data name="Action.Confirm" xml:space="preserve"><value>Confirm</value></data>
   <data name="Dialog.Confirm.Title" xml:space="preserve"><value>Confirm action</value></data>
   <data name="Dashboard.Leave" xml:space="preserve"><value>Leave</value></data>
@@ -532,8 +557,21 @@
   <data name="Blog.CategoryHeading" xml:space="preserve"><value>Writing filed under “{0}”</value></data>
   <data name="Blog.Categories" xml:space="preserve"><value>Explore topics</value></data>
   <data name="Blog.NoCategories" xml:space="preserve"><value>No topics have been added yet.</value></data>
+  <data name="Blog.Tags" xml:space="preserve"><value>Explore tags</value></data>
+  <data name="Blog.NoTags" xml:space="preserve"><value>No tags have been added yet.</value></data>
+  <data name="Blog.Discover" xml:space="preserve"><value>Discover</value></data>
+  <data name="Blog.Search" xml:space="preserve"><value>Search</value></data>
+  <data name="Blog.SearchPlaceholder" xml:space="preserve"><value>Search published posts…</value></data>
+  <data name="Blog.NoSearchResults" xml:space="preserve"><value>No matching stories were found.</value></data>
+  <data name="Blog.Archives" xml:space="preserve"><value>Archives</value></data>
+  <data name="Blog.Pagination" xml:space="preserve"><value>Post pagination</value></data>
+  <data name="Blog.Previous" xml:space="preserve"><value>Previous</value></data>
+  <data name="Blog.Next" xml:space="preserve"><value>Next</value></data>
+  <data name="Blog.TagHeading" xml:space="preserve"><value>Writing tagged “{0}”</value></data>
+  <data name="Blog.ArchiveHeading" xml:space="preserve"><value>Writing from {0}</value></data>
   <data name="Blog.NoPosts" xml:space="preserve"><value>No stories have been published yet.</value></data>
   <data name="Blog.NoCategoryPosts" xml:space="preserve"><value>No stories have been published in this topic yet.</value></data>
+  <data name="Blog.NoTagPosts" xml:space="preserve"><value>No stories have been published with this tag yet.</value></data>
   <data name="Blog.BackToPosts" xml:space="preserve"><value>Back to all writing</value></data>
   <data name="Blog.Comments" xml:space="preserve"><value>Comments ({0})</value></data>
   <data name="Blog.Reply" xml:space="preserve"><value>Reply</value></data>

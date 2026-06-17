@@ -11,6 +11,7 @@ else
             @if (lead.CoverImageUrl is not null) { <img src="@lead.CoverImageUrl" alt="" /> } else { <span aria-hidden="true">@lead.Title.Substring(0, 1).ToUpperInvariant()</span> }
         </a>
         <div><p class="magazine-kicker">@Localizer["Blog.LatestWriting"]</p><h1><a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug">@lead.Title</a></h1>
+        @if (lead.Categories.Count > 0 || lead.Tags.Count > 0) { <div class="topic-links">@foreach (CategoryLinkViewModel cat in lead.Categories) { <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a> }@foreach (TagLinkViewModel tag in lead.Tags) { <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a> }</div> }
         @if (lead.Excerpt is not null) { <p class="magazine-deck">@lead.Excerpt</p> }
         <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="magazine-read">@Localizer["Blog.ReadStory"] →</a></div>
     </section>
@@ -24,9 +25,11 @@ else
                     @if (post.CoverImageUrl is not null) { <img src="@post.CoverImageUrl" alt="" loading="lazy" /> } else { <span aria-hidden="true">@post.Title.Substring(0, 1).ToUpperInvariant()</span> }
                 </a>
                 <time>@post.PublishedAt.ToString("D")</time><h3><a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug">@post.Title</a></h3>
+                @if (post.Categories.Count > 0 || post.Tags.Count > 0) { <div class="topic-links">@foreach (CategoryLinkViewModel cat in post.Categories) { <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a> }@foreach (TagLinkViewModel tag in post.Tags) { <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a> }</div> }
                 @if (post.Excerpt is not null) { <p>@post.Excerpt</p> }
             </article>
         }
         </div></section>
     }
+    await Html.RenderPartialAsync("_Pagination", Model.Pagination);
 }

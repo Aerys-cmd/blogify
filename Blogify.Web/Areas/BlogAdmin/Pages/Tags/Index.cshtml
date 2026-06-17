@@ -1,0 +1,64 @@
+@page
+@model Blogify.Web.Areas.BlogAdmin.Pages.Tags.IndexModel
+@{
+    ViewData["Title"] = Localizer["Page.Title.BlogAdmin.Tags"].Value;
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">@Localizer["Page.Title.BlogAdmin.Tags"]</h1>
+        <p class="text-muted mb-0">@Localizer["Tags.Count", Model.TenantTitle, Model.Tags.Count]</p>
+    </div>
+    <a asp-area="BlogAdmin" asp-page="/Tags/Create" asp-route-blogSlug="@blogSlug" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+        </svg>
+        @Localizer["Tags.New"]
+    </a>
+</div>
+
+@if (Model.Tags.Count == 0)
+{
+    <div class="b-empty-state">
+        <h2>@Localizer["Tags.Empty.Title"]</h2>
+        <p>@Localizer["Tags.Empty.Copy"]</p>
+        <a class="btn btn-primary" asp-area="BlogAdmin" asp-page="/Tags/Create" asp-route-blogSlug="@blogSlug">@Localizer["Tags.Empty.Action"]</a>
+    </div>
+}
+else
+{
+    <div class="b-data-list">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Localizer["Label.Name"]</th>
+                        <th>@Localizer["Label.Slug"]</th>
+                        <th class="text-end">@Localizer["Label.Actions"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <tr>
+                            <td class="align-middle fw-semibold">@tag.Name</td>
+                            <td class="align-middle text-muted font-monospace small">@tag.Slug</td>
+                            <td class="align-middle text-end">
+                                <a asp-area="BlogAdmin" asp-page="/Tags/Edit"
+                                   asp-route-blogSlug="@blogSlug"
+                                   asp-route-id="@tag.Id"
+                                   class="btn btn-sm btn-outline-secondary me-1">@Localizer["Action.Edit"]</a>
+                                <form method="post" asp-page-handler="Delete" asp-route-blogSlug="@blogSlug" class="d-inline"
+                                      data-confirm-message="@Localizer["Tags.DeleteConfirm", tag.Name].Value">
+                                    <input type="hidden" name="id" value="@tag.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">@Localizer["Action.Delete"]</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

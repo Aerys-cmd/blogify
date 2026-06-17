@@ -1,0 +1,25 @@
+@page "/tags"
+@model Blogify.Web.Areas.Blog.Pages.TagsModel
+@{
+    ViewData["Title"] = Localizer["Blog.Tags"].Value;
+}
+<header class="blog-list-header">
+    <h1>@Localizer["Blog.Tags"]</h1>
+</header>
+@if (Model.Tags.Count == 0)
+{
+    <div class="empty-state">@Localizer["Blog.NoTags"]</div>
+}
+else
+{
+    <nav class="topic-links" aria-label="@Localizer["Blog.Tags"].Value">
+        @foreach (TagLinkViewModel tag in Model.Tags)
+        {
+            <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a>
+        }
+    </nav>
+}
+
+@section Sidebar {
+    @await Html.PartialAsync("_Sidebar", Model.Sidebar)
+}

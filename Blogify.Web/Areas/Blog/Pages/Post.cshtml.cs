@@ -23,8 +23,9 @@ public sealed class PostModel(
     public string? CoverImageUrl { get; private set; }
     public DateTimeOffset PublishedAt { get; private set; }
     public IReadOnlyList<CategoryLinkViewModel> CategoryItems { get; private set; } = [];
+    public IReadOnlyList<TagLinkViewModel> TagItems { get; private set; } = [];
     public string AuthorId { get; private set; } = string.Empty;
-    public BlogSidebarViewModel Sidebar { get; private set; } = new([]);
+    public BlogSidebarViewModel Sidebar { get; private set; } = new([], []);
     public IReadOnlyList<CommentViewModel> Comments { get; private set; } = [];
     public bool IsAuthenticated { get; private set; }
     public string LoginUrl { get; private set; } = string.Empty;
@@ -127,13 +128,14 @@ public sealed class PostModel(
             select new CategoryLinkViewModel(c.Name, c.Slug)
         ).ToListAsync(ct);
 
-        List<CategoryLinkViewModel> sidebarCategories = await dbContext.Categories
-            .AsNoTracking()
-            .OrderBy(c => c.Name)
-            .Select(c => new CategoryLinkViewModel(c.Name, c.Slug))
-            .ToListAsync(ct);
+        TagItems = await (
+            from pt in dbContext.PostTags.AsNoTracking()
+            where pt.PostId == post.Id
+            join t in dbContext.Tags.AsNoTracking() on pt.TagId equals t.Id
+            select new TagLinkViewModel(t.Name, t.Slug)
+        ).ToListAsync(ct);
 
-        Sidebar = new BlogSidebarViewModel(sidebarCategories);
+        Sidebar = await BlogPostListLoader.LoadSidebarAsync(dbContext, ct);
 
         List<Comment> allComments = await dbContext.Comments
             .AsNoTracking()

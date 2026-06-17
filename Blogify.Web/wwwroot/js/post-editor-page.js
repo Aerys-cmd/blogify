@@ -168,30 +168,32 @@
     counter('metaTitleInput', 'metaTitleCount', 60);
     counter('metaDescInput', 'metaDescCount', 160);
 
-    var checkboxHost = document.getElementById('categoryCheckboxes');
-    var pills = document.getElementById('categoryPills');
-    var search = document.getElementById('categorySearch');
-    var dropdown = document.getElementById('categoryDropdown');
-    var badge = document.getElementById('categoriesBadge');
-    if (checkboxHost && pills && search && dropdown) {
-        function categories() {
+    document.querySelectorAll('[data-taxonomy-picker]').forEach(function (picker) {
+        var checkboxHost = document.getElementById(picker.dataset.checkboxes || '');
+        var pills = document.getElementById(picker.dataset.pills || '');
+        var search = document.getElementById(picker.dataset.search || '');
+        var dropdown = document.getElementById(picker.dataset.dropdown || '');
+        var badge = document.getElementById(picker.dataset.badge || '');
+        if (!checkboxHost || !pills || !search || !dropdown) return;
+
+        function items() {
             return Array.from(checkboxHost.querySelectorAll('input[type="checkbox"]')).map(function (checkbox) {
                 return { checkbox: checkbox, name: checkboxHost.querySelector('label[for="' + checkbox.id + '"]')?.textContent.trim() || checkbox.value };
             });
         }
         function renderPills() {
             pills.innerHTML = '';
-            var selected = categories().filter(function (category) { return category.checkbox.checked; });
-            selected.forEach(function (category) {
+            var selected = items().filter(function (item) { return item.checkbox.checked; });
+            selected.forEach(function (item) {
                 var pill = document.createElement('span');
                 pill.className = 'pe-category-pill';
-                pill.append(document.createTextNode(category.name + ' '));
+                pill.append(document.createTextNode(item.name + ' '));
                 var remove = document.createElement('button');
                 remove.type = 'button';
                 remove.className = 'pe-category-pill-remove';
-                remove.setAttribute('aria-label', (form.dataset.removeLabel || 'Remove') + ' ' + category.name);
+                remove.setAttribute('aria-label', (form.dataset.removeLabel || 'Remove') + ' ' + item.name);
                 remove.textContent = '\u00d7';
-                remove.addEventListener('click', function () { category.checkbox.checked = false; renderPills(); renderOptions(''); markUnsaved(); });
+                remove.addEventListener('click', function () { item.checkbox.checked = false; renderPills(); renderOptions(''); markUnsaved(); });
                 pill.append(remove);
                 pills.append(pill);
             });
@@ -202,15 +204,15 @@
         }
         function renderOptions(query) {
             dropdown.innerHTML = '';
-            categories().filter(function (category) {
-                return !category.checkbox.checked && category.name.toLowerCase().includes(query.toLowerCase());
-            }).forEach(function (category) {
+            items().filter(function (item) {
+                return !item.checkbox.checked && item.name.toLowerCase().includes(query.toLowerCase());
+            }).forEach(function (item) {
                 var option = document.createElement('button');
                 option.type = 'button';
                 option.className = 'pe-category-option';
                 option.setAttribute('role', 'option');
-                option.textContent = category.name;
-                option.addEventListener('click', function () { category.checkbox.checked = true; search.value = ''; dropdown.classList.remove('show'); renderPills(); markUnsaved(); });
+                option.textContent = item.name;
+                option.addEventListener('click', function () { item.checkbox.checked = true; search.value = ''; dropdown.classList.remove('show'); renderPills(); markUnsaved(); });
                 dropdown.append(option);
             });
             dropdown.classList.toggle('show', dropdown.childElementCount > 0);
@@ -221,10 +223,10 @@
             if (event.key === 'Enter') { event.preventDefault(); dropdown.querySelector('button')?.click(); }
         });
         document.addEventListener('click', function (event) {
-            if (!event.target.closest('.pe-category-search-wrap')) dropdown.classList.remove('show');
+            if (!picker.contains(event.target)) dropdown.classList.remove('show');
         });
         renderPills();
-    }
+    });
 
     form.addEventListener('input', markUnsaved);
     form.addEventListener('change', markUnsaved);

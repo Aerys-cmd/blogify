@@ -4,7 +4,7 @@
         <a asp-area="Blog" asp-page="/Index" class="back-link">← @Localizer["Blog.BackToPosts"]</a>
         <h1>@Model.PostTitle</h1>
         <p class="date-line">@Localizer["Blog.Published", Model.PublishedAt.ToString("D")]</p>
-        @if(Model.CategoryItems.Count>0){<div class="topic-links">@foreach(CategoryLinkViewModel cat in Model.CategoryItems){<a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a>}</div>}
+        @if(Model.CategoryItems.Count>0||Model.TagItems.Count>0){<div class="topic-links">@foreach(CategoryLinkViewModel cat in Model.CategoryItems){<a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a>}@foreach(TagLinkViewModel tag in Model.TagItems){<a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a>}</div>}
     </header>
     @if(Model.CoverImageUrl is not null){<img src="@Model.CoverImageUrl" class="article-cover" alt="" />}
     <div class="prose">@Html.Raw(Model.PostContent)</div>

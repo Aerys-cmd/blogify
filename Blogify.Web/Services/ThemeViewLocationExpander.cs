@@ -28,6 +28,7 @@ public sealed class ThemeViewLocationExpander : IViewLocationExpander
         [
             $"/Areas/Blog/Themes/{themeFolder}/Shared/{{0}}.cshtml",
             $"/Areas/Blog/Themes/{themeFolder}/{{0}}.cshtml",
+            $"/Areas/Blog/Themes/Shared/{{0}}.cshtml",
         ];
 
         return themeLocations.Concat(viewLocations);

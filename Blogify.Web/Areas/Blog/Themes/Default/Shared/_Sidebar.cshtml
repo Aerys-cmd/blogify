@@ -1,2 +1,14 @@
 @model Blogify.Web.Areas.Blog.Pages.BlogSidebarViewModel
-<aside class="topic-strip"><h2>@Localizer["Blog.Categories"]</h2>@if(Model.Categories.Count==0){<p>@Localizer["Blog.NoCategories"]</p>}else{<nav aria-label="@Localizer["Blog.Categories"]">@foreach(CategoryLinkViewModel category in Model.Categories){<a asp-area="Blog" asp-page="/Category" asp-route-slug="@category.Slug">@category.Name</a>}</nav>}</aside>
+<aside class="topic-strip">
+    <h2>@Localizer["Blog.Discover"]</h2>
+    <nav aria-label="@Localizer["Blog.Discover"].Value">
+        <a asp-area="Blog" asp-page="/Search">@Localizer["Blog.Search"]</a>
+        <a asp-area="Blog" asp-page="/Archives">@Localizer["Blog.Archives"]</a>
+        <a asp-area="Blog" asp-page="/Categories">@Localizer["Blog.Categories"]</a>
+        <a asp-area="Blog" asp-page="/Tags">@Localizer["Blog.Tags"]</a>
+    </nav>
+    <h2>@Localizer["Blog.Categories"]</h2>
+    @if(Model.Categories.Count==0){<p>@Localizer["Blog.NoCategories"]</p>}else{<nav aria-label="@Localizer["Blog.Categories"]">@foreach(CategoryLinkViewModel category in Model.Categories){<a asp-area="Blog" asp-page="/Category" asp-route-slug="@category.Slug">@category.Name</a>}</nav>}
+    <h2>@Localizer["Blog.Tags"]</h2>
+    @if(Model.Tags.Count==0){<p>@Localizer["Blog.NoTags"]</p>}else{<nav aria-label="@Localizer["Blog.Tags"]">@foreach(TagLinkViewModel tag in Model.Tags){<a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a>}</nav>}
+</aside>

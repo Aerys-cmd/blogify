@@ -20,11 +20,15 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
     [BindProperty]
     public List<Guid> SelectedCategoryIds { get; set; } = [];
 
+    [BindProperty]
+    public List<Guid> SelectedTagIds { get; set; } = [];
+
     public IReadOnlyList<CategorySelectItem> AvailableCategories { get; private set; } = [];
+    public IReadOnlyList<TagSelectItem> AvailableTags { get; private set; } = [];
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
-        await LoadAvailableCategoriesAsync(ct);
+        await LoadAvailableTaxonomiesAsync(ct);
         return Page();
     }
 
@@ -32,7 +36,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
     {
         if (!ModelState.IsValid)
         {
-            await LoadAvailableCategoriesAsync(ct);
+            await LoadAvailableTaxonomiesAsync(ct);
             return Page();
         }
 
@@ -40,7 +44,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         if (string.IsNullOrWhiteSpace(authorId))
         {
             ModelState.AddModelError(string.Empty, localizer["Message.UnableToDetermineUser"]);
-            await LoadAvailableCategoriesAsync(ct);
+            await LoadAvailableTaxonomiesAsync(ct);
             return Page();
         }
 
@@ -51,7 +55,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         if (slugTaken)
         {
             ModelState.AddModelError(nameof(Input.Slug), localizer["Message.SlugTaken"]);
-            await LoadAvailableCategoriesAsync(ct);
+            await LoadAvailableTaxonomiesAsync(ct);
             return Page();
         }
 
@@ -71,6 +75,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         post.UpdateExcerpt(Input.Excerpt);
         post.SetCoverImage(Input.CoverImageId);
         post.SetCategories(SelectedCategoryIds);
+        post.SetTags(SelectedTagIds);
         post.UpdateSeoMetadata(Input.MetaTitle, Input.MetaDescription);
 
         if (Input.Publish)
@@ -95,7 +100,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         return RedirectToPage("/Posts/Edit", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"], id = post.Id });
     }
 
-    private async Task LoadAvailableCategoriesAsync(CancellationToken ct)
+    private async Task LoadAvailableTaxonomiesAsync(CancellationToken ct)
     {
         List<Category> categories = await dbContext.Categories
             .AsNoTracking()
@@ -104,6 +109,15 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
 
         AvailableCategories = categories
             .Select(c => new CategorySelectItem(c.Id, c.Name, SelectedCategoryIds.Contains(c.Id)))
+            .ToList();
+
+        List<Tag> tags = await dbContext.Tags
+            .AsNoTracking()
+            .OrderBy(t => t.Name)
+            .ToListAsync(ct);
+
+        AvailableTags = tags
+            .Select(t => new TagSelectItem(t.Id, t.Name, SelectedTagIds.Contains(t.Id)))
             .ToList();
     }
 }
@@ -137,3 +151,4 @@ public sealed class CreatePostInput
 }
 
 public sealed record CategorySelectItem(Guid Id, string Name, bool IsSelected);
+public sealed record TagSelectItem(Guid Id, string Name, bool IsSelected);

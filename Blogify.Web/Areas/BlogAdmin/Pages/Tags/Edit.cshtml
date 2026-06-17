@@ -1,0 +1,57 @@
+@page
+@model Blogify.Web.Areas.BlogAdmin.Pages.Tags.EditModel
+@{
+    ViewData["Title"] = Localizer["Page.Title.BlogAdmin.EditTag"].Value;
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
+}
+
+<header class="b-page-header">
+    <div>
+        <p class="b-page-context">@Localizer["Nav.Tags"]</p>
+        <h1>@Localizer["Page.Title.BlogAdmin.EditTag"]</h1>
+        <p>@Localizer["Tags.Form.EditDescription"]</p>
+    </div>
+    <a asp-area="BlogAdmin" asp-page="/Tags/Index" asp-route-blogSlug="@blogSlug" class="btn btn-outline-secondary">
+        @Localizer["Tags.Back"]
+    </a>
+</header>
+
+<form method="post" class="b-form-layout" novalidate>
+    @if (!Model.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+    }
+
+    <section class="b-form-section">
+        <div>
+            <h2>@Localizer["Tags.Form.DetailsTitle"]</h2>
+            <p>@Localizer["Tags.Form.DetailsDescription"]</p>
+        </div>
+        <div class="b-form-section-fields">
+            <div>
+                <label asp-for="Input.Name" class="form-label fw-semibold">@Localizer["Label.Name"] <span class="text-danger">*</span></label>
+                <input asp-for="Input.Name" class="form-control"
+                       placeholder="@Localizer["Tags.Form.NamePlaceholder"].Value" autocomplete="off" />
+                <div class="form-text">@Localizer["Tags.Form.NameHelp"]</div>
+                <span asp-validation-for="Input.Name" class="text-danger small"></span>
+            </div>
+
+            <div>
+                <label asp-for="Input.Slug" class="form-label fw-semibold">@Localizer["Label.Slug"] <span class="text-danger">*</span></label>
+                <input asp-for="Input.Slug" class="form-control font-monospace"
+                       placeholder="@Localizer["Tags.Form.SlugPlaceholder"].Value" autocomplete="off" />
+                <div class="form-text">@Localizer["Tags.Form.SlugHelpEdit"]</div>
+                <span asp-validation-for="Input.Slug" class="text-danger small"></span>
+            </div>
+        </div>
+    </section>
+
+    <div class="b-form-actions">
+        <a asp-area="BlogAdmin" asp-page="/Tags/Index" asp-route-blogSlug="@blogSlug" class="btn btn-outline-secondary">@Localizer["Action.Cancel"]</a>
+        <button type="submit" class="btn btn-primary">@Localizer["Action.Save"]</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

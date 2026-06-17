@@ -1,0 +1,10 @@
+@page "/search"
+@model Blogify.Web.Areas.Blog.Pages.SearchModel
+@{
+    ViewData["Title"] = Localizer["Blog.Search"].Value;
+}
+@await Html.PartialAsync("_Search", Model)
+
+@section Sidebar {
+    @await Html.PartialAsync("_Sidebar", Model.Sidebar)
+}

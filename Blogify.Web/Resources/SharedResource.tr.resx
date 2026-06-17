@@ -478,6 +478,31 @@
   <data name="Categories.Form.SlugPlaceholder" xml:space="preserve"><value>saha-notlari</value></data>
   <data name="Categories.Form.SlugHelpCreate" xml:space="preserve"><value>Siz düzenleyene kadar addan oluşturulur. Küçük harf, sayı ve kısa çizgi kullanın.</value></data>
   <data name="Categories.Form.SlugHelpEdit" xml:space="preserve"><value>Küçük harf, sayı ve kısa çizgi kullanın. Bunu değiştirmek mevcut bağlantıları bozabilir.</value></data>
+  <data name="Page.Title.BlogAdmin.Tags" xml:space="preserve"><value>Etiketler</value></data>
+  <data name="Page.Title.BlogAdmin.NewTag" xml:space="preserve"><value>Yeni Etiket</value></data>
+  <data name="Page.Title.BlogAdmin.EditTag" xml:space="preserve"><value>Etiket Düzenle</value></data>
+  <data name="Nav.Tags" xml:space="preserve"><value>Etiketler</value></data>
+  <data name="Label.Tags.None" xml:space="preserve"><value>Henüz etiket yok.</value></data>
+  <data name="Label.Tags.Create" xml:space="preserve"><value>Oluşturun</value></data>
+  <data name="Label.Tags.Search" xml:space="preserve"><value>Etiket ara…</value></data>
+  <data name="Message.TagSlugTaken" xml:space="preserve"><value>Bu kısa ada sahip bir etiket zaten mevcut.</value></data>
+  <data name="Message.TagNameTaken" xml:space="preserve"><value>Bu ada sahip bir etiket zaten mevcut.</value></data>
+  <data name="Tags.Count" xml:space="preserve"><value>{0} · {1} etiket</value></data>
+  <data name="Tags.New" xml:space="preserve"><value>Yeni etiket</value></data>
+  <data name="Tags.Empty.Title" xml:space="preserve"><value>İlk etiketinizi ekleyin</value></data>
+  <data name="Tags.Empty.Copy" xml:space="preserve"><value>Etiketler, okurların kategoriler arasında ilgili yazıları keşfetmesine yardımcı olur.</value></data>
+  <data name="Tags.Empty.Action" xml:space="preserve"><value>İlk etiketinizi oluşturun</value></data>
+  <data name="Tags.DeleteConfirm" xml:space="preserve"><value>'{0}' silinsin mi? Bu işlem geri alınamaz.</value></data>
+  <data name="Tags.Back" xml:space="preserve"><value>Etiketlere dön</value></data>
+  <data name="Tags.Form.CreateDescription" xml:space="preserve"><value>Ortak bir temayı paylaşan yazılar için kısa bir keşif etiketi oluşturun.</value></data>
+  <data name="Tags.Form.EditDescription" xml:space="preserve"><value>Bu etiketin okurlara nasıl görüneceğini düzenleyin.</value></data>
+  <data name="Tags.Form.DetailsTitle" xml:space="preserve"><value>Etiket ayrıntıları</value></data>
+  <data name="Tags.Form.DetailsDescription" xml:space="preserve"><value>Etiketi adlandırın ve bağlantılarda kullanılacak adresi seçin.</value></data>
+  <data name="Tags.Form.NamePlaceholder" xml:space="preserve"><value>Örneğin, Araştırma</value></data>
+  <data name="Tags.Form.NameHelp" xml:space="preserve"><value>Kategoriler arasında kullanılabilecek kısa bir etiket seçin.</value></data>
+  <data name="Tags.Form.SlugPlaceholder" xml:space="preserve"><value>arastirma</value></data>
+  <data name="Tags.Form.SlugHelpCreate" xml:space="preserve"><value>Siz düzenleyene kadar addan oluşturulur. Küçük harf, sayı ve kısa çizgi kullanın.</value></data>
+  <data name="Tags.Form.SlugHelpEdit" xml:space="preserve"><value>Küçük harf, sayı ve kısa çizgi kullanın. Bunu değiştirmek mevcut bağlantıları bozabilir.</value></data>
   <data name="Action.Confirm" xml:space="preserve"><value>Onayla</value></data>
   <data name="Dialog.Confirm.Title" xml:space="preserve"><value>İşlemi onayla</value></data>
   <data name="Dashboard.Leave" xml:space="preserve"><value>Ayrıl</value></data>
@@ -533,8 +558,21 @@
   <data name="Blog.CategoryHeading" xml:space="preserve"><value>“{0}” konusundaki yazılar</value></data>
   <data name="Blog.Categories" xml:space="preserve"><value>Konuları keşfedin</value></data>
   <data name="Blog.NoCategories" xml:space="preserve"><value>Henüz konu eklenmedi.</value></data>
+  <data name="Blog.Tags" xml:space="preserve"><value>Etiketleri keşfedin</value></data>
+  <data name="Blog.NoTags" xml:space="preserve"><value>Henüz etiket eklenmedi.</value></data>
+  <data name="Blog.Discover" xml:space="preserve"><value>Keşfet</value></data>
+  <data name="Blog.Search" xml:space="preserve"><value>Arama</value></data>
+  <data name="Blog.SearchPlaceholder" xml:space="preserve"><value>Yayımlanmış yazılarda ara…</value></data>
+  <data name="Blog.NoSearchResults" xml:space="preserve"><value>Eşleşen yazı bulunamadı.</value></data>
+  <data name="Blog.Archives" xml:space="preserve"><value>Arşiv</value></data>
+  <data name="Blog.Pagination" xml:space="preserve"><value>Yazı sayfalaması</value></data>
+  <data name="Blog.Previous" xml:space="preserve"><value>Önceki</value></data>
+  <data name="Blog.Next" xml:space="preserve"><value>Sonraki</value></data>
+  <data name="Blog.TagHeading" xml:space="preserve"><value>“{0}” etiketli yazılar</value></data>
+  <data name="Blog.ArchiveHeading" xml:space="preserve"><value>{0} yazıları</value></data>
   <data name="Blog.NoPosts" xml:space="preserve"><value>Henüz yayımlanmış bir yazı yok.</value></data>
   <data name="Blog.NoCategoryPosts" xml:space="preserve"><value>Bu konuda henüz yayımlanmış bir yazı yok.</value></data>
+  <data name="Blog.NoTagPosts" xml:space="preserve"><value>Bu etiketle henüz yayımlanmış bir yazı yok.</value></data>
   <data name="Blog.BackToPosts" xml:space="preserve"><value>Tüm yazılara dön</value></data>
   <data name="Blog.Comments" xml:space="preserve"><value>Yorumlar ({0})</value></data>
   <data name="Blog.Reply" xml:space="preserve"><value>Yanıtla</value></data>

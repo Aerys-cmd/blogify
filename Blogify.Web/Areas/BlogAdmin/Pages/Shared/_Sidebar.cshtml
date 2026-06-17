@@ -62,6 +62,7 @@
             <p class="ba-sidebar-section-label">@Localizer["Sidebar.Manage"]</p>
             <a class="ba-nav-link @Active("/Themes")" aria-current="@Current("/Themes")" asp-area="BlogAdmin" asp-page="/Themes/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">◐</span>@Localizer["Nav.Appearance"]</a>
             <a class="ba-nav-link @Active("/Categories")" aria-current="@Current("/Categories")" asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">#</span>@Localizer["Nav.Categories"]</a>
+            <a class="ba-nav-link @Active("/Tags")" aria-current="@Current("/Tags")" asp-area="BlogAdmin" asp-page="/Tags/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">⌁</span>@Localizer["Nav.Tags"]</a>
             @if (canManageUsers)
             {
                 <a class="ba-nav-link @Active("/Members")" aria-current="@Current("/Members")" asp-area="BlogAdmin" asp-page="/Members/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">♙</span>@Localizer["Nav.Members"]</a>

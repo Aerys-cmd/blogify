@@ -1,0 +1,10 @@
+@page "/tag/{slug}"
+@model Blogify.Web.Areas.Blog.Pages.TagModel
+@{
+    ViewData["Title"] = Localizer["Blog.TagHeading", Model.TagName].Value;
+}
+@await Html.PartialAsync("_Tag", Model)
+
+@section Sidebar {
+    @await Html.PartialAsync("_Sidebar", Model.Sidebar)
+}

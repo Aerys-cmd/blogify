@@ -10,6 +10,7 @@ public sealed class Post
 
     private readonly List<PostRevision> _revisions = [];
     private readonly List<PostCategory> _categories = [];
+    private readonly List<PostTag> _tags = [];
 
     private Post() { }
 
@@ -50,6 +51,7 @@ public sealed class Post
     public DateTimeOffset? DeletedAt { get; private set; }
     public IReadOnlyList<PostRevision> Revisions => _revisions.AsReadOnly();
     public IReadOnlyList<PostCategory> Categories => _categories.AsReadOnly();
+    public IReadOnlyList<PostTag> Tags => _tags.AsReadOnly();
 
     public static Post Create(Guid blogId, string authorId, string slug, string initialTitle, string initialContent, string? initialContentText = null)
     {
@@ -96,6 +98,22 @@ public sealed class Post
         foreach (Guid categoryId in newIds.Where(id => !existingIds.Contains(id)))
         {
             _categories.Add(new PostCategory(Id, categoryId));
+        }
+    }
+
+    public void SetTags(IEnumerable<Guid> tagIds)
+    {
+        ArgumentNullException.ThrowIfNull(tagIds);
+
+        HashSet<Guid> newIds = tagIds.ToHashSet();
+
+        _tags.RemoveAll(pt => !newIds.Contains(pt.TagId));
+
+        HashSet<Guid> existingIds = _tags.Select(pt => pt.TagId).ToHashSet();
+
+        foreach (Guid tagId in newIds.Where(id => !existingIds.Contains(id)))
+        {
+            _tags.Add(new PostTag(Id, tagId));
         }
     }
 

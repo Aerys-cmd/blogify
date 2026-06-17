@@ -23,7 +23,11 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
     [BindProperty]
     public List<Guid> SelectedCategoryIds { get; set; } = [];
 
+    [BindProperty]
+    public List<Guid> SelectedTagIds { get; set; } = [];
+
     public IReadOnlyList<CategorySelectItem> AvailableCategories { get; private set; } = [];
+    public IReadOnlyList<TagSelectItem> AvailableTags { get; private set; } = [];
     public string PostTitle { get; private set; } = string.Empty;
     public string? CoverImagePreviewUrl { get; private set; }
     public string PostCreatedAtFormatted { get; private set; } = string.Empty;
@@ -78,6 +82,12 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
             .Select(pc => pc.CategoryId)
             .ToListAsync(ct);
 
+        SelectedTagIds = await dbContext.PostTags
+            .AsNoTracking()
+            .Where(pt => pt.PostId == Id)
+            .Select(pt => pt.TagId)
+            .ToListAsync(ct);
+
         Input = new EditPostInput
         {
             Title = latestRevision.Title,
@@ -92,7 +102,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
 
         SavedToastType = TempData["PostSaved"] as string;
 
-        await LoadAvailableCategoriesAsync(ct);
+        await LoadAvailableTaxonomiesAsync(ct);
         return Page();
     }
 
@@ -100,13 +110,14 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
     {
         if (!ModelState.IsValid)
         {
-            await LoadAvailableCategoriesAsync(ct);
+            await LoadAvailableTaxonomiesAsync(ct);
             return Page();
         }
 
         Post? post = await dbContext.Posts
             .Include(p => p.Revisions)
             .Include(p => p.Categories)
+            .Include(p => p.Tags)
             .FirstOrDefaultAsync(p => p.Id == Id, ct);
 
         if (post is null || post.DeletedAt.HasValue)
@@ -123,7 +134,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
         if (slugTaken)
         {
             ModelState.AddModelError(nameof(Input.Slug), localizer["Message.SlugTaken"]);
-            await LoadAvailableCategoriesAsync(ct);
+            await LoadAvailableTaxonomiesAsync(ct);
             return Page();
         }
 
@@ -148,6 +159,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
         post.UpdateExcerpt(Input.Excerpt);
         post.SetCoverImage(Input.CoverImageId);
         post.SetCategories(SelectedCategoryIds);
+        post.SetTags(SelectedTagIds);
         post.UpdateSeoMetadata(Input.MetaTitle, Input.MetaDescription);
 
         bool currentlyPublished = post.Status == PostStatus.Published;
@@ -181,7 +193,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
         return RedirectToPage("/Posts/Edit", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"], id = Id });
     }
 
-    private async Task LoadAvailableCategoriesAsync(CancellationToken ct)
+    private async Task LoadAvailableTaxonomiesAsync(CancellationToken ct)
     {
         List<Category> categories = await dbContext.Categories
             .AsNoTracking()
@@ -190,6 +202,15 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
 
         AvailableCategories = categories
             .Select(c => new CategorySelectItem(c.Id, c.Name, SelectedCategoryIds.Contains(c.Id)))
+            .ToList();
+
+        List<Tag> tags = await dbContext.Tags
+            .AsNoTracking()
+            .OrderBy(t => t.Name)
+            .ToListAsync(ct);
+
+        AvailableTags = tags
+            .Select(t => new TagSelectItem(t.Id, t.Name, SelectedTagIds.Contains(t.Id)))
             .ToList();
     }
 }

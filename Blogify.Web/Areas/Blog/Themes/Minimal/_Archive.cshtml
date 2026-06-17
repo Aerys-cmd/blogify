@@ -1,0 +1,4 @@
+@model Blogify.Web.Areas.Blog.Pages.ArchiveModel
+<header class="journal-intro"><h1>@Localizer["Blog.ArchiveHeading", Model.MonthStart.ToString("MMMM yyyy")]</h1></header>
+@if (Model.Posts.Count == 0) { <div class="empty-state">@Localizer["Blog.NoPosts"]</div> }
+else { <div class="journal-list">@foreach(PostCardViewModel post in Model.Posts){<article class="journal-entry"><time>@post.PublishedAt.ToString("D")</time><div><h2><a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug">@post.Title</a></h2>@if(post.Excerpt is not null){<p>@post.Excerpt</p>}</div></article>}</div>await Html.RenderPartialAsync("_Pagination", Model.Pagination); }
