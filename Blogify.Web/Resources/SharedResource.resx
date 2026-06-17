@@ -97,6 +97,7 @@
   <data name="Label.Categories.Create" xml:space="preserve"><value>Create one</value></data>
   <data name="Label.Categories.Search" xml:space="preserve"><value>Search categories…</value></data>
   <data name="Label.MoreSettings" xml:space="preserve"><value>More settings</value></data>
+  <data name="Label.Loading" xml:space="preserve"><value>Loading…</value></data>
   <data name="Post.Status.Draft" xml:space="preserve"><value>Draft</value></data>
   <data name="Post.Status.Published" xml:space="preserve"><value>Published</value></data>
 
@@ -117,6 +118,7 @@
   <data name="Action.Search" xml:space="preserve"><value>Search</value></data>
   <data name="Action.SignIn" xml:space="preserve"><value>Sign In</value></data>
   <data name="Action.GoToBlogAdmin" xml:space="preserve"><value>Go to Blog Admin</value></data>
+  <data name="Action.Resend" xml:space="preserve"><value>Resend</value></data>
 
   <!-- Validation -->
   <data name="Validation.Required" xml:space="preserve"><value>This field is required.</value></data>
@@ -323,7 +325,9 @@
   <data name="Media.Picker.UseUploadedFiles" xml:space="preserve"><value>Use uploaded files</value></data>
   <data name="Media.Picker.BackToLibrary" xml:space="preserve"><value>← Back to library</value></data>
   <data name="Media.Picker.Aria.Preview" xml:space="preserve"><value>Preview of {0}</value></data>
+  <data name="Media.Detail.SavingStatus" xml:space="preserve"><value>Saving…</value></data>
   <data name="Media.Detail.SavedStatus" xml:space="preserve"><value>Saved ✓</value></data>
+  <data name="Media.Detail.MetadataSaved" xml:space="preserve"><value>Metadata saved.</value></data>
   <data name="Media.Detail.DeleteTitle" xml:space="preserve"><value>Delete media file</value></data>
   <data name="Media.Detail.DeleteConfirmBody" xml:space="preserve"><value>Are you sure you want to permanently delete &apos;{0}&apos;? This action cannot be undone.</value></data>
   <data name="Media.Detail.DeleteConfirmUsed" xml:space="preserve"><value>This file is used as the cover image in {0} post(s). Deleting it will cause those posts to show a broken image.</value></data>
@@ -514,6 +518,7 @@
   <data name="Editor.Saved" xml:space="preserve"><value>Saved</value></data>
   <data name="Editor.RestoreDraft" xml:space="preserve"><value>Restore draft</value></data>
   <data name="Editor.UnsavedDraft" xml:space="preserve"><value>Unsaved local draft</value></data>
+  <data name="Editor.WordCountFormat" xml:space="preserve"><value>{0} words · {1} min read</value></data>
   <data name="Action.Close" xml:space="preserve"><value>Close</value></data>
   <data name="Action.Remove" xml:space="preserve"><value>Remove</value></data>
   <data name="Settings.General" xml:space="preserve"><value>General</value></data>
@@ -589,4 +594,60 @@
   <data name="Blog.CommentRequired" xml:space="preserve"><value>Please write a comment.</value></data>
   <data name="Blog.CommentTooLong" xml:space="preserve"><value>Comments cannot exceed 2,000 characters.</value></data>
   <data name="Blog.InvalidParentComment" xml:space="preserve"><value>The comment you are replying to is no longer available.</value></data>
+  <data name="Auth.ForgotPassword.Description" xml:space="preserve"><value>Enter your account email and we will send password reset instructions if the account exists.</value></data>
+  <data name="Auth.ForgotPassword.EmailSent" xml:space="preserve"><value>If an account exists for that email, a password reset link has been sent.</value></data>
+  <data name="Auth.ResetPassword.NewPassword" xml:space="preserve"><value>New password</value></data>
+  <data name="Auth.ResetPassword.Success" xml:space="preserve"><value>Your password has been reset. You can now sign in.</value></data>
+  <data name="Auth.ResetPassword.TokenEmailRequired" xml:space="preserve"><value>A token and email are required to reset the password.</value></data>
+  <data name="Auth.Login.Context" xml:space="preserve"><value>Welcome back</value></data>
+  <data name="Auth.Login.Description" xml:space="preserve"><value>Return to your writing workspace.</value></data>
+  <data name="Auth.Register.Context" xml:space="preserve"><value>Start publishing</value></data>
+  <data name="Auth.Register.Description" xml:space="preserve"><value>Create your account, then choose a name and address for your blog.</value></data>
+  <data name="Auth.Password.Show" xml:space="preserve"><value>Show</value></data>
+  <data name="Auth.Layout.Heading" xml:space="preserve"><value>Make a place for your ideas.</value></data>
+  <data name="Auth.Layout.Description" xml:space="preserve"><value>A focused workspace for writing clearly and publishing confidently.</value></data>
+  <data name="Auth.Layout.PreviewLabel" xml:space="preserve"><value>FIELD NOTES</value></data>
+  <data name="Auth.Layout.PreviewTitle" xml:space="preserve"><value>The work worth returning to</value></data>
+  <data name="Dashboard.Context" xml:space="preserve"><value>Your publishing homes</value></data>
+  <data name="Dashboard.Description" xml:space="preserve"><value>Open a workspace, continue writing, or start something new.</value></data>
+  <data name="Dashboard.OwnerRole" xml:space="preserve"><value>Owner</value></data>
+  <data name="BlogAdmin.Home.Heading" xml:space="preserve"><value>Keep the momentum.</value></data>
+  <data name="BlogAdmin.Home.Description" xml:space="preserve"><value>Your workspace is ready for the next idea.</value></data>
+  <data name="BlogAdmin.Home.WritePost" xml:space="preserve"><value>Write a new post</value></data>
+  <data name="BlogAdmin.Home.DraftCount" xml:space="preserve"><value>{0} drafts</value></data>
+  <data name="BlogAdmin.Home.ContinueWriting" xml:space="preserve"><value>Continue writing</value></data>
+  <data name="BlogAdmin.Home.ContinueDescription" xml:space="preserve"><value>Pick up a draft or begin with a clean page.</value></data>
+  <data name="BlogAdmin.Home.OpenPosts" xml:space="preserve"><value>Open posts</value></data>
+  <data name="BlogAdmin.Home.Snapshot" xml:space="preserve"><value>Publishing snapshot</value></data>
+  <data name="BlogAdmin.Home.ViewAnalytics" xml:space="preserve"><value>View analytics</value></data>
+  <data name="BlogAdmin.Home.PublishedPosts" xml:space="preserve"><value>Published posts</value></data>
+  <data name="BlogAdmin.Home.DraftsInProgress" xml:space="preserve"><value>Drafts in progress</value></data>
+  <data name="BlogAdmin.Home.TotalPosts" xml:space="preserve"><value>Total posts</value></data>
+  <data name="BlogAdmin.Home.SetupTitle" xml:space="preserve"><value>Set up your publishing home</value></data>
+  <data name="BlogAdmin.Home.NextSteps" xml:space="preserve"><value>Recommended next steps</value></data>
+  <data name="BlogAdmin.Home.StepPost" xml:space="preserve"><value>Write your next post</value></data>
+  <data name="BlogAdmin.Home.StepPostHelp" xml:space="preserve"><value>Open the focused editor</value></data>
+  <data name="BlogAdmin.Home.StepAppearance" xml:space="preserve"><value>Choose your appearance</value></data>
+  <data name="BlogAdmin.Home.StepAppearanceHelp" xml:space="preserve"><value>Make the public site feel yours</value></data>
+  <data name="BlogAdmin.Home.StepDescription" xml:space="preserve"><value>Add a blog description</value></data>
+  <data name="BlogAdmin.Home.StepDescriptionHelp" xml:space="preserve"><value>Help readers know what to expect</value></data>
+  <data name="Analytics.Context" xml:space="preserve"><value>Audience</value></data>
+  <data name="Analytics.Description" xml:space="preserve"><value>See what readers return for and where they find you.</value></data>
+  <data name="Analytics.Last30Days" xml:space="preserve"><value>30 days</value></data>
+  <data name="Analytics.Last7Days" xml:space="preserve"><value>{0} in the last 7 days</value></data>
+  <data name="Analytics.Overview" xml:space="preserve"><value>Audience overview</value></data>
+  <data name="Analytics.TotalViews" xml:space="preserve"><value>Total views</value></data>
+  <data name="Analytics.UniqueVisitors" xml:space="preserve"><value>Unique visitors</value></data>
+  <data name="Analytics.TrendAria" xml:space="preserve"><value>Views trend visualization</value></data>
+  <data name="Analytics.TopPosts" xml:space="preserve"><value>Top posts</value></data>
+  <data name="Analytics.EmptyPosts.Title" xml:space="preserve"><value>Publish to start learning</value></data>
+  <data name="Analytics.EmptyPosts.Copy" xml:space="preserve"><value>Post views will appear here after readers visit your published work.</value></data>
+  <data name="Analytics.TopReferrers" xml:space="preserve"><value>Top referrers</value></data>
+  <data name="Analytics.EmptyReferrers.Title" xml:space="preserve"><value>No referrers yet</value></data>
+  <data name="Analytics.EmptyReferrers.Copy" xml:space="preserve"><value>Share a published post to begin seeing where readers arrive from.</value></data>
+  <data name="Invitation.Title" xml:space="preserve"><value>Blog invitation</value></data>
+  <data name="Invitation.Invited" xml:space="preserve"><value>You have been invited to {0} as {1}.</value></data>
+  <data name="Invitation.Accept" xml:space="preserve"><value>Accept invitation</value></data>
+  <data name="Invitation.Decline" xml:space="preserve"><value>Decline</value></data>
+  <data name="Label.Date" xml:space="preserve"><value>Date</value></data>
 </root>

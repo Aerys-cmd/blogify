@@ -320,8 +320,9 @@ public sealed class IndexModel(
 
         if (Request.Headers.ContainsKey("HX-Request"))
         {
+            string message = System.Web.HttpUtility.HtmlEncode(localizer["Media.Detail.MetadataSaved"].Value);
             return Content(
-                "<div class=\"alert alert-success mb-0\">Metadata saved.</div>",
+                $"<div class=\"alert alert-success mb-0\">{message}</div>",
                 "text/html");
         }
 

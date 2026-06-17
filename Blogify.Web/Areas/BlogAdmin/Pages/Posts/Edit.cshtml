@@ -120,7 +120,8 @@
             <span asp-validation-for="Input.Content" class="text-danger small"></span>
 
             <div class="pe-editor-footer">
-                <span id="wordCountDisplay" aria-live="polite">0 words &middot; 0 min read</span>
+                <span id="wordCountDisplay" aria-live="polite"
+                      data-count-format="@Localizer["Editor.WordCountFormat"].Value">@Localizer["Editor.WordCountFormat", 0, 0]</span>
             </div>
         </div>
 

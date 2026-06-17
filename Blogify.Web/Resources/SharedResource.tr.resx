@@ -97,6 +97,7 @@
   <data name="Label.Categories.Create" xml:space="preserve"><value>Oluşturun</value></data>
   <data name="Label.Categories.Search" xml:space="preserve"><value>Kategori ara…</value></data>
   <data name="Label.MoreSettings" xml:space="preserve"><value>Daha fazla ayar</value></data>
+  <data name="Label.Loading" xml:space="preserve"><value>Yükleniyor…</value></data>
   <data name="Post.Status.Draft" xml:space="preserve"><value>Taslak</value></data>
   <data name="Post.Status.Published" xml:space="preserve"><value>Yayımlandı</value></data>
 
@@ -117,6 +118,7 @@
   <data name="Action.Search" xml:space="preserve"><value>Ara</value></data>
   <data name="Action.SignIn" xml:space="preserve"><value>Giriş yap</value></data>
   <data name="Action.GoToBlogAdmin" xml:space="preserve"><value>Blog Yönetimine Git</value></data>
+  <data name="Action.Resend" xml:space="preserve"><value>Yeniden gönder</value></data>
 
   <!-- Validation -->
   <data name="Validation.Required" xml:space="preserve"><value>Bu alan zorunludur.</value></data>
@@ -325,6 +327,7 @@
   <data name="Media.Picker.Aria.Preview" xml:space="preserve"><value>{0} önizlemesi</value></data>
   <data name="Media.Detail.SavingStatus" xml:space="preserve"><value>Kaydediliyor…</value></data>
   <data name="Media.Detail.SavedStatus" xml:space="preserve"><value>Kaydedildi ✓</value></data>
+  <data name="Media.Detail.MetadataSaved" xml:space="preserve"><value>Meta veriler kaydedildi.</value></data>
   <data name="Media.Detail.DeleteTitle" xml:space="preserve"><value>Medya dosyasını sil</value></data>
   <data name="Media.Detail.DeleteConfirmBody" xml:space="preserve"><value>&apos;{0}&apos; adlı dosyayı kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</value></data>
   <data name="Media.Detail.DeleteConfirmUsed" xml:space="preserve"><value>Bu dosya {0} gönderide kapak görseli olarak kullanılmaktadır. Silinmesi bu gönderilerde bozuk görsel görünmesine yol açacaktır.</value></data>
@@ -515,6 +518,7 @@
   <data name="Editor.Saved" xml:space="preserve"><value>Kaydedildi</value></data>
   <data name="Editor.RestoreDraft" xml:space="preserve"><value>Taslağı geri yükle</value></data>
   <data name="Editor.UnsavedDraft" xml:space="preserve"><value>Kaydedilmemiş yerel taslak</value></data>
+  <data name="Editor.WordCountFormat" xml:space="preserve"><value>{0} kelime · {1} dk okuma</value></data>
   <data name="Action.Close" xml:space="preserve"><value>Kapat</value></data>
   <data name="Action.Remove" xml:space="preserve"><value>Kaldır</value></data>
   <data name="Settings.General" xml:space="preserve"><value>Genel</value></data>
@@ -590,4 +594,60 @@
   <data name="Blog.CommentRequired" xml:space="preserve"><value>Lütfen bir yorum yazın.</value></data>
   <data name="Blog.CommentTooLong" xml:space="preserve"><value>Yorumlar 2.000 karakteri aşamaz.</value></data>
   <data name="Blog.InvalidParentComment" xml:space="preserve"><value>Yanıtladığınız yorum artık kullanılamıyor.</value></data>
+  <data name="Auth.ForgotPassword.Description" xml:space="preserve"><value>Hesap e-postanızı girin; hesap varsa şifre sıfırlama yönergelerini göndereceğiz.</value></data>
+  <data name="Auth.ForgotPassword.EmailSent" xml:space="preserve"><value>Bu e-posta için bir hesap varsa şifre sıfırlama bağlantısı gönderildi.</value></data>
+  <data name="Auth.ResetPassword.NewPassword" xml:space="preserve"><value>Yeni şifre</value></data>
+  <data name="Auth.ResetPassword.Success" xml:space="preserve"><value>Şifreniz sıfırlandı. Artık giriş yapabilirsiniz.</value></data>
+  <data name="Auth.ResetPassword.TokenEmailRequired" xml:space="preserve"><value>Şifreyi sıfırlamak için token ve e-posta gereklidir.</value></data>
+  <data name="Auth.Login.Context" xml:space="preserve"><value>Tekrar hoş geldiniz</value></data>
+  <data name="Auth.Login.Description" xml:space="preserve"><value>Yazı çalışma alanınıza dönün.</value></data>
+  <data name="Auth.Register.Context" xml:space="preserve"><value>Yayınlamaya başlayın</value></data>
+  <data name="Auth.Register.Description" xml:space="preserve"><value>Hesabınızı oluşturun, ardından blogunuz için bir ad ve adres seçin.</value></data>
+  <data name="Auth.Password.Show" xml:space="preserve"><value>Göster</value></data>
+  <data name="Auth.Layout.Heading" xml:space="preserve"><value>Fikirleriniz için bir yer açın.</value></data>
+  <data name="Auth.Layout.Description" xml:space="preserve"><value>Net yazmak ve güvenle yayınlamak için odaklı bir çalışma alanı.</value></data>
+  <data name="Auth.Layout.PreviewLabel" xml:space="preserve"><value>SAHA NOTLARI</value></data>
+  <data name="Auth.Layout.PreviewTitle" xml:space="preserve"><value>Geri dönmeye değer çalışma</value></data>
+  <data name="Dashboard.Context" xml:space="preserve"><value>Yayın evleriniz</value></data>
+  <data name="Dashboard.Description" xml:space="preserve"><value>Bir çalışma alanı açın, yazmaya devam edin veya yeni bir şeye başlayın.</value></data>
+  <data name="Dashboard.OwnerRole" xml:space="preserve"><value>Sahip</value></data>
+  <data name="BlogAdmin.Home.Heading" xml:space="preserve"><value>Ritmi koruyun.</value></data>
+  <data name="BlogAdmin.Home.Description" xml:space="preserve"><value>Çalışma alanınız bir sonraki fikir için hazır.</value></data>
+  <data name="BlogAdmin.Home.WritePost" xml:space="preserve"><value>Yeni yazı yaz</value></data>
+  <data name="BlogAdmin.Home.DraftCount" xml:space="preserve"><value>{0} taslak</value></data>
+  <data name="BlogAdmin.Home.ContinueWriting" xml:space="preserve"><value>Yazmaya devam edin</value></data>
+  <data name="BlogAdmin.Home.ContinueDescription" xml:space="preserve"><value>Bir taslağı sürdürün veya temiz bir sayfayla başlayın.</value></data>
+  <data name="BlogAdmin.Home.OpenPosts" xml:space="preserve"><value>Yazıları aç</value></data>
+  <data name="BlogAdmin.Home.Snapshot" xml:space="preserve"><value>Yayın özeti</value></data>
+  <data name="BlogAdmin.Home.ViewAnalytics" xml:space="preserve"><value>Analitiği görüntüle</value></data>
+  <data name="BlogAdmin.Home.PublishedPosts" xml:space="preserve"><value>Yayımlanmış yazılar</value></data>
+  <data name="BlogAdmin.Home.DraftsInProgress" xml:space="preserve"><value>Devam eden taslaklar</value></data>
+  <data name="BlogAdmin.Home.TotalPosts" xml:space="preserve"><value>Toplam yazı</value></data>
+  <data name="BlogAdmin.Home.SetupTitle" xml:space="preserve"><value>Yayın evinizi hazırlayın</value></data>
+  <data name="BlogAdmin.Home.NextSteps" xml:space="preserve"><value>Önerilen sonraki adımlar</value></data>
+  <data name="BlogAdmin.Home.StepPost" xml:space="preserve"><value>Sonraki yazınızı yazın</value></data>
+  <data name="BlogAdmin.Home.StepPostHelp" xml:space="preserve"><value>Odaklı editörü açın</value></data>
+  <data name="BlogAdmin.Home.StepAppearance" xml:space="preserve"><value>Görünümünüzü seçin</value></data>
+  <data name="BlogAdmin.Home.StepAppearanceHelp" xml:space="preserve"><value>Herkese açık site size ait hissettirsin</value></data>
+  <data name="BlogAdmin.Home.StepDescription" xml:space="preserve"><value>Blog açıklaması ekleyin</value></data>
+  <data name="BlogAdmin.Home.StepDescriptionHelp" xml:space="preserve"><value>Okurların ne bekleyeceğini anlamasına yardımcı olun</value></data>
+  <data name="Analytics.Context" xml:space="preserve"><value>Kitle</value></data>
+  <data name="Analytics.Description" xml:space="preserve"><value>Okurların neye döndüğünü ve sizi nereden bulduğunu görün.</value></data>
+  <data name="Analytics.Last30Days" xml:space="preserve"><value>30 gün</value></data>
+  <data name="Analytics.Last7Days" xml:space="preserve"><value>son 7 günde {0}</value></data>
+  <data name="Analytics.Overview" xml:space="preserve"><value>Kitle özeti</value></data>
+  <data name="Analytics.TotalViews" xml:space="preserve"><value>Toplam görüntüleme</value></data>
+  <data name="Analytics.UniqueVisitors" xml:space="preserve"><value>Tekil ziyaretçi</value></data>
+  <data name="Analytics.TrendAria" xml:space="preserve"><value>Görüntüleme eğilimi görselleştirmesi</value></data>
+  <data name="Analytics.TopPosts" xml:space="preserve"><value>En iyi yazılar</value></data>
+  <data name="Analytics.EmptyPosts.Title" xml:space="preserve"><value>Öğrenmeye başlamak için yayınlayın</value></data>
+  <data name="Analytics.EmptyPosts.Copy" xml:space="preserve"><value>Okurlar yayımlanmış çalışmalarınızı ziyaret ettikten sonra yazı görüntülemeleri burada görünür.</value></data>
+  <data name="Analytics.TopReferrers" xml:space="preserve"><value>En iyi yönlendirenler</value></data>
+  <data name="Analytics.EmptyReferrers.Title" xml:space="preserve"><value>Henüz yönlendiren yok</value></data>
+  <data name="Analytics.EmptyReferrers.Copy" xml:space="preserve"><value>Okurların nereden geldiğini görmek için yayımlanmış bir yazıyı paylaşın.</value></data>
+  <data name="Invitation.Title" xml:space="preserve"><value>Blog daveti</value></data>
+  <data name="Invitation.Invited" xml:space="preserve"><value>{0} bloguna {1} rolüyle davet edildiniz.</value></data>
+  <data name="Invitation.Accept" xml:space="preserve"><value>Daveti kabul et</value></data>
+  <data name="Invitation.Decline" xml:space="preserve"><value>Reddet</value></data>
+  <data name="Label.Date" xml:space="preserve"><value>Tarih</value></data>
 </root>

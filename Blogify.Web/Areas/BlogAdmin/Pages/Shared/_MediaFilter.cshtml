@@ -3,27 +3,27 @@
 <div class="d-flex flex-column gap-3">
     @* Search *@
     <div>
-        <label class="form-label small fw-semibold mb-1">Search</label>
+        <label class="form-label small fw-semibold mb-1">@Localizer["Action.Search"]</label>
         <input type="search" class="form-control form-control-sm"
                name="q" id="active-q-filter" value="@Model.SearchQuery"
-               placeholder="Filename…"
+               placeholder="@Localizer["Placeholder.SearchMedia"].Value"
                hx-get="?handler=Search"
                hx-target="#media-content"
                hx-swap="innerHTML"
                hx-trigger="input changed delay:400ms, search"
                hx-include="[name='type'],[name='month']"
-               aria-label="Search by filename" />
+               aria-label="@Localizer["Aria.SearchMedia"].Value" />
     </div>
 
     @* Type filter *@
     <div>
-        <p class="form-label small fw-semibold mb-2">Type</p>
+        <p class="form-label small fw-semibold mb-2">@Localizer["Label.Type"]</p>
         @{
             (string Value, string Label)[] typeOptions =
             [
-                ("", "All"),
-                ("image", "Images"),
-                ("document", "Documents")
+                ("", Localizer["Media.Picker.TypeAll"].Value),
+                ("image", Localizer["Label.Images"].Value),
+                ("document", Localizer["Label.Documents"].Value)
             ];
         }
         <div class="d-flex flex-column gap-1">
@@ -50,7 +50,7 @@
     @if (Model.AvailableMonths.Count > 0)
     {
         <div>
-            <label class="form-label small fw-semibold mb-1" for="month-filter-select">Date</label>
+            <label class="form-label small fw-semibold mb-1" for="month-filter-select">@Localizer["Label.Date"]</label>
             <select class="form-select form-select-sm" id="month-filter-select" name="month"
                     hx-get="?handler=Search"
                     hx-target="#media-content"
@@ -58,7 +58,7 @@
                     hx-include="[name='q'],[name='type']"
                     hx-trigger="change">
                 <option value="" selected="@(string.IsNullOrEmpty(Model.MonthFilter) ? "selected" : null)">
-                    All dates
+                    @Localizer["Label.AllDates"]
                 </option>
                 @foreach (MonthBucketVm bucket in Model.AvailableMonths)
                 {
@@ -71,4 +71,3 @@
         </div>
     }
 </div>
-

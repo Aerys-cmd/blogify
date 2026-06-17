@@ -4,9 +4,9 @@
     ViewData["Title"] = @Localizer["Auth.Login.Title"].Value;
 }
 
-<p class="b-page-context mb-2">Welcome back</p>
+<p class="b-page-context mb-2">@Localizer["Auth.Login.Context"]</p>
 <h4 class="mb-2 fw-semibold">@Localizer["Auth.Login.Heading"]</h4>
-<p class="text-muted mb-4">Return to your writing workspace.</p>
+<p class="text-muted mb-4">@Localizer["Auth.Login.Description"]</p>
 
 @if (Model.HasExplicitReturnUrl)
 {
@@ -23,7 +23,7 @@
             <label asp-for="Input.Password" class="form-label">@Localizer["Label.Password"]</label>
             <div class="input-group">
                 <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
-                <button class="btn btn-outline-secondary" type="button" data-toggle-password="@Html.IdFor(m => m.Input.Password)">Show</button>
+                <button class="btn btn-outline-secondary" type="button" data-toggle-password="@Html.IdFor(m => m.Input.Password)">@Localizer["Auth.Password.Show"]</button>
             </div>
             <span asp-validation-for="Input.Password" class="text-danger small"></span>
         </div>
@@ -59,7 +59,7 @@ else
             <label asp-for="Input.Password" class="form-label">@Localizer["Label.Password"]</label>
             <div class="input-group">
                 <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
-                <button class="btn btn-outline-secondary" type="button" data-toggle-password="@Html.IdFor(m => m.Input.Password)">Show</button>
+                <button class="btn btn-outline-secondary" type="button" data-toggle-password="@Html.IdFor(m => m.Input.Password)">@Localizer["Auth.Password.Show"]</button>
             </div>
             <span asp-validation-for="Input.Password" class="text-danger small"></span>
         </div>

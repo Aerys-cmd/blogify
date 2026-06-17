@@ -112,7 +112,9 @@
             if (Array.isArray(blocks)) text = extractText(blocks);
         } catch (_) { }
         var words = text.trim() ? text.trim().split(/\s+/).length : 0;
-        output.textContent = words + ' words \u00b7 ' + Math.max(1, Math.ceil(words / 238)) + ' min read';
+        var minutes = Math.max(1, Math.ceil(words / 238));
+        var format = output.dataset.countFormat || '{0} words \u00b7 {1} min read';
+        output.textContent = format.replace('{0}', words).replace('{1}', minutes);
     }
 
     function markUnsaved() {

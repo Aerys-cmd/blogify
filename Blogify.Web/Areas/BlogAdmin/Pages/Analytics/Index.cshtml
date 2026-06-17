@@ -1,17 +1,17 @@
 @page
 @model Blogify.Web.Areas.BlogAdmin.Pages.Analytics.IndexModel
 @{
-    ViewData["Title"] = "Analytics";
+    ViewData["Title"] = Localizer["Page.Title.BlogAdmin.Analytics"].Value;
 }
 
-<header class="b-page-header"><div><p class="b-page-context">Audience</p><h1>Analytics</h1><p>See what readers return for and where they find you.</p></div><span class="b-segmented"><strong>30 days</strong></span></header>
+<header class="b-page-header"><div><p class="b-page-context">@Localizer["Analytics.Context"]</p><h1>@Localizer["Page.Title.BlogAdmin.Analytics"]</h1><p>@Localizer["Analytics.Description"]</p></div><span class="b-segmented"><strong>@Localizer["Analytics.Last30Days"]</strong></span></header>
 <section class="b-section">
-    <div class="b-section-heading"><h2>Audience overview</h2><span>Last 30 days</span></div>
+    <div class="b-section-heading"><h2>@Localizer["Analytics.Overview"]</h2><span>@Localizer["Analytics.Last30Days"]</span></div>
     <div class="b-inline-metrics">
-        <div><strong>@Model.TotalViews30Days</strong><span>Total views</span><small>@Model.TotalViews7Days in the last 7 days</small></div>
-        <div><strong>@Model.UniqueVisitors30Days</strong><span>Unique visitors</span><small>@Model.UniqueVisitors7Days in the last 7 days</small></div>
+        <div><strong>@Model.TotalViews30Days</strong><span>@Localizer["Analytics.TotalViews"]</span><small>@Localizer["Analytics.Last7Days", Model.TotalViews7Days]</small></div>
+        <div><strong>@Model.UniqueVisitors30Days</strong><span>@Localizer["Analytics.UniqueVisitors"]</span><small>@Localizer["Analytics.Last7Days", Model.UniqueVisitors7Days]</small></div>
     </div>
-    <div class="b-trend-placeholder" role="img" aria-label="Views trend visualization">
+    <div class="b-trend-placeholder" role="img" aria-label="@Localizer["Analytics.TrendAria"].Value">
         <span style="height:18%"></span><span style="height:28%"></span><span style="height:22%"></span><span style="height:44%"></span><span style="height:38%"></span><span style="height:62%"></span><span style="height:52%"></span><span style="height:72%"></span><span style="height:66%"></span><span style="height:84%"></span><span style="height:76%"></span><span style="height:94%"></span>
     </div>
 </section>
@@ -19,10 +19,10 @@
 <div class="row g-4">
     <div class="col-lg-6">
         <section class="b-section">
-            <div class="b-section-heading"><h2>Top posts</h2><span>Last 30 days</span></div>
+            <div class="b-section-heading"><h2>@Localizer["Analytics.TopPosts"]</h2><span>@Localizer["Analytics.Last30Days"]</span></div>
             @if (Model.TopPosts.Count == 0)
             {
-                <div class="b-empty-state"><h3>Publish to start learning</h3><p>Post views will appear here after readers visit your published work.</p></div>
+                <div class="b-empty-state"><h3>@Localizer["Analytics.EmptyPosts.Title"]</h3><p>@Localizer["Analytics.EmptyPosts.Copy"]</p></div>
             }
             else
             {
@@ -41,10 +41,10 @@
 
     <div class="col-lg-6">
         <section class="b-section">
-            <div class="b-section-heading"><h2>Top referrers</h2><span>Last 30 days</span></div>
+            <div class="b-section-heading"><h2>@Localizer["Analytics.TopReferrers"]</h2><span>@Localizer["Analytics.Last30Days"]</span></div>
             @if (Model.TopReferrers.Count == 0)
             {
-                <div class="b-empty-state"><h3>No referrers yet</h3><p>Share a published post to begin seeing where readers arrive from.</p></div>
+                <div class="b-empty-state"><h3>@Localizer["Analytics.EmptyReferrers.Title"]</h3><p>@Localizer["Analytics.EmptyReferrers.Copy"]</p></div>
             }
             else
             {

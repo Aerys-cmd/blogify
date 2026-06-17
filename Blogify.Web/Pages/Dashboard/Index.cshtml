@@ -11,7 +11,7 @@
         <div class="alert alert-success">@success</div>
     }
 
-    <header class="b-page-header"><div><p class="b-page-context">Your publishing homes</p><h1>@Localizer["Dashboard.MyBlogs"]</h1><p>Open a workspace, continue writing, or start something new.</p></div><a asp-page="/Dashboard/CreateBlog" class="btn btn-primary">@Localizer["Action.CreateBlog"]</a></header>
+    <header class="b-page-header"><div><p class="b-page-context">@Localizer["Dashboard.Context"]</p><h1>@Localizer["Dashboard.MyBlogs"]</h1><p>@Localizer["Dashboard.Description"]</p></div><a asp-page="/Dashboard/CreateBlog" class="btn btn-primary">@Localizer["Action.CreateBlog"]</a></header>
 
     @if (Model.OwnedBlogs.Count > 0)
     {
@@ -22,7 +22,7 @@
                 <article class="b-site-row">
                     <img src="/blogify-mark.svg" alt="" width="44" height="44" />
                     <div><h3>@blog.Title</h3><p>@(blog.Subdomain).blogify.com</p></div>
-                    <span class="b-status b-status-live">Owner</span>
+                    <span class="b-status b-status-live">@Localizer["Dashboard.OwnerRole"]</span>
                     <div class="b-site-actions">
                                 <a href="/app/admin/@blog.Subdomain" class="btn btn-dark">
                                     @Localizer["Dashboard.ManageBlog"]

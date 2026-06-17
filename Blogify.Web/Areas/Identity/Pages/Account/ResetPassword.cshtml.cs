@@ -1,12 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using Blogify.Web.Models;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Blogify.Web.Areas.Identity.Pages.Account;
 
-public sealed class ResetPasswordModel(UserManager<ApplicationUser> userManager) : PageModel
+public sealed class ResetPasswordModel(
+    UserManager<ApplicationUser> userManager,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty]
     public ResetPasswordInput Input { get; set; } = new();
@@ -16,7 +20,7 @@ public sealed class ResetPasswordModel(UserManager<ApplicationUser> userManager)
     public IActionResult OnGet(string? token = null, string? email = null)
     {
         if (token is null || email is null)
-            return BadRequest("A token and email are required to reset the password.");
+            return BadRequest(localizer["Auth.ResetPassword.TokenEmailRequired"].Value);
 
         Input = new ResetPasswordInput { Token = token, Email = email };
         return Page();

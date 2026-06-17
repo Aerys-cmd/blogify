@@ -4,9 +4,9 @@
     ViewData["Title"] = @Localizer["Auth.Register.Title"].Value;
 }
 
-<p class="b-page-context mb-2">Start publishing</p>
+<p class="b-page-context mb-2">@Localizer["Auth.Register.Context"]</p>
 <h4 class="mb-2 fw-semibold">@Localizer["Auth.Register.Heading"]</h4>
-<p class="text-muted mb-4">Create your account, then choose a name and address for your blog.</p>
+<p class="text-muted mb-4">@Localizer["Auth.Register.Description"]</p>
 
 <form method="post">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>

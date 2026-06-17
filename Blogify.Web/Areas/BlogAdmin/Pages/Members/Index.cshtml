@@ -70,7 +70,7 @@
                                                 <option value="@role" selected="@(member.Role == role)">@role</option>
                                             }
                                         </select>
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Save</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">@Localizer["Action.Save"]</button>
                                     </form>
                                 }
                                 else
@@ -131,11 +131,11 @@ else
                                 {
                                     <form method="post" asp-page-handler="ResendInvite" asp-route-blogSlug="@blogSlug" class="d-inline">
                                         <input type="hidden" name="invitationId" value="@inv.InvitationId" />
-                                        <button type="submit" class="btn btn-sm btn-outline-primary">Resend</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">@Localizer["Action.Resend"]</button>
                                     </form>
                                     <form method="post" asp-page-handler="CancelInvite" asp-route-blogSlug="@blogSlug" class="d-inline">
                                         <input type="hidden" name="invitationId" value="@inv.InvitationId" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">@Localizer["Action.Cancel"]</button>
                                     </form>
                                 }
                             </td>
