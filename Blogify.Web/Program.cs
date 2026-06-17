@@ -13,6 +13,7 @@ using Blogify.Web.Middleware;
 using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.OutputCaching;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,6 +87,7 @@ else
 builder.Services.AddSingleton<IBlockNoteHtmlRenderer, BlockNoteHtmlRenderer>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<FeedService>();
+builder.Services.AddScoped<IPublicBlogCacheInvalidator, PublicBlogCacheInvalidator>();
 builder.Services.AddScoped<IBlogPermissionService, BlogPermissionService>();
 builder.Services.AddScoped<IAccessibleBlogService, AccessibleBlogService>();
 builder.Services.AddScoped<ILoginRedirectService, LoginRedirectService>();
@@ -140,9 +142,32 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
     options.ViewLocationExpanders.Add(new ThemeViewLocationExpander());
 });
 
+string[] outputCachedPublicBlogPages =
+[
+    "/Index",
+    "/Post",
+    "/Category",
+    "/Tag",
+    "/Categories",
+    "/Tags",
+    "/Archive",
+    "/Archives"
+];
+
 builder.Services
     .AddRazorPages(options =>
     {
+        foreach (string pageName in outputCachedPublicBlogPages)
+        {
+            options.Conventions.AddAreaPageApplicationModelConvention(
+                areaName: "Blog",
+                pageName: pageName,
+                action: model => model.EndpointMetadata.Add(new OutputCacheAttribute
+                {
+                    PolicyName = PublicBlogOutputCachePolicy.PolicyName
+                }));
+        }
+
     // Map the BlogAdmin area under /app/admin/{blogSlug} so the blog is identified
     // by route parameter rather than subdomain, enabling a single-auth architecture
     // where all admin pages live on the root domain cookie.
@@ -200,6 +225,11 @@ builder.Services
         options.DataAnnotationLocalizerProvider = (_, factory) =>
             factory.Create(typeof(SharedResource)));
 
+builder.Services.AddOutputCache(options =>
+{
+    options.AddPolicy(PublicBlogOutputCachePolicy.PolicyName, new PublicBlogOutputCachePolicy());
+});
+
 var app = builder.Build();
 
 await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
@@ -245,6 +275,8 @@ app.UseAccessControl();
 app.UseAnalyticsTracking();
 
 app.UseAuthorization();
+
+app.UseOutputCache();
 
 app.UseAntiforgery();
 

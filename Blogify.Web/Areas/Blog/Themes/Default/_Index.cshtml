@@ -8,7 +8,7 @@ else
     PostCardViewModel lead = Model.Posts[0];
     <section class="lead-story">
         <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="lead-image">
-            @if (lead.CoverImageUrl is not null) { <img src="@lead.CoverImageUrl" alt="" /> }
+            @if (lead.CoverImageUrl is not null) { <img src="@lead.CoverImageUrl" alt="" decoding="async" /> }
             else { <span aria-hidden="true">@Model.BlogTitle.Substring(0, 1).ToUpperInvariant()</span> }
         </a>
         <div class="lead-copy">
@@ -33,7 +33,7 @@ else
         {
             <article class="story-card">
                 <a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug" class="story-image">
-                    @if (post.CoverImageUrl is not null) { <img src="@post.CoverImageUrl" alt="" loading="lazy" /> }
+                    @if (post.CoverImageUrl is not null) { <img src="@post.CoverImageUrl" alt="" loading="lazy" decoding="async" /> }
                     else { <span aria-hidden="true">@post.Title.Substring(0, 1).ToUpperInvariant()</span> }
                 </a>
                 <p class="date-line">@post.PublishedAt.ToString("D")</p>

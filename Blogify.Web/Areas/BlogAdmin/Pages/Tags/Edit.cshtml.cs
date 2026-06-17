@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
+using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,7 +11,10 @@ using Microsoft.Extensions.Localization;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Tags;
 
 [Authorize]
-public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<SharedResource> localizer) : PageModel
+public sealed class EditModel(
+    ApplicationDbContext dbContext,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -82,6 +86,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<S
         tag.Rename(name);
         tag.ChangeSlug(slug);
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateTenantAsync(tag.BlogId, ct);
 
         return RedirectToPage("/Tags/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }

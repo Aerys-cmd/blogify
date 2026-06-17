@@ -12,7 +12,10 @@ using Microsoft.Extensions.Localization;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
 [Authorize]
-public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedService, IStringLocalizer<SharedResource> localizer) : PageModel
+public sealed class EditModel(
+    ApplicationDbContext dbContext,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -184,7 +187,10 @@ public sealed class EditModel(ApplicationDbContext dbContext, FeedService feedSe
         }
 
         await dbContext.SaveChangesAsync(ct);
-        feedService.InvalidateTenant(post.BlogId);
+        if (currentlyPublished || Input.IsPublished)
+        {
+            await publicBlogCacheInvalidator.InvalidateTenantAsync(post.BlogId, ct);
+        }
 
         TempData["PostSaved"] = (Input.IsPublished && !currentlyPublished) ? "published"
             : (!Input.IsPublished && currentlyPublished) ? "unpublished"

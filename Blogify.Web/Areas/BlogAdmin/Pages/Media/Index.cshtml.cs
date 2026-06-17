@@ -14,6 +14,7 @@ public sealed class IndexModel(
     ApplicationDbContext dbContext,
     TenantContext tenantContext,
     IFileStorageService fileStorage,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
     IStringLocalizer<SharedResource> localizer) : PageModel
 {
     private const int PageSize = 24;
@@ -239,6 +240,10 @@ public sealed class IndexModel(
         await fileStorage.DeleteAsync(media.Url, ct);
         media.SoftDelete();
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateIfMediaIsPubliclyReferencedAsync(
+            tenantContext.RequiredTenant.Id,
+            [id],
+            ct);
 
         if (Request.Headers.ContainsKey("HX-Request"))
         {
@@ -268,6 +273,10 @@ public sealed class IndexModel(
         }
 
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateIfMediaIsPubliclyReferencedAsync(
+            tenantContext.RequiredTenant.Id,
+            ids,
+            ct);
 
         return RedirectToPage("/Media/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
@@ -304,6 +313,10 @@ public sealed class IndexModel(
         }
 
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateIfMediaIsPubliclyReferencedAsync(
+            tenantContext.RequiredTenant.Id,
+            [id],
+            ct);
 
         if (Request.Headers.ContainsKey("HX-Request"))
         {

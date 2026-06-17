@@ -17,7 +17,7 @@
             <a asp-area="Blog" asp-page="/Index" class="magazine-title magazine-brand">
                 @if (!string.IsNullOrWhiteSpace(branding.LogoUrl))
                 {
-                    <img src="@branding.LogoUrl" alt="" class="magazine-logo" />
+                    <img src="@branding.LogoUrl" alt="" class="magazine-logo" loading="lazy" decoding="async" />
                 }
                 <span>@TenantContext.RequiredTenant.Title</span>
             </a>

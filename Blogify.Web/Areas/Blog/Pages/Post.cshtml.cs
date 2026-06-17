@@ -15,6 +15,7 @@ public sealed class PostModel(
     ApplicationDbContext dbContext,
     TenantContext tenantContext,
     IBlockNoteHtmlRenderer htmlRenderer,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
     IStringLocalizer<SharedResource> localizer) : PageModel
 {
     public Guid PostId { get; private set; }
@@ -79,6 +80,7 @@ public sealed class PostModel(
         Comment comment = Comment.Create(blogId, PostId, authorId, Input.Content, Input.ParentCommentId);
         dbContext.Comments.Add(comment);
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateTenantAsync(blogId, ct);
 
         return RedirectToPage("./Post", new { slug });
     }

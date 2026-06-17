@@ -14,6 +14,7 @@ namespace Blogify.Web.Areas.BlogAdmin.Pages.Themes;
 public sealed class IndexModel(
     ApplicationDbContext dbContext,
     TenantContext tenantContext,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
     IStringLocalizer<SharedResource> localizer) : PageModel
 {
     public string CurrentTheme { get; private set; } = string.Empty;
@@ -59,6 +60,7 @@ public sealed class IndexModel(
         }
 
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateTenantAsync(tenant.Id, ct);
         return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });
     }
 

@@ -12,7 +12,11 @@ using Microsoft.Extensions.Localization;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Settings;
 
 [Authorize]
-public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext, IStringLocalizer<SharedResource> localizer) : PageModel
+public sealed class IndexModel(
+    ApplicationDbContext dbContext,
+    TenantContext tenantContext,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty]
     public BlogSettingsInput Input { get; set; } = new();
@@ -87,6 +91,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
         }
 
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateTenantAsync(tenant.Id, ct);
 
         TempData["SuccessMessage"] = localizer["Message.SaveSuccess"].Value;
         return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });

@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Posts;
 
 [Authorize]
-public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class IndexModel(
+    ApplicationDbContext dbContext,
+    TenantContext tenantContext,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator) : PageModel
 {
     private const int PageSize = 10;
 
@@ -108,8 +111,13 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
             return NotFound();
         }
 
+        bool wasPublished = post.PublishedRevisionId is not null;
         post.SoftDelete();
         await dbContext.SaveChangesAsync(ct);
+        if (wasPublished)
+        {
+            await publicBlogCacheInvalidator.InvalidateTenantAsync(post.BlogId, ct);
+        }
 
         return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });
     }

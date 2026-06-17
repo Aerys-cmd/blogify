@@ -66,7 +66,7 @@ internal static class BlogPostListLoader
             ? await dbContext.Media
                 .AsNoTracking()
                 .Where(m => coverImageIds.Contains(m.Id))
-                .ToDictionaryAsync(m => m.Id, m => m.Url, ct)
+                .ToDictionaryAsync(m => m.Id, m => m.ThumbnailUrl ?? m.Url, ct)
             : [];
 
         List<Guid> postIds = rows.Select(p => p.Id).ToList();

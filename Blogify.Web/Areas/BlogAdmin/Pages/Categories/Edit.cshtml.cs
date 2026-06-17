@@ -12,7 +12,10 @@ using Microsoft.Extensions.Localization;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Categories;
 
 [Authorize]
-public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<SharedResource> localizer) : PageModel
+public sealed class EditModel(
+    ApplicationDbContext dbContext,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -89,6 +92,7 @@ public sealed class EditModel(ApplicationDbContext dbContext, IStringLocalizer<S
         category.Update(name, slug);
         category.UpdateSeoMetadata(Input.MetaTitle, Input.MetaDescription);
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateTenantAsync(category.BlogId, ct);
 
         return RedirectToPage("/Categories/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }
@@ -119,4 +123,3 @@ public sealed class CategoryEditInput
     [MaxLength(160)]
     public string? MetaDescription { get; set; }
 }
-

@@ -12,7 +12,11 @@ using Microsoft.Extensions.Localization;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Tags;
 
 [Authorize]
-public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext tenantContext, IStringLocalizer<SharedResource> localizer) : PageModel
+public sealed class CreateModel(
+    ApplicationDbContext dbContext,
+    TenantContext tenantContext,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty]
     public TagInputModel Input { get; set; } = new();
@@ -55,6 +59,7 @@ public sealed class CreateModel(ApplicationDbContext dbContext, TenantContext te
         Tag tag = Tag.Create(blogId, name, slug);
         dbContext.Tags.Add(tag);
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateTenantAsync(blogId, ct);
 
         return RedirectToPage("/Tags/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
     }

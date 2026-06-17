@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 namespace Blogify.Web.Areas.BlogAdmin.Pages.Tags;
 
 [Authorize]
-public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext tenantContext) : PageModel
+public sealed class IndexModel(
+    ApplicationDbContext dbContext,
+    TenantContext tenantContext,
+    IPublicBlogCacheInvalidator publicBlogCacheInvalidator) : PageModel
 {
     public IReadOnlyList<TagListItem> Tags { get; private set; } = [];
     public string TenantTitle { get; private set; } = string.Empty;
@@ -37,6 +40,7 @@ public sealed class IndexModel(ApplicationDbContext dbContext, TenantContext ten
 
         tag.SoftDelete();
         await dbContext.SaveChangesAsync(ct);
+        await publicBlogCacheInvalidator.InvalidateTenantAsync(tag.BlogId, ct);
         return RedirectToPage(new { blogSlug = RouteData.Values["blogSlug"] });
     }
 }
