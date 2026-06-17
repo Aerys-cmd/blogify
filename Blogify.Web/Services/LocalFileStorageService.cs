@@ -1,54 +1,25 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 
 namespace Blogify.Web.Services;
 
-public sealed class LocalFileStorageService(IWebHostEnvironment env) : IFileStorageService
+public sealed class LocalFileStorageService(
+    IWebHostEnvironment env,
+    ImageStorageProcessor imageProcessor) : IFileStorageService
 {
-    private static readonly HashSet<string> AllowedContentTypes = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "image/jpeg",
-        "image/png",
-        "image/gif",
-        "image/webp"
-    };
-
-    private const long MaxFileSizeBytes = 10L * 1024L * 1024L;
-
     public async Task<string> SaveAsync(IFormFile file, Guid tenantId, CancellationToken ct = default)
     {
-        ArgumentNullException.ThrowIfNull(file);
+        imageProcessor.ValidateUpload(file);
 
-        if (!AllowedContentTypes.Contains(file.ContentType))
-        {
-            throw new ArgumentException(
-                $"Content type '{file.ContentType}' is not allowed. Only JPEG, PNG, GIF, and WebP images are accepted.",
-                nameof(file));
-        }
-
-        if (file.Length > MaxFileSizeBytes)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(file),
-                "File size exceeds the maximum allowed size of 10 MB.");
-        }
-
-        string extension = Path.GetExtension(file.FileName);
-        string fileName = $"{Guid.NewGuid()}{extension}";
+        ProcessedImage stored = await imageProcessor.CreateStoredImageAsync(file, ct);
+        string fileName = $"{Guid.NewGuid()}{stored.FileExtension}";
         string directoryPath = Path.Combine(env.WebRootPath, "uploads", tenantId.ToString());
-
         Directory.CreateDirectory(directoryPath);
 
         string filePath = Path.Combine(directoryPath, fileName);
+        await File.WriteAllBytesAsync(filePath, stored.Bytes, ct);
 
-        await using (FileStream stream = new(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream, ct);
-        }
-
-        return $"/uploads/{tenantId}/{fileName}";
+        return StoragePathHelper.BuildLocalUrl(tenantId, fileName);
     }
 
     public Task DeleteAsync(string url, CancellationToken ct = default)
@@ -60,13 +31,28 @@ public sealed class LocalFileStorageService(IWebHostEnvironment env) : IFileStor
             throw new ArgumentException("URL must not be empty.", nameof(url));
         }
 
-        // URL format: /uploads/{tenantId}/{fileName}
-        string relativePath = url.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+        string relativePath = StoragePathHelper.GetRelativePathFromUrl(url).Replace('/', Path.DirectorySeparatorChar);
         string absolutePath = Path.Combine(env.WebRootPath, relativePath);
-
         if (File.Exists(absolutePath))
         {
             File.Delete(absolutePath);
+        }
+
+        string[] segments = relativePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length == 3 &&
+            string.Equals(segments[0], "uploads", StringComparison.OrdinalIgnoreCase))
+        {
+            string thumbnailPath = Path.Combine(
+                env.WebRootPath,
+                "uploads",
+                segments[1],
+                "thumbnails",
+                StoragePathHelper.GetThumbnailFileName(segments[2]));
+
+            if (File.Exists(thumbnailPath))
+            {
+                File.Delete(thumbnailPath);
+            }
         }
 
         return Task.CompletedTask;
@@ -80,9 +66,8 @@ public sealed class LocalFileStorageService(IWebHostEnvironment env) : IFileStor
     {
         ArgumentNullException.ThrowIfNull(sourceUrl);
 
-        string relativePath = sourceUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+        string relativePath = StoragePathHelper.GetRelativePathFromUrl(sourceUrl).Replace('/', Path.DirectorySeparatorChar);
         string absolutePath = Path.Combine(env.WebRootPath, relativePath);
-
         if (!File.Exists(absolutePath))
         {
             return null;
@@ -90,25 +75,21 @@ public sealed class LocalFileStorageService(IWebHostEnvironment env) : IFileStor
 
         try
         {
-            string thumbDir = Path.Combine(
-                env.WebRootPath, "uploads", tenantId.ToString(), "thumbnails");
+            string thumbDir = Path.Combine(env.WebRootPath, "uploads", tenantId.ToString(), "thumbnails");
             Directory.CreateDirectory(thumbDir);
 
-            string originalName = Path.GetFileNameWithoutExtension(absolutePath);
-            string thumbFileName = $"{originalName}-thumb.webp";
+            string thumbFileName = StoragePathHelper.GetThumbnailFileName(Path.GetFileName(absolutePath));
             string thumbPath = Path.Combine(thumbDir, thumbFileName);
 
-            using Image image = await Image.LoadAsync(absolutePath, ct);
-
-            if (image.Width > maxWidthPx)
+            await using FileStream input = File.OpenRead(absolutePath);
+            ProcessedImage? thumbnail = await imageProcessor.CreateThumbnailAsync(input, maxWidthPx, ct);
+            if (thumbnail is null)
             {
-                int newHeight = (int)Math.Round((double)image.Height * maxWidthPx / image.Width);
-                image.Mutate(ctx => ctx.Resize(maxWidthPx, newHeight));
+                return null;
             }
 
-            await image.SaveAsWebpAsync(thumbPath, ct);
-
-            return $"/uploads/{tenantId}/thumbnails/{thumbFileName}";
+            await File.WriteAllBytesAsync(thumbPath, thumbnail.Bytes, ct);
+            return StoragePathHelper.BuildLocalThumbnailUrl(tenantId, thumbFileName);
         }
         catch
         {
@@ -122,9 +103,8 @@ public sealed class LocalFileStorageService(IWebHostEnvironment env) : IFileStor
     {
         ArgumentNullException.ThrowIfNull(sourceUrl);
 
-        string relativePath = sourceUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+        string relativePath = StoragePathHelper.GetRelativePathFromUrl(sourceUrl).Replace('/', Path.DirectorySeparatorChar);
         string absolutePath = Path.Combine(env.WebRootPath, relativePath);
-
         if (!File.Exists(absolutePath))
         {
             return null;
@@ -132,8 +112,8 @@ public sealed class LocalFileStorageService(IWebHostEnvironment env) : IFileStor
 
         try
         {
-            ImageInfo info = await Image.IdentifyAsync(absolutePath, ct);
-            return info is null ? null : (info.Width, info.Height);
+            await using FileStream input = File.OpenRead(absolutePath);
+            return await imageProcessor.GetDimensionsAsync(input, ct);
         }
         catch
         {

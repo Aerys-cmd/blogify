@@ -36,7 +36,37 @@ builder.Services
 builder.Services.AddScoped<TenantContext>();
 builder.Services.AddScoped<DatabaseMigrator>();
 builder.Services.AddScoped<DatabaseSeeder>();
-builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+StorageOptions storageOptions = builder.Configuration.GetSection("Storage").Get<StorageOptions>() ?? new StorageOptions();
+builder.Services.AddSingleton(storageOptions);
+builder.Services.AddSingleton<ImageStorageProcessor>();
+
+bool useR2Storage =
+    !string.IsNullOrWhiteSpace(storageOptions.R2.AccountId) &&
+    !string.IsNullOrWhiteSpace(storageOptions.R2.AccessKeyId) &&
+    !string.IsNullOrWhiteSpace(storageOptions.R2.SecretAccessKey) &&
+    !string.IsNullOrWhiteSpace(storageOptions.R2.BucketName) &&
+    !string.IsNullOrWhiteSpace(storageOptions.R2.PublicBaseUrl);
+
+bool hasAnyR2Settings =
+    !string.IsNullOrWhiteSpace(storageOptions.R2.AccountId) ||
+    !string.IsNullOrWhiteSpace(storageOptions.R2.AccessKeyId) ||
+    !string.IsNullOrWhiteSpace(storageOptions.R2.SecretAccessKey) ||
+    !string.IsNullOrWhiteSpace(storageOptions.R2.BucketName) ||
+    !string.IsNullOrWhiteSpace(storageOptions.R2.PublicBaseUrl);
+
+if (hasAnyR2Settings && !useR2Storage)
+{
+    throw new InvalidOperationException("Storage:R2 configuration is incomplete.");
+}
+
+if (useR2Storage)
+{
+    builder.Services.AddHttpClient<IFileStorageService, R2FileStorageService>();
+}
+else
+{
+    builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+}
 builder.Services.AddSingleton<IBlockNoteHtmlRenderer, BlockNoteHtmlRenderer>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<FeedService>();

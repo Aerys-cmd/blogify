@@ -17,7 +17,7 @@ public sealed class IndexModel(
     IStringLocalizer<SharedResource> localizer) : PageModel
 {
     private const int PageSize = 24;
-    private const int ThumbnailMaxWidthPx = 300;
+    private const int ThumbnailMaxWidthPx = 220;
 
     public IReadOnlyList<MediaItemVm> Items { get; private set; } = [];
     public CursorPagerVm Pager { get; private set; } = CursorPagerVm.Empty;
