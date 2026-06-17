@@ -12,6 +12,7 @@
     string blogTitle = TenantCtx.CurrentTenant?.Title ?? Localizer["Page.Title.BlogAdmin.Dashboard"].Value;
     string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
     bool canManageUsers = userId is not null && await PermissionService.CanManageUsersAsync(userId, TenantCtx.RequiredTenant.Id);
+    bool canManageComments = userId is not null && await PermissionService.CanManageCommentsAsync(userId, TenantCtx.RequiredTenant.Id);
     IReadOnlyList<Blogify.Web.Services.AccessibleBlog> blogs = userId is null
         ? []
         : await AccessibleBlogService.GetForUserAsync(userId, Context.Request.Scheme, Context.Request.Host);
@@ -59,6 +60,10 @@
             <a class="ba-nav-link @Active("/Posts")" aria-current="@Current("/Posts")" asp-area="BlogAdmin" asp-page="/Posts/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">▤</span>@Localizer["Nav.Posts"]</a>
             <a class="ba-nav-link @Active("/Media")" aria-current="@Current("/Media")" asp-area="BlogAdmin" asp-page="/Media/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">▧</span>@Localizer["Nav.Media"]</a>
             <a class="ba-nav-link @Active("/Analytics")" aria-current="@Current("/Analytics")" asp-area="BlogAdmin" asp-page="/Analytics/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">↗</span>@Localizer["Nav.Analytics"]</a>
+            @if (canManageComments)
+            {
+                <a class="ba-nav-link @Active("/Comments")" aria-current="@Current("/Comments")" asp-area="BlogAdmin" asp-page="/Comments/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">◒</span>@Localizer["Nav.Comments"]</a>
+            }
             <p class="ba-sidebar-section-label">@Localizer["Sidebar.Manage"]</p>
             <a class="ba-nav-link @Active("/Themes")" aria-current="@Current("/Themes")" asp-area="BlogAdmin" asp-page="/Themes/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">◐</span>@Localizer["Nav.Appearance"]</a>
             <a class="ba-nav-link @Active("/Categories")" aria-current="@Current("/Categories")" asp-area="BlogAdmin" asp-page="/Categories/Index" asp-route-blogSlug="@blogSlug"><span aria-hidden="true">#</span>@Localizer["Nav.Categories"]</a>

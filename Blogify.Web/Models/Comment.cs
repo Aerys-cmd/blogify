@@ -34,6 +34,7 @@ public sealed class Comment
         Content = trimmedContent;
         ParentCommentId = parentCommentId == Guid.Empty ? null : parentCommentId;
         CreatedAt = DateTimeOffset.UtcNow;
+        ModerationStatus = CommentModerationStatus.Pending;
     }
 
     public static Comment Create(Guid blogId, Guid postId, string authorId, string content, Guid? parentCommentId = null)
@@ -46,7 +47,39 @@ public sealed class Comment
     public string Content { get; private set; } = string.Empty;
     public Guid? ParentCommentId { get; private init; }
     public DateTimeOffset CreatedAt { get; private init; }
+    public CommentModerationStatus ModerationStatus { get; private set; }
+    public DateTimeOffset? ModeratedAt { get; private set; }
+    public string? ModeratedByUserId { get; private set; }
+    public string? ModerationReason { get; private set; }
     public DateTimeOffset? DeletedAt { get; private set; }
+
+    public bool IsApproved => ModerationStatus == CommentModerationStatus.Approved;
+
+    public void Approve(string moderatorUserId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(moderatorUserId);
+
+        ModerationStatus = CommentModerationStatus.Approved;
+        ModeratedByUserId = moderatorUserId.Trim();
+        ModeratedAt = DateTimeOffset.UtcNow;
+        ModerationReason = null;
+    }
+
+    public void Reject(string moderatorUserId, string? reason = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(moderatorUserId);
+
+        string? trimmedReason = string.IsNullOrWhiteSpace(reason) ? null : reason.Trim();
+        if (trimmedReason?.Length > 500)
+        {
+            throw new ArgumentException("Moderation reason must not exceed 500 characters.", nameof(reason));
+        }
+
+        ModerationStatus = CommentModerationStatus.Rejected;
+        ModeratedByUserId = moderatorUserId.Trim();
+        ModeratedAt = DateTimeOffset.UtcNow;
+        ModerationReason = trimmedReason;
+    }
 
     public void SoftDelete()
     {

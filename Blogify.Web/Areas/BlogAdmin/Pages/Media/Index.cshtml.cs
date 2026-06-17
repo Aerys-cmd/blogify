@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Blogify.Web.Data;
 using Blogify.Web.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +16,8 @@ public sealed class IndexModel(
     TenantContext tenantContext,
     IFileStorageService fileStorage,
     IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
+    IBlogPermissionService permissionService,
+    ILogger<IndexModel> logger,
     IStringLocalizer<SharedResource> localizer) : PageModel
 {
     private const int PageSize = 24;
@@ -151,6 +154,11 @@ public sealed class IndexModel(
 
     public async Task<IActionResult> OnPostUploadAsync(IFormFile? file, CancellationToken ct = default)
     {
+        if (!await CanManageMediaAsync(ct))
+        {
+            return Forbid();
+        }
+
         if (file is null || file.Length == 0)
         {
             return ReturnUploadError(localizer["Message.UploadFileRequired"].Value);
@@ -168,6 +176,11 @@ public sealed class IndexModel(
         catch (ArgumentException ex)
         {
             return ReturnUploadError(ex.Message);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogError(ex, "Media upload failed for blog {BlogId}.", tenantContext.RequiredTenant.Id);
+            return ReturnUploadError(localizer["Media.Upload.StorageError"].Value);
         }
 
         MediaItemVm vm = new(
@@ -188,6 +201,11 @@ public sealed class IndexModel(
         string? modalId,
         CancellationToken ct = default)
     {
+        if (!await CanManageMediaAsync(ct))
+        {
+            return Forbid();
+        }
+
         if (string.IsNullOrWhiteSpace(targetInputId) || !IsSafeDomId(targetInputId))
         {
             return BadRequest();
@@ -215,6 +233,11 @@ public sealed class IndexModel(
         {
             return ReturnPickerUploadError(ex.Message, resolvedModalId);
         }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogError(ex, "Picker media upload failed for blog {BlogId}.", tenantContext.RequiredTenant.Id);
+            return ReturnPickerUploadError(localizer["Media.Upload.StorageError"].Value, resolvedModalId);
+        }
 
         MediaItemVm item = new(
             media.Id, media.FileName, media.Url, media.ContentType,
@@ -230,6 +253,11 @@ public sealed class IndexModel(
 
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken ct = default)
     {
+        if (!await CanManageMediaAsync(ct))
+        {
+            return Forbid();
+        }
+
         Models.Media? media = await dbContext.Media.FirstOrDefaultAsync(m => m.Id == id, ct);
 
         if (media is null)
@@ -237,7 +265,16 @@ public sealed class IndexModel(
             return NotFound();
         }
 
-        await fileStorage.DeleteAsync(media.Url, ct);
+        try
+        {
+            await fileStorage.DeleteAsync(media.Url, ct);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogError(ex, "Media delete failed for media {MediaId} in blog {BlogId}.", id, tenantContext.RequiredTenant.Id);
+            return BadRequest(localizer["Media.Delete.StorageError"].Value);
+        }
+
         media.SoftDelete();
         await dbContext.SaveChangesAsync(ct);
         await publicBlogCacheInvalidator.InvalidateIfMediaIsPubliclyReferencedAsync(
@@ -257,6 +294,11 @@ public sealed class IndexModel(
         [FromForm] List<Guid> ids,
         CancellationToken ct = default)
     {
+        if (!await CanManageMediaAsync(ct))
+        {
+            return Forbid();
+        }
+
         if (ids is null || ids.Count == 0)
         {
             return RedirectToPage("/Media/Index", new { area = "BlogAdmin", blogSlug = RouteData.Values["blogSlug"] });
@@ -268,7 +310,19 @@ public sealed class IndexModel(
 
         foreach (Models.Media media in mediaItems)
         {
-            await fileStorage.DeleteAsync(media.Url, ct);
+            try
+            {
+                await fileStorage.DeleteAsync(media.Url, ct);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                logger.LogError(
+                    ex,
+                    "Bulk media delete skipped object for media {MediaId} in blog {BlogId}.",
+                    media.Id,
+                    tenantContext.RequiredTenant.Id);
+            }
+
             media.SoftDelete();
         }
 
@@ -288,6 +342,11 @@ public sealed class IndexModel(
         string? description,
         CancellationToken ct = default)
     {
+        if (!await CanManageMediaAsync(ct))
+        {
+            return Forbid();
+        }
+
         Models.Media? media = await dbContext.Media.FirstOrDefaultAsync(m => m.Id == id, ct);
 
         if (media is null)
@@ -447,6 +506,13 @@ public sealed class IndexModel(
             {
                 media.SetThumbnail(thumbnailUrl, dims.Value.Width, dims.Value.Height);
             }
+            else
+            {
+                logger.LogWarning(
+                    "Image metadata or thumbnail generation did not complete for media {MediaId} in blog {BlogId}.",
+                    media.Id,
+                    tenantContext.RequiredTenant.Id);
+            }
         }
 
         dbContext.Media.Add(media);
@@ -478,6 +544,13 @@ public sealed class IndexModel(
 
     private IActionResult ReturnPickerUploadError(string message, string modalId) =>
         ReturnUploadError(message, $"#picker-upload-error-{modalId}");
+
+    private async Task<bool> CanManageMediaAsync(CancellationToken ct)
+    {
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return userId is not null &&
+            await permissionService.CanManageMediaAsync(userId, tenantContext.RequiredTenant.Id, ct);
+    }
 
     public async Task<IActionResult> OnGetMediaDetailAsync(Guid id, CancellationToken ct = default)
     {

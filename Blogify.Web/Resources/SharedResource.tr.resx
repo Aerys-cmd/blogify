@@ -650,4 +650,29 @@
   <data name="Invitation.Accept" xml:space="preserve"><value>Daveti kabul et</value></data>
   <data name="Invitation.Decline" xml:space="preserve"><value>Reddet</value></data>
   <data name="Label.Date" xml:space="preserve"><value>Tarih</value></data>
+  <data name="Page.Title.BlogAdmin.Comments" xml:space="preserve"><value>Yorumlar</value></data>
+  <data name="Nav.Comments" xml:space="preserve"><value>Yorumlar</value></data>
+  <data name="Blog.CommentModerationNotice" xml:space="preserve"><value>Yorumunuz moderatör onayından sonra görünecek.</value></data>
+  <data name="Blog.CommentRateLimited" xml:space="preserve"><value>Çok hızlı yorum yapıyorsunuz. Lütfen biraz bekleyip tekrar deneyin.</value></data>
+  <data name="Comments.Context" xml:space="preserve"><value>Moderasyon</value></data>
+  <data name="Comments.Description" xml:space="preserve"><value>Yeni yorumları herkese açık blogda görünmeden önce inceleyin.</value></data>
+  <data name="Comments.FilterAria" xml:space="preserve"><value>Yorum durum filtresi</value></data>
+  <data name="Comments.Status.Pending" xml:space="preserve"><value>Bekleyen</value></data>
+  <data name="Comments.Status.Approved" xml:space="preserve"><value>Onaylanan</value></data>
+  <data name="Comments.Status.Rejected" xml:space="preserve"><value>Reddedilen</value></data>
+  <data name="Comments.Empty.Title" xml:space="preserve"><value>Bu kuyrukta yorum yok</value></data>
+  <data name="Comments.Empty.Copy" xml:space="preserve"><value>Seçili durumla eşleşen yorumlar burada görünür.</value></data>
+  <data name="Comments.Table.Comment" xml:space="preserve"><value>Yorum</value></data>
+  <data name="Comments.Table.Post" xml:space="preserve"><value>Yazı</value></data>
+  <data name="Comments.Table.Author" xml:space="preserve"><value>Yazar</value></data>
+  <data name="Comments.Table.Date" xml:space="preserve"><value>Tarih</value></data>
+  <data name="Comments.Action.Approve" xml:space="preserve"><value>Onayla</value></data>
+  <data name="Comments.Action.Reject" xml:space="preserve"><value>Reddet</value></data>
+  <data name="Comments.Moderation.Approved" xml:space="preserve"><value>Yorum onaylandı.</value></data>
+  <data name="Comments.Moderation.Rejected" xml:space="preserve"><value>Yorum reddedildi.</value></data>
+  <data name="Comments.DeleteConfirm" xml:space="preserve"><value>Bu yorum silinsin mi?</value></data>
+  <data name="Comments.RejectionReason" xml:space="preserve"><value>Neden: {0}</value></data>
+  <data name="Comments.UnknownPost" xml:space="preserve"><value>Bilinmeyen yazı</value></data>
+  <data name="Media.Upload.StorageError" xml:space="preserve"><value>Dosya depolanamadı. Lütfen tekrar deneyin.</value></data>
+  <data name="Media.Delete.StorageError" xml:space="preserve"><value>Dosya depolamadan silinemedi. Lütfen tekrar deneyin.</value></data>
 </root>

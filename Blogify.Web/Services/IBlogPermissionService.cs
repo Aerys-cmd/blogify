@@ -21,6 +21,12 @@ public interface IBlogPermissionService
     /// <summary>Owner or Admin can manage blog settings and SEO metadata.</summary>
     Task<bool> CanManageSettingsAsync(string userId, Guid blogId, CancellationToken ct = default);
 
+    /// <summary>Editor, Admin, and Owner can moderate comments.</summary>
+    Task<bool> CanManageCommentsAsync(string userId, Guid blogId, CancellationToken ct = default);
+
+    /// <summary>Editor, Admin, and Owner can upload, edit, or delete media.</summary>
+    Task<bool> CanManageMediaAsync(string userId, Guid blogId, CancellationToken ct = default);
+
     /// <summary>Writer, Editor, Admin, and Owner can create posts.</summary>
     Task<bool> CanWritePostsAsync(string userId, Guid blogId, CancellationToken ct = default);
 

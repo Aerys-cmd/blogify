@@ -15,9 +15,12 @@ public sealed class PostModel(
     ApplicationDbContext dbContext,
     TenantContext tenantContext,
     IBlockNoteHtmlRenderer htmlRenderer,
-    IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
+    ILogger<PostModel> logger,
     IStringLocalizer<SharedResource> localizer) : PageModel
 {
+    private const int CommentRateLimitCount = 3;
+    private static readonly TimeSpan CommentRateLimitWindow = TimeSpan.FromMinutes(2);
+
     public Guid PostId { get; private set; }
     public string PostTitle { get; private set; } = string.Empty;
     public string PostContent { get; private set; } = string.Empty;
@@ -58,6 +61,15 @@ public sealed class PostModel(
             return Page();
         }
 
+        if (!string.IsNullOrWhiteSpace(Input.Website))
+        {
+            logger.LogWarning(
+                "Rejected honeypot comment attempt for blog {BlogId} and post {PostId}.",
+                tenantContext.RequiredTenant.Id,
+                PostId);
+            return RedirectToPage("./Post", new { slug });
+        }
+
         string? authorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (authorId is null)
         {
@@ -65,10 +77,30 @@ public sealed class PostModel(
         }
 
         Guid blogId = tenantContext.RequiredTenant.Id;
+        DateTimeOffset windowStart = DateTimeOffset.UtcNow.Subtract(CommentRateLimitWindow);
+        int recentCommentCount = await dbContext.Comments
+            .IgnoreQueryFilters()
+            .CountAsync(c =>
+                c.BlogId == blogId &&
+                c.AuthorId == authorId &&
+                c.CreatedAt >= windowStart,
+                ct);
+
+        if (recentCommentCount >= CommentRateLimitCount)
+        {
+            ModelState.AddModelError(string.Empty, localizer["Blog.CommentRateLimited"]);
+            return Page();
+        }
+
         if (Input.ParentCommentId is Guid parentCommentId)
         {
             Comment? parentComment = await dbContext.Comments
-                .FirstOrDefaultAsync(c => c.Id == parentCommentId && c.BlogId == blogId && c.PostId == PostId, ct);
+                .FirstOrDefaultAsync(c =>
+                    c.Id == parentCommentId &&
+                    c.BlogId == blogId &&
+                    c.PostId == PostId &&
+                    c.ModerationStatus == CommentModerationStatus.Approved,
+                    ct);
 
             if (parentComment is null)
             {
@@ -80,7 +112,6 @@ public sealed class PostModel(
         Comment comment = Comment.Create(blogId, PostId, authorId, Input.Content, Input.ParentCommentId);
         dbContext.Comments.Add(comment);
         await dbContext.SaveChangesAsync(ct);
-        await publicBlogCacheInvalidator.InvalidateTenantAsync(blogId, ct);
 
         return RedirectToPage("./Post", new { slug });
     }
@@ -141,7 +172,7 @@ public sealed class PostModel(
 
         List<Comment> allComments = await dbContext.Comments
             .AsNoTracking()
-            .Where(c => c.PostId == post.Id)
+            .Where(c => c.PostId == post.Id && c.ModerationStatus == CommentModerationStatus.Approved)
             .OrderBy(c => c.CreatedAt)
             .ToListAsync(ct);
 
@@ -205,4 +236,7 @@ public sealed record CommentInput
     public string Content { get; init; } = string.Empty;
 
     public Guid? ParentCommentId { get; init; }
+
+    [MaxLength(100)]
+    public string? Website { get; init; }
 }

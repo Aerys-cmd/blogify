@@ -1,0 +1,96 @@
+@page
+@using Blogify.Web.Models
+@model Blogify.Web.Areas.BlogAdmin.Pages.Comments.IndexModel
+@{
+    ViewData["Title"] = Localizer["Page.Title.BlogAdmin.Comments"].Value;
+    string? blogSlug = ViewContext.RouteData.Values["blogSlug"]?.ToString();
+}
+
+<header class="b-page-header">
+    <div>
+        <p class="b-page-context">@Localizer["Comments.Context"]</p>
+        <h1>@Localizer["Page.Title.BlogAdmin.Comments"]</h1>
+        <p>@Localizer["Comments.Description"]</p>
+    </div>
+    <div class="btn-group" role="group" aria-label="@Localizer["Comments.FilterAria"].Value">
+        <a class="btn btn-sm @(Model.StatusFilter == CommentModerationStatus.Pending ? "btn-primary" : "btn-outline-secondary")"
+           asp-route-blogSlug="@blogSlug"
+           asp-route-status="@CommentModerationStatus.Pending">@Localizer["Comments.Status.Pending"]</a>
+        <a class="btn btn-sm @(Model.StatusFilter == CommentModerationStatus.Approved ? "btn-primary" : "btn-outline-secondary")"
+           asp-route-blogSlug="@blogSlug"
+           asp-route-status="@CommentModerationStatus.Approved">@Localizer["Comments.Status.Approved"]</a>
+        <a class="btn btn-sm @(Model.StatusFilter == CommentModerationStatus.Rejected ? "btn-primary" : "btn-outline-secondary")"
+           asp-route-blogSlug="@blogSlug"
+           asp-route-status="@CommentModerationStatus.Rejected">@Localizer["Comments.Status.Rejected"]</a>
+    </div>
+</header>
+
+@if (TempData["SuccessMessage"] is string success)
+{
+    <div class="alert alert-success">@success</div>
+}
+
+@if (Model.Comments.Count == 0)
+{
+    <div class="b-empty-state">
+        <h2>@Localizer["Comments.Empty.Title"]</h2>
+        <p>@Localizer["Comments.Empty.Copy"]</p>
+    </div>
+}
+else
+{
+    <div class="b-data-list">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Localizer["Comments.Table.Comment"]</th>
+                        <th>@Localizer["Comments.Table.Post"]</th>
+                        <th>@Localizer["Comments.Table.Author"]</th>
+                        <th>@Localizer["Comments.Table.Date"]</th>
+                        <th class="text-end">@Localizer["Label.Actions"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var comment in Model.Comments)
+                    {
+                        <tr>
+                            <td class="align-middle" style="min-width: 18rem;">
+                                <p class="mb-1">@comment.Content</p>
+                                @if (!string.IsNullOrWhiteSpace(comment.ModerationReason))
+                                {
+                                    <small class="text-muted">@Localizer["Comments.RejectionReason", comment.ModerationReason]</small>
+                                }
+                            </td>
+                            <td class="align-middle">@comment.PostTitle</td>
+                            <td class="align-middle">@comment.AuthorName</td>
+                            <td class="align-middle text-muted">@comment.CreatedAt.ToString("g")</td>
+                            <td class="align-middle text-end">
+                                @if (comment.Status != CommentModerationStatus.Approved)
+                                {
+                                    <form method="post" asp-page-handler="Approve" asp-route-blogSlug="@blogSlug" class="d-inline">
+                                        <input type="hidden" name="id" value="@comment.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-success">@Localizer["Comments.Action.Approve"]</button>
+                                    </form>
+                                }
+                                @if (comment.Status != CommentModerationStatus.Rejected)
+                                {
+                                    <form method="post" asp-page-handler="Reject" asp-route-blogSlug="@blogSlug" class="d-inline">
+                                        <input type="hidden" name="id" value="@comment.Id" />
+                                        <input type="hidden" asp-for="Input.Reason" value="" />
+                                        <button type="submit" class="btn btn-sm btn-outline-warning">@Localizer["Comments.Action.Reject"]</button>
+                                    </form>
+                                }
+                                <form method="post" asp-page-handler="Delete" asp-route-blogSlug="@blogSlug" class="d-inline"
+                                      data-confirm-message="@Localizer["Comments.DeleteConfirm"].Value">
+                                    <input type="hidden" name="id" value="@comment.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">@Localizer["Action.Delete"]</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

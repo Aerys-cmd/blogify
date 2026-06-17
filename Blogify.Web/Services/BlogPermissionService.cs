@@ -59,6 +59,20 @@ public sealed class BlogPermissionService(ApplicationDbContext dbContext) : IBlo
     }
 
     /// <inheritdoc />
+    public async Task<bool> CanManageCommentsAsync(string userId, Guid blogId, CancellationToken ct = default)
+    {
+        BlogRole? role = await GetUserRoleAsync(userId, blogId, ct);
+        return role is BlogRole.Editor or BlogRole.Admin || IsOwner(userId, blogId);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> CanManageMediaAsync(string userId, Guid blogId, CancellationToken ct = default)
+    {
+        BlogRole? role = await GetUserRoleAsync(userId, blogId, ct);
+        return role is BlogRole.Editor or BlogRole.Admin || IsOwner(userId, blogId);
+    }
+
+    /// <inheritdoc />
     public async Task<bool> CanWritePostsAsync(string userId, Guid blogId, CancellationToken ct = default)
         => await GetUserRoleAsync(userId, blogId, ct) is not null;
 

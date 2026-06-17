@@ -31,6 +31,19 @@ public sealed class CommentEntityConfiguration : IEntityTypeConfiguration<Commen
 
         builder.Property(c => c.CreatedAt).IsRequired();
 
+        builder.Property(c => c.ModerationStatus)
+            .HasConversion<string>()
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(c => c.ModeratedAt);
+
+        builder.Property(c => c.ModeratedByUserId)
+            .HasMaxLength(450);
+
+        builder.Property(c => c.ModerationReason)
+            .HasMaxLength(500);
+
         builder.Property(c => c.DeletedAt);
 
         builder.HasOne<Post>()
@@ -50,5 +63,7 @@ public sealed class CommentEntityConfiguration : IEntityTypeConfiguration<Commen
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(c => c.PostId);
+
+        builder.HasIndex(c => new { c.BlogId, c.ModerationStatus, c.CreatedAt });
     }
 }

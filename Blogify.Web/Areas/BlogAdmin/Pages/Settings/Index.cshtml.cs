@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Blogify.Web.Data;
 using Blogify.Web.Models;
 using Blogify.Web.Models.Exceptions;
@@ -16,6 +17,7 @@ public sealed class IndexModel(
     ApplicationDbContext dbContext,
     TenantContext tenantContext,
     IPublicBlogCacheInvalidator publicBlogCacheInvalidator,
+    IBlogPermissionService permissionService,
     IStringLocalizer<SharedResource> localizer) : PageModel
 {
     [BindProperty]
@@ -28,6 +30,11 @@ public sealed class IndexModel(
 
     public async Task<IActionResult> OnGetAsync(CancellationToken ct = default)
     {
+        if (!await CanManageSettingsAsync(ct))
+        {
+            return Forbid();
+        }
+
         Tenant tenant = tenantContext.RequiredTenant;
 
         BlogTitle = tenant.Title;
@@ -47,6 +54,11 @@ public sealed class IndexModel(
 
     public async Task<IActionResult> OnPostAsync(CancellationToken ct = default)
     {
+        if (!await CanManageSettingsAsync(ct))
+        {
+            return Forbid();
+        }
+
         if (!ModelState.IsValid)
         {
             BlogTitle = tenantContext.RequiredTenant.Title;
@@ -165,6 +177,13 @@ public sealed class IndexModel(
 
         ModelState.AddModelError(string.Empty, localizer["Settings.Branding.InvalidMedia"].Value);
         return false;
+    }
+
+    private async Task<bool> CanManageSettingsAsync(CancellationToken ct)
+    {
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return userId is not null &&
+            await permissionService.CanManageSettingsAsync(userId, tenantContext.RequiredTenant.Id, ct);
     }
 }
 
