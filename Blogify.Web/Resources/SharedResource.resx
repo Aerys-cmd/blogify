@@ -548,6 +548,11 @@
   <data name="Themes.Active" xml:space="preserve"><value>Active</value></data>
   <data name="Themes.Current" xml:space="preserve"><value>Current theme</value></data>
   <data name="Themes.Activate" xml:space="preserve"><value>Use this theme</value></data>
+  <data name="Themes.Preview" xml:space="preserve"><value>Preview</value></data>
+  <data name="Themes.Previewing" xml:space="preserve"><value>Previewing theme: {0}</value></data>
+  <data name="Themes.ExitPreview" xml:space="preserve"><value>Exit preview</value></data>
+  <data name="Themes.SelectionRequired" xml:space="preserve"><value>A theme must be selected.</value></data>
+  <data name="Themes.Unavailable" xml:space="preserve"><value>Your saved theme '{0}' is no longer available. Public readers see the fallback theme '{1}' until you choose a valid theme.</value></data>
   <data name="Themes.Default.Name" xml:space="preserve"><value>Editorial</value></data>
   <data name="Themes.Default.Description" xml:space="preserve"><value>A confident publication layout that gives the newest story room to lead.</value></data>
   <data name="Themes.Minimal.Name" xml:space="preserve"><value>Journal</value></data>

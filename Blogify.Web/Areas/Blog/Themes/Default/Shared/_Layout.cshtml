@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/css/themes/default.css" asp-append-version="true" />
 </head>
 <body class="editorial-theme">
+    @await Html.PartialAsync("~/Areas/Blog/Themes/Shared/_ThemePreviewBanner.cshtml")
     @{
         Blogify.Web.Services.BlogBrandingAssets branding = await BrandingService.GetAssetsAsync();
     }

@@ -18,6 +18,13 @@
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 }
 
+@if (Model.IsStoredThemeUnavailable)
+{
+    <div class="alert alert-warning">
+        @Localizer["Themes.Unavailable", Model.StoredTheme, Model.CurrentTheme]
+    </div>
+}
+
 <div class="b-theme-picker">
     @foreach (ThemeOptionViewModel theme in Model.AvailableThemes)
     {
@@ -38,6 +45,12 @@
                 </div>
                 <form method="post">
                     <input type="hidden" name="SelectedTheme" value="@theme.Slug" />
+                    <a href="@theme.PreviewUrl"
+                       class="btn btn-outline-secondary w-100 mb-2"
+                       target="_blank"
+                       rel="noopener">
+                        @Localizer["Themes.Preview"]
+                    </a>
                     <button type="submit"
                             class="btn @(theme.Slug == Model.CurrentTheme ? "btn-outline-secondary" : "btn-primary") w-100"
                             @(theme.Slug == Model.CurrentTheme ? "disabled" : "")>

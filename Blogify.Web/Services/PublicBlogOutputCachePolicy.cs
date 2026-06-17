@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Net.Http.Headers;
+using Blogify.Web.Services.Themes;
 
 namespace Blogify.Web.Services;
 
@@ -88,6 +89,14 @@ public sealed class PublicBlogOutputCachePolicy : IOutputCachePolicy
         }
 
         if (!httpContext.RequestServices.GetRequiredService<TenantContext>().IsTenantResolved)
+        {
+            return false;
+        }
+
+        if (httpContext.Request.Query.ContainsKey(ThemePreviewTokenService.ThemeQueryKey) ||
+            httpContext.Request.Query.ContainsKey(ThemePreviewTokenService.TokenQueryKey) ||
+            httpContext.Request.Query.ContainsKey(ThemePreviewTokenService.ExitQueryKey) ||
+            httpContext.Request.Cookies.ContainsKey(ThemePreviewTokenService.CookieName))
         {
             return false;
         }

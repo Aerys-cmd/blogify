@@ -9,6 +9,7 @@ using Blogify.Web.Endpoints;
 using Blogify.Web.Models;
 using Blogify.Web.Services;
 using Blogify.Web.Services.Email;
+using Blogify.Web.Services.Themes;
 using Blogify.Web.Middleware;
 using System.Net;
 using Microsoft.AspNetCore.DataProtection;
@@ -92,6 +93,8 @@ builder.Services.AddScoped<IBlogPermissionService, BlogPermissionService>();
 builder.Services.AddScoped<IAccessibleBlogService, AccessibleBlogService>();
 builder.Services.AddScoped<ILoginRedirectService, LoginRedirectService>();
 builder.Services.AddScoped<BlogBrandingService>();
+builder.Services.AddSingleton<IThemeRegistry>(_ => new ThemeRegistry());
+builder.Services.AddSingleton<ThemePreviewTokenService>();
 
 builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));

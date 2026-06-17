@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Blogify.Web.Services.Themes;
 
 namespace Blogify.Tests;
 
@@ -32,6 +33,22 @@ public sealed class LocalizationResourceTests
         {
             Assert.False(string.IsNullOrWhiteSpace(value), $"Resource '{key}' has a blank value.");
         }
+    }
+
+    [Fact]
+    public void ThemeRegistryResourceKeys_ExistInEnglishAndTurkishResources()
+    {
+        ThemeRegistry registry = new();
+        Dictionary<string, string> english = LoadResources("SharedResource.resx");
+        Dictionary<string, string> turkish = LoadResources("SharedResource.tr.resx");
+        string[] keys = registry.AllThemes
+            .SelectMany(theme => new[] { theme.DisplayNameResourceKey, theme.DescriptionResourceKey })
+            .Distinct()
+            .Order()
+            .ToArray();
+
+        Assert.Empty(keys.Except(english.Keys).Order());
+        Assert.Empty(keys.Except(turkish.Keys).Order());
     }
 
     [Fact]

@@ -548,6 +548,11 @@
   <data name="Themes.Active" xml:space="preserve"><value>Etkin</value></data>
   <data name="Themes.Current" xml:space="preserve"><value>Geçerli tema</value></data>
   <data name="Themes.Activate" xml:space="preserve"><value>Bu temayı kullan</value></data>
+  <data name="Themes.Preview" xml:space="preserve"><value>Önizle</value></data>
+  <data name="Themes.Previewing" xml:space="preserve"><value>Tema önizleniyor: {0}</value></data>
+  <data name="Themes.ExitPreview" xml:space="preserve"><value>Önizlemeden çık</value></data>
+  <data name="Themes.SelectionRequired" xml:space="preserve"><value>Bir tema seçilmelidir.</value></data>
+  <data name="Themes.Unavailable" xml:space="preserve"><value>Kayıtlı temanız '{0}' artık kullanılamıyor. Geçerli bir tema seçene kadar okuyucular yedek tema '{1}' ile görür.</value></data>
   <data name="Themes.Default.Name" xml:space="preserve"><value>Editoryal</value></data>
   <data name="Themes.Default.Description" xml:space="preserve"><value>En yeni yazıya öne çıkması için alan veren, güçlü bir yayın düzeni.</value></data>
   <data name="Themes.Minimal.Name" xml:space="preserve"><value>Günlük</value></data>

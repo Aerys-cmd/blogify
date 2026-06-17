@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Blogify.Web.Models.Exceptions;
+using Blogify.Web.Services.Themes;
 
 namespace Blogify.Web.Models;
 
@@ -8,7 +9,6 @@ public sealed class Tenant
     private static readonly Regex SubdomainRegex =
         new Regex(@"^[a-z0-9-]+$", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
 
-    private static readonly HashSet<string> AllowedThemes = ["default", "minimal", "aurora"];
     private static readonly HashSet<string> AllowedPublicLanguages = ["en", "tr"];
 
     private Tenant() { }
@@ -94,13 +94,15 @@ public sealed class Tenant
         DeletedAt = DateTimeOffset.UtcNow;
     }
 
-    public void ChangeTheme(string themeName)
+    public void ChangeTheme(string themeName, IThemeRegistry themeRegistry)
     {
+        ArgumentNullException.ThrowIfNull(themeRegistry);
+
         if (string.IsNullOrWhiteSpace(themeName))
             throw new ArgumentException("Theme name is required.", nameof(themeName));
 
         string normalized = themeName.Trim().ToLowerInvariant();
-        if (!AllowedThemes.Contains(normalized))
+        if (!themeRegistry.IsSelectableTheme(normalized))
             throw new DomainException($"'{normalized}' is not a recognised theme.");
 
         ActiveTheme = normalized;

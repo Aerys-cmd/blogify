@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Blogify.Web.Models;
 using Blogify.Web.Models.Posts;
 using Blogify.Web.Services;
+using Blogify.Web.Services.Themes;
 
 namespace Blogify.Web.Data;
 
@@ -10,7 +11,8 @@ public sealed class DatabaseSeeder(
     UserManager<ApplicationUser> userManager,
     RoleManager<IdentityRole> roleManager,
     ApplicationDbContext dbContext,
-    IWebHostEnvironment environment)
+    IWebHostEnvironment environment,
+    IThemeRegistry themeRegistry)
 {
     private const string SuperAdminEmail    = "superadmin@blogify.com";
     private const string SuperAdminPassword = "SuperAdmin123A+";
@@ -128,7 +130,7 @@ public sealed class DatabaseSeeder(
         if (existing is not null)
         {
             existing.Rename("Northstar Notes");
-            existing.ChangeTheme("aurora");
+            existing.ChangeTheme("aurora", themeRegistry);
             existing.ChangePublicLanguage("en");
             existing.UpdateSeoMetadata(
                 "Northstar Notes",
@@ -138,7 +140,7 @@ public sealed class DatabaseSeeder(
         }
 
         Tenant testBlog = Tenant.Create("Northstar Notes", "test", owner.Id);
-        testBlog.ChangeTheme("aurora");
+        testBlog.ChangeTheme("aurora", themeRegistry);
         testBlog.ChangePublicLanguage("en");
         testBlog.UpdateSeoMetadata(
             "Northstar Notes",

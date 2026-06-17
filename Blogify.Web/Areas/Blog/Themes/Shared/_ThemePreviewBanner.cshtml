@@ -1,0 +1,13 @@
+@using Blogify.Web.Services.Themes
+@{
+    string? previewTheme = Context.Items[ThemePreviewTokenService.ThemeQueryKey] as string;
+}
+
+@if (!string.IsNullOrWhiteSpace(previewTheme))
+{
+    string exitUrl = $"{Context.Request.PathBase}{Context.Request.Path}?{ThemePreviewTokenService.ExitQueryKey}=1";
+    <div class="theme-preview-banner" role="status">
+        <span>@Localizer["Themes.Previewing", previewTheme]</span>
+        <a href="@exitUrl">@Localizer["Themes.ExitPreview"]</a>
+    </div>
+}
