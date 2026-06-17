@@ -13,6 +13,8 @@
         string? canonicalUrl = ViewData["CanonicalUrl"] as string;
     }
     <title>@pageTitle — @blogTitle</title>
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
+    <link rel="alternate icon" href="~/favicon.ico" />
     @if (!string.IsNullOrEmpty(metaDescription)) { <meta name="description" content="@metaDescription" /> }
     <meta property="og:title" content="@metaTitle" />
     <meta property="og:site_name" content="@blogTitle" />
