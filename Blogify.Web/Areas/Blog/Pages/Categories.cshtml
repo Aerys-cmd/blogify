@@ -3,19 +3,19 @@
 @{
     ViewData["Title"] = Localizer["Blog.Categories"].Value;
 }
-<header class="blog-list-header">
-    <h1>@Localizer["Blog.Categories"]</h1>
+<header class="pb-8">
+    <h1 class="font-serif text-4xl leading-tight tracking-[-0.025em] md:text-6xl">@Localizer["Blog.Categories"]</h1>
 </header>
 @if (Model.Categories.Count == 0)
 {
-    <div class="empty-state">@Localizer["Blog.NoCategories"]</div>
+    <div class="border-y border-current/15 py-16 text-current/70">@Localizer["Blog.NoCategories"]</div>
 }
 else
 {
-    <nav class="topic-links" aria-label="@Localizer["Blog.Categories"].Value">
+    <nav class="flex flex-wrap gap-2" aria-label="@Localizer["Blog.Categories"].Value">
         @foreach (CategoryLinkViewModel category in Model.Categories)
         {
-            <a asp-area="Blog" asp-page="/Category" asp-route-slug="@category.Slug">@category.Name</a>
+            <a asp-area="Blog" asp-page="/Category" asp-route-slug="@category.Slug" class="rounded-full border border-current/20 px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-current/10 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4">@category.Name</a>
         }
     </nav>
 }

@@ -1,0 +1,39 @@
+@model IReadOnlyList<Blogify.Web.Areas.Blog.Pages.PostCardViewModel>
+<div class="grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+    @foreach (PostCardViewModel post in Model)
+    {
+        <article>
+            <a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug" class="mb-4 grid aspect-[4/3] place-items-center overflow-hidden bg-[#4b57a8] text-white no-underline focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">
+                @if (post.CoverImageUrl is not null)
+                {
+                    <img src="@post.CoverImageUrl" alt="" class="h-full w-full object-cover transition duration-200 ease-out hover:scale-[1.02]" loading="lazy" decoding="async" />
+                }
+                else
+                {
+                    <span class="text-6xl font-black" aria-hidden="true">@post.Title.Substring(0, 1).ToUpperInvariant()</span>
+                }
+            </a>
+            <time class="text-xs font-bold text-[#626970]">@post.PublishedAt.ToString("D")</time>
+            <h2 class="mt-2 text-2xl font-black leading-tight">
+                <a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug" class="no-underline transition-colors hover:text-[#4b57a8] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">@post.Title</a>
+            </h2>
+            @if (post.Categories.Count > 0 || post.Tags.Count > 0)
+            {
+                <div class="mt-3 flex flex-wrap gap-2">
+                    @foreach (CategoryLinkViewModel cat in post.Categories)
+                    {
+                        <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug" class="rounded-full bg-[#10162f] px-3 py-1.5 text-xs font-extrabold text-white no-underline transition-colors hover:bg-[#303653] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">@cat.Name</a>
+                    }
+                    @foreach (TagLinkViewModel tag in post.Tags)
+                    {
+                        <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug" class="rounded-full bg-[#10162f] px-3 py-1.5 text-xs font-extrabold text-white no-underline transition-colors hover:bg-[#303653] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">@tag.Name</a>
+                    }
+                </div>
+            }
+            @if (post.Excerpt is not null)
+            {
+                <p class="mt-3 leading-7 text-[#626970]">@post.Excerpt</p>
+            }
+        </article>
+    }
+</div>

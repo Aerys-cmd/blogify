@@ -1,5 +1,17 @@
 @model Blogify.Web.Areas.Blog.Pages.SearchModel
-<header class="journal-intro"><h1>@Localizer["Blog.Search"]</h1></header>
-<form method="get" asp-area="Blog" asp-page="/Search" class="mb-4"><input class="form-control" type="search" name="q" value="@Model.Query" placeholder="@Localizer["Blog.SearchPlaceholder"].Value" /></form>
-@if (Model.Posts.Count == 0) { <div class="empty-state">@Localizer["Blog.NoSearchResults"]</div> }
-else { <div class="journal-list">@foreach(PostCardViewModel post in Model.Posts){<article class="journal-entry"><time>@post.PublishedAt.ToString("D")</time><div><h2><a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug">@post.Title</a></h2>@if(post.Excerpt is not null){<p>@post.Excerpt</p>}</div></article>}</div>await Html.RenderPartialAsync("_Pagination", Model.Pagination); }
+<header class="mb-8">
+    <h1 class="font-serif text-4xl leading-tight tracking-[-0.025em] md:text-6xl">@Localizer["Blog.Search"]</h1>
+</header>
+<form method="get" asp-area="Blog" asp-page="/Search" class="mb-8">
+    <label class="sr-only" for="theme-search">@Localizer["Blog.Search"]</label>
+    <input id="theme-search" class="min-h-12 w-full border border-[#181817] bg-white px-4 text-sm placeholder:text-[#686863] focus:outline focus:outline-[3px] focus:outline-offset-2 focus:outline-[#242f56]" type="search" name="q" value="@Model.Query" placeholder="@Localizer["Blog.SearchPlaceholder"].Value" />
+</form>
+@if (Model.Posts.Count == 0)
+{
+    <div class="py-16 text-[#686863]">@Localizer["Blog.NoSearchResults"]</div>
+}
+else
+{
+    <partial name="/Areas/Blog/Themes/Minimal/_PostList.cshtml" model="Model.Posts" />
+    await Html.RenderPartialAsync("_Pagination", Model.Pagination);
+}

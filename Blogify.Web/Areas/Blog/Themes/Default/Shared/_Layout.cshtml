@@ -8,25 +8,32 @@
     @await Html.PartialAsync("~/Areas/Blog/Themes/Shared/_BlogMeta.cshtml")
     <link rel="stylesheet" href="~/css/themes/default.css" asp-append-version="true" />
 </head>
-<body class="editorial-theme">
+<body class="min-h-screen bg-canvas text-ink antialiased">
     @await Html.PartialAsync("~/Areas/Blog/Themes/Shared/_ThemePreviewBanner.cshtml")
     @{
         Blogify.Web.Services.BlogBrandingAssets branding = await BrandingService.GetAssetsAsync();
     }
-    <header class="site-header">
-        <div class="site-shell header-row">
-            <a asp-area="Blog" asp-page="/Index" class="site-title site-brand">
+    <header class="border-b border-line bg-surface/95">
+        <div class="mx-auto flex min-h-20 w-[min(1180px,calc(100%-32px))] items-center justify-between gap-6 md:w-[min(1180px,calc(100%-56px))]">
+            <a asp-area="Blog" asp-page="/Index" class="inline-flex min-h-11 items-center gap-3 text-lg font-extrabold no-underline transition-colors hover:text-brand focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand">
                 @if (!string.IsNullOrWhiteSpace(branding.LogoUrl))
                 {
-                    <img src="@branding.LogoUrl" alt="" class="site-logo" loading="lazy" decoding="async" />
+                    <img src="@branding.LogoUrl" alt="" class="h-8 max-w-40 object-contain md:max-w-48" loading="lazy" decoding="async" />
                 }
                 <span>@TenantContext.RequiredTenant.Title</span>
             </a>
-            <a asp-area="Blog" asp-page="/Index" class="home-link">@Localizer["Blog.AllWriting"]</a>
+            <a asp-area="Blog" asp-page="/Index" class="hidden min-h-11 items-center text-sm font-bold text-brand no-underline transition-colors hover:text-ink focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand sm:inline-flex">@Localizer["Blog.AllWriting"]</a>
         </div>
     </header>
-    <main class="site-shell page-shell">@RenderBody()@await RenderSectionAsync("Sidebar", required: false)</main>
-    <footer class="site-footer"><div class="site-shell">&copy; @TenantContext.RequiredTenant.CreatedAt.Year <strong>@TenantContext.RequiredTenant.Title</strong></div></footer>
+    <main class="mx-auto w-[min(1180px,calc(100%-32px))] py-10 md:w-[min(1180px,calc(100%-56px))] md:py-16">
+        @RenderBody()
+        @await RenderSectionAsync("Sidebar", required: false)
+    </main>
+    <footer class="mt-16 bg-ink text-white">
+        <div class="mx-auto w-[min(1180px,calc(100%-32px))] py-8 text-sm md:w-[min(1180px,calc(100%-56px))]">
+            &copy; @TenantContext.RequiredTenant.CreatedAt.Year <strong>@TenantContext.RequiredTenant.Title</strong>
+        </div>
+    </footer>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

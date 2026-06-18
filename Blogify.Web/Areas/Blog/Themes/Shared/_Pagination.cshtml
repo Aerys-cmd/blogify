@@ -22,25 +22,25 @@
 }
 @if (Model.TotalPages > 1)
 {
-    <nav class="blog-pagination" aria-label="@Localizer["Blog.Pagination"].Value">
+    <nav class="mt-12 flex flex-wrap items-center gap-2 border-t border-current/15 pt-6 text-sm font-bold" aria-label="@Localizer["Blog.Pagination"].Value">
         @if (Model.HasPrevious)
         {
-            <a href="@PageUrl(Model.CurrentPage - 1)">@Localizer["Blog.Previous"]</a>
+            <a class="inline-flex min-h-11 items-center rounded-md border border-current/20 px-4 no-underline transition-colors hover:bg-current/10 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4" href="@PageUrl(Model.CurrentPage - 1)">@Localizer["Blog.Previous"]</a>
         }
         @for (int i = 1; i <= Model.TotalPages; i++)
         {
             if (i == Model.CurrentPage)
             {
-                <span aria-current="page">@i</span>
+                <span class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md bg-current px-4 text-white" aria-current="page">@i</span>
             }
             else
             {
-                <a href="@PageUrl(i)">@i</a>
+                <a class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-current/20 px-4 no-underline transition-colors hover:bg-current/10 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4" href="@PageUrl(i)">@i</a>
             }
         }
         @if (Model.HasNext)
         {
-            <a href="@PageUrl(Model.CurrentPage + 1)">@Localizer["Blog.Next"]</a>
+            <a class="inline-flex min-h-11 items-center rounded-md border border-current/20 px-4 no-underline transition-colors hover:bg-current/10 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4" href="@PageUrl(Model.CurrentPage + 1)">@Localizer["Blog.Next"]</a>
         }
     </nav>
 }

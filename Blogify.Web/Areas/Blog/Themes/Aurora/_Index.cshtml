@@ -1,35 +1,56 @@
 @model Blogify.Web.Areas.Blog.Pages.IndexModel
 @if (Model.Posts.Count == 0)
 {
-    <div class="empty-state">@Localizer["Blog.NoPosts"]</div>
+    <div class="bg-[#10162f] px-5 py-24 text-center text-xl font-bold text-white">@Localizer["Blog.NoPosts"]</div>
 }
 else
 {
     PostCardViewModel lead = Model.Posts[0];
-    <section class="magazine-lead">
-        <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="magazine-lead-image">
-            @if (lead.CoverImageUrl is not null) { <img src="@lead.CoverImageUrl" alt="" decoding="async" /> } else { <span aria-hidden="true">@lead.Title.Substring(0, 1).ToUpperInvariant()</span> }
+    <section class="grid overflow-hidden bg-[#10162f] text-white md:min-h-[520px] md:grid-cols-[minmax(0,1.05fr)_minmax(420px,.95fr)]">
+        <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="grid min-h-72 place-items-center overflow-hidden bg-[#4b57a8] no-underline md:min-h-[520px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">
+            @if (lead.CoverImageUrl is not null)
+            {
+                <img src="@lead.CoverImageUrl" alt="" class="h-full w-full object-cover transition duration-200 ease-out hover:scale-[1.015]" decoding="async" />
+            }
+            else
+            {
+                <span class="text-8xl font-black md:text-[11rem]" aria-hidden="true">@lead.Title.Substring(0, 1).ToUpperInvariant()</span>
+            }
         </a>
-        <div><p class="magazine-kicker">@Localizer["Blog.LatestWriting"]</p><h1><a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug">@lead.Title</a></h1>
-        @if (lead.Categories.Count > 0 || lead.Tags.Count > 0) { <div class="topic-links">@foreach (CategoryLinkViewModel cat in lead.Categories) { <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a> }@foreach (TagLinkViewModel tag in lead.Tags) { <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a> }</div> }
-        @if (lead.Excerpt is not null) { <p class="magazine-deck">@lead.Excerpt</p> }
-        <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="magazine-read">@Localizer["Blog.ReadStory"] →</a></div>
+        <div class="flex flex-col justify-center p-7 md:p-10 lg:p-12">
+            <p class="text-sm font-black text-[#dfe985]">@Localizer["Blog.LatestWriting"]</p>
+            <h1 class="mt-3 text-5xl font-black leading-[.98] tracking-[-0.03em] md:text-6xl">
+                <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="no-underline transition-colors hover:text-[#dfe985] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">@lead.Title</a>
+            </h1>
+            @if (lead.Categories.Count > 0 || lead.Tags.Count > 0)
+            {
+                <div class="mt-5 flex flex-wrap gap-2">
+                    @foreach (CategoryLinkViewModel cat in lead.Categories)
+                    {
+                        <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug" class="rounded-full bg-[#2a3154] px-3 py-1.5 text-xs font-extrabold no-underline transition-colors hover:bg-[#39416b] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">@cat.Name</a>
+                    }
+                    @foreach (TagLinkViewModel tag in lead.Tags)
+                    {
+                        <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug" class="rounded-full bg-[#2a3154] px-3 py-1.5 text-xs font-extrabold no-underline transition-colors hover:bg-[#39416b] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">@tag.Name</a>
+                    }
+                </div>
+            }
+            @if (lead.Excerpt is not null)
+            {
+                <p class="mt-5 text-base leading-7 text-[#d7dbea]">@lead.Excerpt</p>
+            }
+            <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="mt-6 inline-flex min-h-11 w-max items-center bg-[#ee6b4d] px-5 font-black text-[#10162f] no-underline transition-colors hover:bg-[#dfe985] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">@Localizer["Blog.ReadStory"] <span class="ml-2" aria-hidden="true">-&gt;</span></a>
+        </div>
     </section>
     @if (Model.Posts.Count > 1)
     {
-        <section class="magazine-section"><div class="section-heading"><h2>@Localizer["Blog.AllWriting"]</h2><span>@Model.Posts.Count</span></div><div class="magazine-grid">
-        @foreach (PostCardViewModel post in Model.Posts.Skip(1))
-        {
-            <article class="magazine-card">
-                <a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug" class="magazine-card-image">
-                    @if (post.CoverImageUrl is not null) { <img src="@post.CoverImageUrl" alt="" loading="lazy" decoding="async" /> } else { <span aria-hidden="true">@post.Title.Substring(0, 1).ToUpperInvariant()</span> }
-                </a>
-                <time>@post.PublishedAt.ToString("D")</time><h3><a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug">@post.Title</a></h3>
-                @if (post.Categories.Count > 0 || post.Tags.Count > 0) { <div class="topic-links">@foreach (CategoryLinkViewModel cat in post.Categories) { <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a> }@foreach (TagLinkViewModel tag in post.Tags) { <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a> }</div> }
-                @if (post.Excerpt is not null) { <p>@post.Excerpt</p> }
-            </article>
-        }
-        </div></section>
+        <section class="pt-14">
+            <div class="mb-7 flex items-end justify-between border-b-[3px] border-[#10162f]">
+                <h2 class="mb-3 text-3xl font-black">@Localizer["Blog.AllWriting"]</h2>
+                <span class="mb-3 font-black">@Model.Posts.Count</span>
+            </div>
+            <partial name="/Areas/Blog/Themes/Aurora/_PostGrid.cshtml" model="Model.Posts.Skip(1).ToArray()" />
+        </section>
     }
     await Html.RenderPartialAsync("_Pagination", Model.Pagination);
 }

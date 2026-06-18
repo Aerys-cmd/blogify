@@ -8,25 +8,32 @@
     @await Html.PartialAsync("~/Areas/Blog/Themes/Shared/_BlogMeta.cshtml")
     <link rel="stylesheet" href="~/css/themes/aurora.css" asp-append-version="true" />
 </head>
-<body class="magazine-theme">
+<body class="min-h-screen bg-[#f5f6fb] font-sans text-ink antialiased">
     @await Html.PartialAsync("~/Areas/Blog/Themes/Shared/_ThemePreviewBanner.cshtml")
     @{
         Blogify.Web.Services.BlogBrandingAssets branding = await BrandingService.GetAssetsAsync();
     }
-    <header class="magazine-header">
-        <div class="magazine-shell header-row">
-            <a asp-area="Blog" asp-page="/Index" class="magazine-title magazine-brand">
+    <header class="border-b border-[#303653] bg-[#10162f] text-white">
+        <div class="mx-auto flex min-h-20 w-[min(1240px,calc(100%-32px))] items-center justify-between gap-5 md:w-[min(1240px,calc(100%-56px))]">
+            <a asp-area="Blog" asp-page="/Index" class="inline-flex min-h-11 items-center gap-3 text-xl font-black no-underline transition-colors hover:text-[#dfe985] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d]">
                 @if (!string.IsNullOrWhiteSpace(branding.LogoUrl))
                 {
-                    <img src="@branding.LogoUrl" alt="" class="magazine-logo" loading="lazy" decoding="async" />
+                    <img src="@branding.LogoUrl" alt="" class="h-8 max-w-40 object-contain md:h-9 md:max-w-48" loading="lazy" decoding="async" />
                 }
                 <span>@TenantContext.RequiredTenant.Title</span>
             </a>
-            <a asp-area="Blog" asp-page="/Index" class="magazine-home">@Localizer["Blog.Home"]</a>
+            <a asp-area="Blog" asp-page="/Index" class="hidden min-h-11 items-center text-sm font-extrabold text-[#dfe985] no-underline transition-colors hover:text-white focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#ee6b4d] sm:inline-flex">@Localizer["Blog.Home"]</a>
         </div>
     </header>
-    <main class="magazine-shell magazine-main">@RenderBody()@await RenderSectionAsync("Sidebar", required: false)</main>
-    <footer class="magazine-footer"><div class="magazine-shell">&copy; @TenantContext.RequiredTenant.CreatedAt.Year @TenantContext.RequiredTenant.Title</div></footer>
+    <main class="mx-auto w-[min(1240px,calc(100%-32px))] py-8 md:w-[min(1240px,calc(100%-56px))] md:py-12">
+        @RenderBody()
+        @await RenderSectionAsync("Sidebar", required: false)
+    </main>
+    <footer class="mt-16 bg-[#10162f] text-[#ccd1e4]">
+        <div class="mx-auto w-[min(1240px,calc(100%-32px))] py-8 text-sm md:w-[min(1240px,calc(100%-56px))]">
+            &copy; @TenantContext.RequiredTenant.CreatedAt.Year @TenantContext.RequiredTenant.Title
+        </div>
+    </footer>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

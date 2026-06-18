@@ -1,4 +1,14 @@
 @model Blogify.Web.Areas.Blog.Pages.TagModel
-<header class="journal-intro"><a asp-area="Blog" asp-page="/Index" class="back-link">← @Localizer["Blog.BackToPosts"]</a><h1>@Localizer["Blog.TagHeading", Model.TagName]</h1></header>
-@if (Model.Posts.Count == 0) { <div class="empty-state">@Localizer["Blog.NoTagPosts"]</div> }
-else { <div class="journal-list">@foreach(PostCardViewModel post in Model.Posts){<article class="journal-entry"><time>@post.PublishedAt.ToString("D")</time><div><h2><a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug">@post.Title</a></h2>@if(post.Excerpt is not null){<p>@post.Excerpt</p>}@if(post.Categories.Count>0||post.Tags.Count>0){<div class="topic-links">@foreach(CategoryLinkViewModel cat in post.Categories){<a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a>}@foreach(TagLinkViewModel tag in post.Tags){<a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a>}</div>}</div></article>}</div>await Html.RenderPartialAsync("_Pagination", Model.Pagination); }
+<header class="mb-10">
+    <a asp-area="Blog" asp-page="/Index" class="inline-flex min-h-11 items-center text-xs font-bold text-[#242f56] no-underline hover:text-[#181817] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#242f56]">&lt;- @Localizer["Blog.BackToPosts"]</a>
+    <h1 class="mt-3 font-serif text-4xl leading-tight tracking-[-0.025em] md:text-6xl">@Localizer["Blog.TagHeading", Model.TagName]</h1>
+</header>
+@if (Model.Posts.Count == 0)
+{
+    <div class="py-16 text-[#686863]">@Localizer["Blog.NoTagPosts"]</div>
+}
+else
+{
+    <partial name="/Areas/Blog/Themes/Minimal/_PostList.cshtml" model="Model.Posts" />
+    await Html.RenderPartialAsync("_Pagination", Model.Pagination);
+}

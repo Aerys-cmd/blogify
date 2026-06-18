@@ -8,23 +8,28 @@
     @await Html.PartialAsync("~/Areas/Blog/Themes/Shared/_BlogMeta.cshtml")
     <link rel="stylesheet" href="~/css/themes/minimal.css" asp-append-version="true" />
 </head>
-<body class="journal-theme">
+<body class="min-h-screen bg-white font-mono text-[#181817] antialiased">
     @await Html.PartialAsync("~/Areas/Blog/Themes/Shared/_ThemePreviewBanner.cshtml")
     @{
         Blogify.Web.Services.BlogBrandingAssets branding = await BrandingService.GetAssetsAsync();
     }
-    <header class="journal-header">
-        <a asp-area="Blog" asp-page="/Index" class="journal-title journal-brand">
+    <header class="mx-auto flex min-h-24 w-[min(760px,calc(100%-36px))] items-center justify-between gap-5 border-b border-[#181817] text-xs text-[#686863]">
+        <a asp-area="Blog" asp-page="/Index" class="inline-flex min-h-11 items-center gap-3 text-sm font-extrabold text-[#181817] no-underline transition-colors hover:text-[#242f56] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#242f56]">
             @if (!string.IsNullOrWhiteSpace(branding.LogoUrl))
             {
-                <img src="@branding.LogoUrl" alt="" class="journal-logo" loading="lazy" decoding="async" />
+                <img src="@branding.LogoUrl" alt="" class="h-7 max-w-36 object-contain md:h-8 md:max-w-44" loading="lazy" decoding="async" />
             }
             <span>@TenantContext.RequiredTenant.Title</span>
         </a>
-        <span>@Localizer["Blog.LatestWriting"]</span>
+        <span class="hidden sm:inline">@Localizer["Blog.LatestWriting"]</span>
     </header>
-    <main class="journal-main">@RenderBody()@await RenderSectionAsync("Sidebar", required: false)</main>
-    <footer class="journal-footer">&copy; @TenantContext.RequiredTenant.CreatedAt.Year @TenantContext.RequiredTenant.Title</footer>
+    <main class="mx-auto w-[min(760px,calc(100%-36px))] py-10 md:py-16">
+        @RenderBody()
+        @await RenderSectionAsync("Sidebar", required: false)
+    </main>
+    <footer class="mx-auto w-[min(760px,calc(100%-36px))] border-t border-[#181817] py-8 text-xs text-[#686863]">
+        &copy; @TenantContext.RequiredTenant.CreatedAt.Year @TenantContext.RequiredTenant.Title
+    </footer>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

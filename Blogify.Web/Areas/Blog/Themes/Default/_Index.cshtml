@@ -1,54 +1,80 @@
 @model Blogify.Web.Areas.Blog.Pages.IndexModel
 @if (Model.Posts.Count == 0)
 {
-    <div class="empty-state"><p>@Localizer["Blog.NoPosts"]</p></div>
+    <div class="border-y border-line py-24 text-center text-xl text-muted">
+        <p>@Localizer["Blog.NoPosts"]</p>
+    </div>
 }
 else
 {
     PostCardViewModel lead = Model.Posts[0];
-    <section class="lead-story">
-        <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="lead-image">
-            @if (lead.CoverImageUrl is not null) { <img src="@lead.CoverImageUrl" alt="" decoding="async" /> }
-            else { <span aria-hidden="true">@Model.BlogTitle.Substring(0, 1).ToUpperInvariant()</span> }
+    <section class="grid gap-8 border-b border-line pb-10 md:grid-cols-[minmax(0,1fr)_minmax(360px,1fr)] md:items-center md:gap-12 md:pb-16">
+        <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="grid min-h-80 place-items-center overflow-hidden bg-ink text-white no-underline md:min-h-[420px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand">
+            @if (lead.CoverImageUrl is not null)
+            {
+                <img src="@lead.CoverImageUrl" alt="" class="h-full w-full object-cover transition duration-200 ease-out hover:scale-[1.015]" decoding="async" />
+            }
+            else
+            {
+                <span class="font-serif text-8xl md:text-9xl" aria-hidden="true">@Model.BlogTitle.Substring(0, 1).ToUpperInvariant()</span>
+            }
         </a>
-        <div class="lead-copy">
-            <p class="section-label">@Localizer["Blog.LatestWriting"]</p>
-            <h1><a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug">@lead.Title</a></h1>
-            <p class="date-line">@Localizer["Blog.Published", lead.PublishedAt.ToString("D")]</p>
+        <div>
+            <p class="text-sm font-extrabold text-brand">@Localizer["Blog.LatestWriting"]</p>
+            <h1 class="mt-3 font-serif text-5xl leading-[1.04] tracking-[-0.03em] md:text-6xl">
+                <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="no-underline transition-colors hover:text-brand focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand">@lead.Title</a>
+            </h1>
+            <p class="mt-5 text-sm text-muted">@Localizer["Blog.Published", lead.PublishedAt.ToString("D")]</p>
             @if (lead.Categories.Count > 0 || lead.Tags.Count > 0)
             {
-                <div class="topic-links">
-                    @foreach (CategoryLinkViewModel cat in lead.Categories) { <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a> }
-                    @foreach (TagLinkViewModel tag in lead.Tags) { <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a> }
+                <div class="mt-4 flex flex-wrap gap-2">
+                    @foreach (CategoryLinkViewModel cat in lead.Categories)
+                    {
+                        <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug" class="rounded-full bg-subtle px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-line focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand">@cat.Name</a>
+                    }
+                    @foreach (TagLinkViewModel tag in lead.Tags)
+                    {
+                        <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug" class="rounded-full bg-subtle px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-line focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand">@tag.Name</a>
+                    }
                 </div>
             }
-            @if (lead.Excerpt is not null) { <p class="lead-excerpt">@lead.Excerpt</p> }
-            <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="read-link">@Localizer["Blog.ReadStory"] <span aria-hidden="true">→</span></a>
+            @if (lead.Excerpt is not null)
+            {
+                <p class="mt-5 max-w-prose text-lg leading-8 text-muted">@lead.Excerpt</p>
+            }
+            <a asp-area="Blog" asp-page="/Post" asp-route-slug="@lead.Slug" class="mt-6 inline-flex min-h-11 items-center font-bold text-brand no-underline transition-colors hover:text-ink focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand">@Localizer["Blog.ReadStory"] <span class="ml-2" aria-hidden="true">-&gt;</span></a>
         </div>
     </section>
     @if (Model.Posts.Count > 1)
     {
-        <section class="story-section"><h2>@Localizer["Blog.AllWriting"]</h2><div class="story-grid">
-        @foreach (PostCardViewModel post in Model.Posts.Skip(1))
-        {
-            <article class="story-card">
-                <a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug" class="story-image">
-                    @if (post.CoverImageUrl is not null) { <img src="@post.CoverImageUrl" alt="" loading="lazy" decoding="async" /> }
-                    else { <span aria-hidden="true">@post.Title.Substring(0, 1).ToUpperInvariant()</span> }
-                </a>
-                <p class="date-line">@post.PublishedAt.ToString("D")</p>
-                <h3><a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug">@post.Title</a></h3>
-                @if (post.Categories.Count > 0 || post.Tags.Count > 0)
+        <section class="pt-14">
+            <h2 class="mb-7 font-serif text-3xl">@Localizer["Blog.AllWriting"]</h2>
+            <div class="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach (PostCardViewModel post in Model.Posts.Skip(1))
                 {
-                    <div class="topic-links">
-                        @foreach (CategoryLinkViewModel cat in post.Categories) { <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a> }
-                        @foreach (TagLinkViewModel tag in post.Tags) { <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a> }
-                    </div>
+                    <article>
+                        <a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug" class="mb-4 grid aspect-[4/3] place-items-center overflow-hidden bg-ink text-white no-underline focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand">
+                            @if (post.CoverImageUrl is not null)
+                            {
+                                <img src="@post.CoverImageUrl" alt="" class="h-full w-full object-cover transition duration-200 ease-out hover:scale-[1.02]" loading="lazy" decoding="async" />
+                            }
+                            else
+                            {
+                                <span class="font-serif text-6xl" aria-hidden="true">@post.Title.Substring(0, 1).ToUpperInvariant()</span>
+                            }
+                        </a>
+                        <p class="text-sm text-muted">@post.PublishedAt.ToString("D")</p>
+                        <h3 class="mt-2 font-serif text-2xl leading-tight">
+                            <a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug" class="no-underline transition-colors hover:text-brand focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand">@post.Title</a>
+                        </h3>
+                        @if (post.Excerpt is not null)
+                        {
+                            <p class="mt-3 leading-7 text-muted">@post.Excerpt</p>
+                        }
+                    </article>
                 }
-                @if (post.Excerpt is not null) { <p>@post.Excerpt</p> }
-            </article>
-        }
-        </div></section>
+            </div>
+        </section>
     }
     await Html.RenderPartialAsync("_Pagination", Model.Pagination);
 }

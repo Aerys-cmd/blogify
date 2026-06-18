@@ -1,14 +1,38 @@
 @model Blogify.Web.Areas.Blog.Pages.BlogSidebarViewModel
-<aside class="topic-strip">
-    <h2>@Localizer["Blog.Discover"]</h2>
-    <nav aria-label="@Localizer["Blog.Discover"].Value">
-        <a asp-area="Blog" asp-page="/Search">@Localizer["Blog.Search"]</a>
-        <a asp-area="Blog" asp-page="/Archives">@Localizer["Blog.Archives"]</a>
-        <a asp-area="Blog" asp-page="/Categories">@Localizer["Blog.Categories"]</a>
-        <a asp-area="Blog" asp-page="/Tags">@Localizer["Blog.Tags"]</a>
+<aside class="mt-16 grid gap-6 border-y border-line py-7 md:grid-cols-[auto_1fr] md:items-start">
+    <h2 class="text-base font-extrabold">@Localizer["Blog.Discover"]</h2>
+    <nav class="flex flex-wrap gap-2" aria-label="@Localizer["Blog.Discover"].Value">
+        <a class="rounded-full bg-subtle px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-line focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand" asp-area="Blog" asp-page="/Search">@Localizer["Blog.Search"]</a>
+        <a class="rounded-full bg-subtle px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-line focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand" asp-area="Blog" asp-page="/Archives">@Localizer["Blog.Archives"]</a>
+        <a class="rounded-full bg-subtle px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-line focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand" asp-area="Blog" asp-page="/Categories">@Localizer["Blog.Categories"]</a>
+        <a class="rounded-full bg-subtle px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-line focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand" asp-area="Blog" asp-page="/Tags">@Localizer["Blog.Tags"]</a>
     </nav>
-    <h2>@Localizer["Blog.Categories"]</h2>
-    @if(Model.Categories.Count==0){<p>@Localizer["Blog.NoCategories"]</p>}else{<nav aria-label="@Localizer["Blog.Categories"]">@foreach(CategoryLinkViewModel category in Model.Categories){<a asp-area="Blog" asp-page="/Category" asp-route-slug="@category.Slug">@category.Name</a>}</nav>}
-    <h2>@Localizer["Blog.Tags"]</h2>
-    @if(Model.Tags.Count==0){<p>@Localizer["Blog.NoTags"]</p>}else{<nav aria-label="@Localizer["Blog.Tags"]">@foreach(TagLinkViewModel tag in Model.Tags){<a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a>}</nav>}
+    <h2 class="text-base font-extrabold">@Localizer["Blog.Categories"]</h2>
+    @if (Model.Categories.Count == 0)
+    {
+        <p class="text-muted">@Localizer["Blog.NoCategories"]</p>
+    }
+    else
+    {
+        <nav class="flex flex-wrap gap-2" aria-label="@Localizer["Blog.Categories"]">
+            @foreach (CategoryLinkViewModel category in Model.Categories)
+            {
+                <a class="rounded-full bg-subtle px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-line focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand" asp-area="Blog" asp-page="/Category" asp-route-slug="@category.Slug">@category.Name</a>
+            }
+        </nav>
+    }
+    <h2 class="text-base font-extrabold">@Localizer["Blog.Tags"]</h2>
+    @if (Model.Tags.Count == 0)
+    {
+        <p class="text-muted">@Localizer["Blog.NoTags"]</p>
+    }
+    else
+    {
+        <nav class="flex flex-wrap gap-2" aria-label="@Localizer["Blog.Tags"]">
+            @foreach (TagLinkViewModel tag in Model.Tags)
+            {
+                <a class="rounded-full bg-subtle px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-line focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-brand" asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a>
+            }
+        </nav>
+    }
 </aside>

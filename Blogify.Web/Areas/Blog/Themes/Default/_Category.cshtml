@@ -1,7 +1,14 @@
 @model Blogify.Web.Areas.Blog.Pages.CategoryModel
-<header class="category-header"><p class="section-label">@Localizer["Blog.Categories"]</p><h1>@Localizer["Blog.CategoryHeading", Model.CategoryName]</h1></header>
-@if (Model.Posts.Count == 0) { <div class="empty-state"><p>@Localizer["Blog.NoCategoryPosts"]</p></div> }
-else { <div class="story-grid">
-@foreach (PostCardViewModel post in Model.Posts) {
-<article class="story-card"><a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug" class="story-image">@if(post.CoverImageUrl is not null){<img src="@post.CoverImageUrl" alt="" loading="lazy" decoding="async" />}else{<span aria-hidden="true">@post.Title.Substring(0,1).ToUpperInvariant()</span>}</a><p class="date-line">@post.PublishedAt.ToString("D")</p><h2><a asp-area="Blog" asp-page="/Post" asp-route-slug="@post.Slug">@post.Title</a></h2>@if(post.Categories.Count>0||post.Tags.Count>0){<div class="topic-links">@foreach(CategoryLinkViewModel cat in post.Categories){<a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a>}@foreach(TagLinkViewModel tag in post.Tags){<a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a>}</div>}@if(post.Excerpt is not null){<p>@post.Excerpt</p>}</article>
-}</div>await Html.RenderPartialAsync("_Pagination", Model.Pagination); }
+<header class="pb-8">
+    <p class="text-sm font-extrabold text-brand">@Localizer["Blog.Categories"]</p>
+    <h1 class="mt-2 font-serif text-4xl leading-tight md:text-5xl">@Localizer["Blog.CategoryHeading", Model.CategoryName]</h1>
+</header>
+@if (Model.Posts.Count == 0)
+{
+    <div class="border-y border-line py-20 text-center text-lg text-muted"><p>@Localizer["Blog.NoCategoryPosts"]</p></div>
+}
+else
+{
+    <partial name="/Areas/Blog/Themes/Default/_PostGrid.cshtml" model="Model.Posts" />
+    await Html.RenderPartialAsync("_Pagination", Model.Pagination);
+}

@@ -6,8 +6,8 @@
 @if (!string.IsNullOrWhiteSpace(previewTheme))
 {
     string exitUrl = $"{Context.Request.PathBase}{Context.Request.Path}?{ThemePreviewTokenService.ExitQueryKey}=1";
-    <div class="theme-preview-banner" role="status">
+    <div class="fixed bottom-3 right-3 z-40 flex max-w-[min(420px,calc(100%-24px))] flex-col gap-2 rounded-md border border-white/15 bg-ink px-4 py-3 text-sm font-bold text-white shadow-lg sm:bottom-5 sm:right-5 sm:flex-row sm:items-center sm:gap-4" role="status">
         <span>@Localizer["Themes.Previewing", previewTheme]</span>
-        <a href="@exitUrl">@Localizer["Themes.ExitPreview"]</a>
+        <a class="inline-flex min-h-9 items-center justify-center rounded bg-white px-3 text-ink no-underline transition-colors hover:bg-subtle focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-bright" href="@exitUrl">@Localizer["Themes.ExitPreview"]</a>
     </div>
 }

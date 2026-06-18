@@ -3,19 +3,19 @@
 @{
     ViewData["Title"] = Localizer["Blog.Archives"].Value;
 }
-<header class="blog-list-header">
-    <h1>@Localizer["Blog.Archives"]</h1>
+<header class="pb-8">
+    <h1 class="font-serif text-4xl leading-tight tracking-[-0.025em] md:text-6xl">@Localizer["Blog.Archives"]</h1>
 </header>
 @if (Model.Months.Count == 0)
 {
-    <div class="empty-state">@Localizer["Blog.NoPosts"]</div>
+    <div class="border-y border-current/15 py-16 text-current/70">@Localizer["Blog.NoPosts"]</div>
 }
 else
 {
-    <nav class="topic-links" aria-label="@Localizer["Blog.Archives"].Value">
+    <nav class="flex flex-wrap gap-2" aria-label="@Localizer["Blog.Archives"].Value">
         @foreach (ArchiveMonthViewModel month in Model.Months)
         {
-            <a asp-area="Blog" asp-page="/Archive" asp-route-year="@month.Year" asp-route-month="@month.Month">
+            <a asp-area="Blog" asp-page="/Archive" asp-route-year="@month.Year" asp-route-month="@month.Month" class="rounded-full border border-current/20 px-3 py-1.5 text-sm font-bold no-underline transition-colors hover:bg-current/10 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4">
                 @month.MonthStart.ToString("MMMM yyyy") (@month.Count)
             </a>
         }

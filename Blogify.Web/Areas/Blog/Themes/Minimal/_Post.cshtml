@@ -1,11 +1,27 @@
 @model Blogify.Web.Areas.Blog.Pages.PostModel
-<article class="article">
-    <header class="article-header">
-        <a asp-area="Blog" asp-page="/Index" class="back-link">← @Localizer["Blog.BackToPosts"]</a>
-        <h1>@Model.PostTitle</h1><p class="date-line">@Localizer["Blog.Published", Model.PublishedAt.ToString("D")]</p>
-        @if(Model.CategoryItems.Count>0||Model.TagItems.Count>0){<div class="topic-links">@foreach(CategoryLinkViewModel cat in Model.CategoryItems){<a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug">@cat.Name</a>}@foreach(TagLinkViewModel tag in Model.TagItems){<a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug">@tag.Name</a>}</div>}
+<article>
+    <header class="mb-10">
+        <a asp-area="Blog" asp-page="/Index" class="inline-flex min-h-11 items-center text-xs font-bold text-[#242f56] no-underline hover:text-[#181817] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#242f56]">&lt;- @Localizer["Blog.BackToPosts"]</a>
+        <h1 class="mt-5 font-serif text-5xl leading-none tracking-[-0.035em] md:text-7xl">@Model.PostTitle</h1>
+        <p class="mt-5 text-xs text-[#686863]">@Localizer["Blog.Published", Model.PublishedAt.ToString("D")]</p>
+        @if (Model.CategoryItems.Count > 0 || Model.TagItems.Count > 0)
+        {
+            <div class="mt-4 flex flex-wrap gap-3">
+                @foreach (CategoryLinkViewModel cat in Model.CategoryItems)
+                {
+                    <a asp-area="Blog" asp-page="/Category" asp-route-slug="@cat.Slug" class="text-xs font-bold text-[#242f56] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#242f56]">@cat.Name</a>
+                }
+                @foreach (TagLinkViewModel tag in Model.TagItems)
+                {
+                    <a asp-area="Blog" asp-page="/Tag" asp-route-slug="@tag.Slug" class="text-xs font-bold text-[#242f56] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-[#242f56]">@tag.Name</a>
+                }
+            </div>
+        }
     </header>
-    @if(Model.CoverImageUrl is not null){<img src="@Model.CoverImageUrl" class="article-cover" alt="" decoding="async" />}
-    <div class="prose">@Html.Raw(Model.PostContent)</div>
+    @if (Model.CoverImageUrl is not null)
+    {
+        <img src="@Model.CoverImageUrl" class="mb-12 max-h-[680px] w-full object-cover md:w-[calc(100%+160px)] md:max-w-none md:-translate-x-20" alt="" decoding="async" />
+    }
+    <div class="prose prose-lg max-w-none font-serif prose-headings:font-serif prose-headings:text-[#181817] prose-a:text-[#242f56] prose-pre:bg-[#f1f1ed] prose-pre:text-[#181817]">@Html.Raw(Model.PostContent)</div>
 </article>
 <partial name="_Comments" model="Model" />
