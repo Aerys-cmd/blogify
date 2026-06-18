@@ -118,6 +118,18 @@ builder.Services.Configure<FeedbackHubOptions>(
 builder.Services.Configure<TenantOptions>(
     builder.Configuration.GetSection("Tenant"));
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/login";
+    options.LogoutPath = "/logout";
+    options.AccessDeniedPath = "/access-denied";
+});
+
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+});
+
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders =
@@ -160,6 +172,8 @@ string[] outputCachedPublicBlogPages =
 builder.Services
     .AddRazorPages(options =>
     {
+        ConfigureFriendlyPageRoutes(options.Conventions);
+
         foreach (string pageName in outputCachedPublicBlogPages)
         {
             options.Conventions.AddAreaPageApplicationModelConvention(
@@ -170,58 +184,6 @@ builder.Services
                     PolicyName = PublicBlogOutputCachePolicy.PolicyName
                 }));
         }
-
-    // Map the BlogAdmin area under /app/admin/{blogSlug} so the blog is identified
-    // by route parameter rather than subdomain, enabling a single-auth architecture
-    // where all admin pages live on the root domain cookie.
-    options.Conventions.AddAreaFolderRouteModelConvention(
-        areaName: "BlogAdmin",
-        folderPath: "/",
-        action: model =>
-        {
-            const string areaPrefix = "BlogAdmin";
-            const string newPrefix = "app/admin/{blogSlug}";
-
-            foreach (SelectorModel selector in model.Selectors)
-            {
-                if (selector.AttributeRouteModel?.Template is not string template)
-                    continue;
-
-                if (string.Equals(template, areaPrefix, StringComparison.OrdinalIgnoreCase))
-                {
-                    selector.AttributeRouteModel.Template = newPrefix;
-                }
-                else if (template.StartsWith(areaPrefix + "/", StringComparison.OrdinalIgnoreCase))
-                {
-                    selector.AttributeRouteModel.Template = newPrefix + "/" + template[(areaPrefix.Length + 1)..];
-                }
-            }
-        });
-
-    // Map the SuperAdmin area under the /sa route prefix instead of /SuperAdmin.
-    options.Conventions.AddAreaFolderRouteModelConvention(
-        areaName: "SuperAdmin",
-        folderPath: "/",
-        action: model =>
-        {
-            const string areaPrefix = "SuperAdmin";
-            const string newPrefix = "sa";
-
-            foreach (SelectorModel selector in model.Selectors)
-            {
-                if (selector.AttributeRouteModel?.Template is not string template)
-                    continue;
-
-                if (string.Equals(template, areaPrefix, StringComparison.OrdinalIgnoreCase))
-                {
-                    selector.AttributeRouteModel.Template = newPrefix;
-                }
-                else if (template.StartsWith(areaPrefix + "/", StringComparison.OrdinalIgnoreCase))
-                {
-                    selector.AttributeRouteModel.Template = newPrefix + template[areaPrefix.Length..];
-                }
-            }
-        });
     })
     .AddViewLocalization()
     .AddDataAnnotationsLocalization(options =>
@@ -293,3 +255,79 @@ app.MapRazorPages()
 
 
 app.Run();
+
+static void ConfigureFriendlyPageRoutes(PageConventionCollection conventions)
+{
+    // The public Blog area keeps its existing clean subdomain routes. Platform,
+    // identity, and admin surfaces use explicit replacement routes below.
+    ReplacePageRoute(conventions, "/Index", "_internal/landing");
+    ReplacePageRoute(conventions, "/Dashboard/Index", "dashboard");
+    ReplacePageRoute(conventions, "/Dashboard/CreateBlog", "dashboard/create-blog");
+    ReplacePageRoute(conventions, "/Invitation", "invite/{token}");
+    ReplacePageRoute(conventions, "/Privacy", "privacy");
+    ReplacePageRoute(conventions, "/MyAdmin", "my-admin");
+
+    ReplaceAreaPageRoute(conventions, "Identity", "/Account/Login", "login");
+    ReplaceAreaPageRoute(conventions, "Identity", "/Account/Register", "register");
+    ReplaceAreaPageRoute(conventions, "Identity", "/Account/Logout", "logout");
+    ReplaceAreaPageRoute(conventions, "Identity", "/Account/ForgotPassword", "forgot-password");
+    ReplaceAreaPageRoute(conventions, "Identity", "/Account/ResetPassword", "reset-password");
+    ReplaceAreaPageRoute(conventions, "Identity", "/Account/AccessDenied", "access-denied");
+
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Index", "app/admin/{blogSlug}");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Posts/Index", "app/admin/{blogSlug}/posts");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Posts/Create", "app/admin/{blogSlug}/posts/new");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Posts/Edit", "app/admin/{blogSlug}/posts/{id:guid}/edit");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Media/Index", "app/admin/{blogSlug}/media");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Analytics/Index", "app/admin/{blogSlug}/analytics");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Comments/Index", "app/admin/{blogSlug}/comments");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Themes/Index", "app/admin/{blogSlug}/themes");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Categories/Index", "app/admin/{blogSlug}/categories");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Categories/Create", "app/admin/{blogSlug}/categories/new");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Categories/Edit", "app/admin/{blogSlug}/categories/{id:guid}/edit");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Tags/Index", "app/admin/{blogSlug}/tags");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Tags/Create", "app/admin/{blogSlug}/tags/new");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Tags/Edit", "app/admin/{blogSlug}/tags/{id:guid}/edit");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Members/Index", "app/admin/{blogSlug}/members");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Members/Invite", "app/admin/{blogSlug}/members/invite");
+    ReplaceAreaPageRoute(conventions, "BlogAdmin", "/Settings/Index", "app/admin/{blogSlug}/settings");
+
+    ReplaceAreaPageRoute(conventions, "SuperAdmin", "/Index", "sa");
+    ReplaceAreaPageRoute(conventions, "SuperAdmin", "/Users/Index", "sa/users");
+    ReplaceAreaPageRoute(conventions, "SuperAdmin", "/Users/Create", "sa/users/new");
+    ReplaceAreaPageRoute(conventions, "SuperAdmin", "/Users/Edit", "sa/users/{id}/edit");
+    ReplaceAreaPageRoute(conventions, "SuperAdmin", "/Users/Delete", "sa/users/{id}/delete");
+    ReplaceAreaPageRoute(conventions, "SuperAdmin", "/Blogs/Index", "sa/blogs");
+    ReplaceAreaPageRoute(conventions, "SuperAdmin", "/Blogs/Create", "sa/blogs/new");
+    ReplaceAreaPageRoute(conventions, "SuperAdmin", "/Blogs/Edit", "sa/blogs/{id:guid}/edit");
+    ReplaceAreaPageRoute(conventions, "SuperAdmin", "/Blogs/Delete", "sa/blogs/{id:guid}/delete");
+}
+
+static void ReplacePageRoute(PageConventionCollection conventions, string pageName, string routeTemplate)
+{
+    conventions.AddPageRouteModelConvention(pageName, model => ReplaceRoute(model, routeTemplate));
+}
+
+static void ReplaceAreaPageRoute(
+    PageConventionCollection conventions,
+    string areaName,
+    string pageName,
+    string routeTemplate)
+{
+    conventions.AddAreaPageRouteModelConvention(
+        areaName,
+        pageName,
+        model => ReplaceRoute(model, routeTemplate));
+}
+
+static void ReplaceRoute(PageRouteModel model, string routeTemplate)
+{
+    model.Selectors.Clear();
+    model.Selectors.Add(new SelectorModel
+    {
+        AttributeRouteModel = new AttributeRouteModel
+        {
+            Template = routeTemplate
+        }
+    });
+}

@@ -14,14 +14,14 @@ The app starts by running EF migrations and database seeding. Default service en
 
 | Surface | Route/host | Tenant source |
 |---|---|---|
-| Landing, dashboard, identity, invitation | platform host | none |
-| SuperAdmin | `/sa` on platform host | none |
-| BlogAdmin | `/app/admin/{blogSlug}` on platform host | route slug resolved by middleware |
+| Landing, dashboard, identity, invitation | platform host; friendly routes such as `/dashboard`, `/login`, `/register`, `/invite/{token}` | none |
+| SuperAdmin | `/sa` and lowercase child routes on platform host | none |
+| BlogAdmin | `/app/admin/{blogSlug}` and lowercase child routes on platform host | route slug resolved by middleware |
 | Public blog | tenant subdomain | host subdomain |
 
 Platform hosts come from `TenantOptions.PlatformHosts`. `TenantResolutionMiddleware` resolves a `Tenant`, sets `TenantContext`, and sets `ApplicationDbContext.CurrentTenantId`. Unknown tenant slugs return 404.
 
-`AccessControlMiddleware` enforces host/area boundaries and requires ownership or membership for BlogAdmin. `IBlogPermissionService` handles action-level role checks.
+Razor Pages route conventions in `Program.cs` replace broad area paths with friendly lowercase public URLs; old area paths are not compatibility routes. `AccessControlMiddleware` enforces host/area boundaries and requires ownership or membership for BlogAdmin. `IBlogPermissionService` handles action-level role checks.
 
 Middleware order is significant:
 

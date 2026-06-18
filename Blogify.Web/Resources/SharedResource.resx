@@ -613,6 +613,10 @@
   <data name="Auth.Layout.Description" xml:space="preserve"><value>A focused workspace for writing clearly and publishing confidently.</value></data>
   <data name="Auth.Layout.PreviewLabel" xml:space="preserve"><value>FIELD NOTES</value></data>
   <data name="Auth.Layout.PreviewTitle" xml:space="preserve"><value>The work worth returning to</value></data>
+  <data name="Auth.AccessDenied.Title" xml:space="preserve"><value>Access denied</value></data>
+  <data name="Auth.AccessDenied.Context" xml:space="preserve"><value>Not enough access</value></data>
+  <data name="Auth.AccessDenied.Heading" xml:space="preserve"><value>You cannot open this page</value></data>
+  <data name="Auth.AccessDenied.Description" xml:space="preserve"><value>Your account does not have permission to view this area.</value></data>
   <data name="Dashboard.Context" xml:space="preserve"><value>Your publishing homes</value></data>
   <data name="Dashboard.Description" xml:space="preserve"><value>Open a workspace, continue writing, or start something new.</value></data>
   <data name="Dashboard.OwnerRole" xml:space="preserve"><value>Owner</value></data>

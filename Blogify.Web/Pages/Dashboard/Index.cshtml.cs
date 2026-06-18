@@ -22,7 +22,7 @@ public sealed class IndexModel(
     {
         string? userId = userManager.GetUserId(User);
         if (userId is null)
-            return RedirectToPage("/Identity/Account/Login", new { area = "Identity" });
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
 
         IReadOnlyList<AccessibleBlog> blogs = await accessibleBlogService.GetForUserAsync(
             userId, Request.Scheme, Request.Host, ct);

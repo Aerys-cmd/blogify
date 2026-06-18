@@ -18,7 +18,7 @@ public sealed class AppEmailSender(
     {
         string language = GetLanguage(culture);
         string resetUrl = BuildUrl(
-            "/Identity/Account/ResetPassword",
+            "/reset-password",
             new Dictionary<string, string?>
             {
                 ["token"] = token,

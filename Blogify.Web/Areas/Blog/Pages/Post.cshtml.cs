@@ -195,7 +195,7 @@ public sealed class PostModel(
         IsAuthenticated = User.Identity?.IsAuthenticated ?? false;
         string returnUrl = $"{Request.PathBase}{Request.Path}{Request.QueryString}";
         LoginUrl = Url.Page("/Account/Login", pageHandler: null, values: new { area = "Identity", returnUrl })
-            ?? "/Identity/Account/Login";
+            ?? "/login";
 
         ViewData["MetaTitle"] = post.MetaTitle ?? publishedRevision.Title;
         ViewData["Title"] = publishedRevision.Title;

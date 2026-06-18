@@ -613,6 +613,10 @@
   <data name="Auth.Layout.Description" xml:space="preserve"><value>Net yazmak ve güvenle yayınlamak için odaklı bir çalışma alanı.</value></data>
   <data name="Auth.Layout.PreviewLabel" xml:space="preserve"><value>SAHA NOTLARI</value></data>
   <data name="Auth.Layout.PreviewTitle" xml:space="preserve"><value>Geri dönmeye değer çalışma</value></data>
+  <data name="Auth.AccessDenied.Title" xml:space="preserve"><value>Erişim engellendi</value></data>
+  <data name="Auth.AccessDenied.Context" xml:space="preserve"><value>Yetersiz erişim</value></data>
+  <data name="Auth.AccessDenied.Heading" xml:space="preserve"><value>Bu sayfayı açamazsınız</value></data>
+  <data name="Auth.AccessDenied.Description" xml:space="preserve"><value>Hesabınızın bu alanı görüntüleme izni yok.</value></data>
   <data name="Dashboard.Context" xml:space="preserve"><value>Yayın evleriniz</value></data>
   <data name="Dashboard.Description" xml:space="preserve"><value>Bir çalışma alanı açın, yazmaya devam edin veya yeni bir şeye başlayın.</value></data>
   <data name="Dashboard.OwnerRole" xml:space="preserve"><value>Sahip</value></data>

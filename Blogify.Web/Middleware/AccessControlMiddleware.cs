@@ -31,6 +31,7 @@ public sealed class AccessControlMiddleware
 {
     /// <summary>Razor Pages relative path for the root landing page.</summary>
     private const string LandingPageRelativePath = "/Pages/Index.cshtml";
+    private const string PublicBlogIndexRelativePath = "/Areas/Blog/Pages/Index.cshtml";
 
     private readonly RequestDelegate _next;
     private readonly IEnumerable<EndpointDataSource> _endpointSources;
@@ -53,9 +54,19 @@ public sealed class AccessControlMiddleware
         // --- Rule 1: no-area Razor Pages (root Pages/) are root-domain only ---
         if (string.IsNullOrEmpty(area))
         {
+            PageActionDescriptor? page = context.GetEndpoint()?.Metadata.GetMetadata<PageActionDescriptor>();
+            if (page is not null &&
+                string.Equals(page.RelativePath, LandingPageRelativePath, StringComparison.OrdinalIgnoreCase) &&
+                context.Request.Path.StartsWithSegments("/_internal/landing", StringComparison.OrdinalIgnoreCase))
+            {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                await context.Response.WriteAsync("Not found.");
+                return;
+            }
+
             if (tenantResolved)
             {
-                bool isRazorPage = context.GetEndpoint()?.Metadata.GetMetadata<PageActionDescriptor>() is not null;
+                bool isRazorPage = page is not null;
                 if (isRazorPage)
                 {
                     context.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -73,6 +84,14 @@ public sealed class AccessControlMiddleware
         {
             if (!tenantResolved)
             {
+                PageActionDescriptor? blogPage = context.GetEndpoint()?.Metadata.GetMetadata<PageActionDescriptor>();
+                if (blogPage is null ||
+                    !string.Equals(blogPage.RelativePath, PublicBlogIndexRelativePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    return;
+                }
+
                 // SuperAdmin has no blog — send them to the platform dashboard.
                 if (context.User.Identity?.IsAuthenticated == true && context.User.IsInRole("SuperAdmin"))
                 {
@@ -113,7 +132,7 @@ public sealed class AccessControlMiddleware
             if (context.User.Identity is not { IsAuthenticated: true })
             {
                 string returnUrl = context.Request.PathBase + context.Request.Path + context.Request.QueryString;
-                context.Response.Redirect($"/Identity/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}");
+                context.Response.Redirect($"/login?ReturnUrl={Uri.EscapeDataString(returnUrl)}");
                 return;
             }
 
@@ -121,7 +140,7 @@ public sealed class AccessControlMiddleware
             if (userId is null)
             {
                 string returnUrl = context.Request.PathBase + context.Request.Path + context.Request.QueryString;
-                context.Response.Redirect($"/Identity/Account/Login?ReturnUrl={Uri.EscapeDataString(returnUrl)}");
+                context.Response.Redirect($"/login?ReturnUrl={Uri.EscapeDataString(returnUrl)}");
                 return;
             }
 

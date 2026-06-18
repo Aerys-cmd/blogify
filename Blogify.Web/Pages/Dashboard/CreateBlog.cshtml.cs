@@ -30,7 +30,7 @@ public sealed class CreateBlogModel(
 
         string? userId = userManager.GetUserId(User);
         if (userId is null)
-            return RedirectToPage("/Identity/Account/Login", new { area = "Identity" });
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
 
         string normalizedSubdomain = Input.Subdomain.Trim().ToLowerInvariant();
 

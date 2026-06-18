@@ -64,8 +64,8 @@ public sealed class IndexModel(ApplicationDbContext dbContext) : PageModel
             t.CreatedAt)).ToList();
 
         PaginationBaseUrl = string.IsNullOrEmpty(SearchQuery)
-            ? "/sa/Blogs"
-            : $"/sa/Blogs?q={Uri.EscapeDataString(SearchQuery)}";
+            ? "/sa/blogs"
+            : $"/sa/blogs?q={Uri.EscapeDataString(SearchQuery)}";
 
         return Page();
     }

@@ -12,6 +12,6 @@ public sealed class LogoutModel(SignInManager<ApplicationUser> signInManager) : 
         await signInManager.SignOutAsync();
         return returnUrl is not null
             ? LocalRedirect(returnUrl)
-            : RedirectToPage("/Index");
+            : LocalRedirect("~/");
     }
 }
