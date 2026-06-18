@@ -1,106 +1,110 @@
-# blogify
+# Blogify
 
-> ASP.NET Core blog platform orchestrated with .NET Aspire — Docker, Traefik, GitHub Actions CI/CD.
+Blogify is a multi-tenant blogging platform for creators. It is built with ASP.NET Core Razor Pages on .NET 10, EF Core SQLite, ASP.NET Identity, localized English/Turkish UI, tenant-aware public blogs, per-blog administration, and themeable public sites.
 
----
+## Main Features
 
-## What is blogify?
+- Multi-blog tenancy with public blogs on subdomains and admin pages under `/app/admin/{blogSlug}`.
+- Owner and member access using per-blog roles: `Writer`, `Editor`, and `Admin`.
+- Public themes: `default`, `minimal`, and `aurora`.
+- BlockNote-based post editor with server-side public rendering and searchable content extraction.
+- Categories, tags, media library, comments, moderation, RSS, sitemap, analytics, and public output caching.
+- Local file storage by default, with optional Cloudflare R2 storage when all R2 settings are configured.
+- Localized email templates for password reset and blog invitations.
+- SuperAdmin area under `/sa`.
 
-blogify is a content-focused blog platform built on ASP.NET Core, using .NET Aspire for local
-orchestration and multi-container deployment. The project demonstrates modern .NET application
-structure: a shared service defaults layer, an Aspire AppHost as the composition root, and a
-Razor Pages / MVC web application — all wired together with Docker and Traefik for production.
+## Repository Layout
 
----
-
-## Architecture
-
+```text
+Blogify.Web/              ASP.NET Core Razor Pages application
+Blogify.Tests/            xUnit test project
+Blogify.AppHost/          .NET Aspire local orchestration with Traefik
+Blogify.ServiceDefaults/  shared health, telemetry, resilience, and discovery defaults
 ```
-Blogify.AppHost/          ← .NET Aspire orchestration entry point
-Blogify.Web/              ← Razor Pages / MVC web application
-Blogify.ServiceDefaults/  ← Shared telemetry, health checks, resilience defaults
-```
 
-**.NET Aspire** acts as the composition root: `Blogify.AppHost` declares all resources (the web
-app, databases, and any dependent services) and wires them together. Running the AppHost starts
-everything with a single `dotnet run`, including the Aspire developer dashboard.
+Useful supporting files:
 
----
+- `.github/copilot-instructions.md`: agent/Codex operating guide.
+- `.github/instructions/`: file-scoped coding instructions.
+- `.github/architecture/system-overview.md`: tenancy, routing, authorization, theme, and data-boundary reference.
+- `PRODUCT.md` and `DESIGN.md`: product and UI design direction.
+- `.env.example`: production Docker Compose environment template.
 
-## Tech Stack
+## Prerequisites
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | ASP.NET Core 9 |
-| Language | C# 13, .NET 9 |
-| Orchestration | .NET Aspire |
-| Deployment | Docker, Traefik, GitHub Actions |
-| Styling | Razor Pages / MVC views |
+- .NET 10 SDK
+- Node.js 20 or newer for frontend asset builds
+- Docker, if running Aspire with Traefik or using Docker Compose deployment
 
----
+The repository pins the .NET SDK through `global.json`.
 
-## Running Locally
+## Local Development
 
-**Prerequisites**: [.NET 10 SDK](https://dotnet.microsoft.com/download), [Docker](https://docs.docker.com/get-docker/)
+Restore, build, and test:
 
 ```bash
-git clone https://github.com/Aerys-cmd/blogify.git
-cd blogify
+dotnet restore Blogify.sln
+dotnet build Blogify.Web/Blogify.Web.csproj --no-restore
+dotnet test Blogify.Tests/Blogify.Tests.csproj --no-restore
+```
 
-# Run via .NET Aspire (recommended — starts all dependencies automatically)
+Run the app through Aspire:
+
+```bash
 dotnet run --project Blogify.AppHost
 ```
 
-The Aspire dashboard will be available at `https://localhost:15888`.  
-The web application will be available at the port shown in the dashboard.
+`Blogify.AppHost` starts the web app on a fixed HTTP endpoint and a Traefik container for local subdomain routing. Use the Aspire dashboard output to find the exact local URLs.
 
-## Email Delivery
+The web app runs EF migrations and seed data at startup. Development SQLite defaults to `Blogify.Web/blogify.db`.
 
-Password-reset and blog-invitation emails are rendered as localized HTML and placed on a bounded
-in-memory queue. Development defaults to disabled delivery, which logs and discards queued email.
-Production enables SMTP delivery by default.
+## Frontend Assets
 
-For Docker Compose deployments, create a `.env` file beside `docker-compose.yml` from
-`.env.example`. Compose maps these deployment variables to the application's ASP.NET Core
-configuration:
+The application is primarily server-rendered Razor. React is used only for the BlockNote editor in `Blogify.Web/ClientApp`.
+
+Install and build assets from `Blogify.Web`:
 
 ```bash
-FEEDBACK_HUB_PUBLIC_KEY=...
-EMAIL_ENABLED=true
-EMAIL_PUBLIC_BASE_URL=https://blogify.example.com
-EMAIL_FROM_ADDRESS=no-reply@blogify.example.com
-EMAIL_FROM_NAME=Blogify
-EMAIL_QUEUE_CAPACITY=100
-SMTP_HOST=smtp.example.com
-SMTP_PORT=587
-SMTP_USERNAME=no-reply@blogify.example.com
-SMTP_PASSWORD=...
-SMTP_USE_SSL=false
+npm ci
+npm run build:editor
+npm run build:css:default
+npm run build:css:minimal
+npm run build:css:aurora
 ```
 
-`FEEDBACK_HUB_PUBLIC_KEY` enables the Feedback Hub widget in the Blog Admin interface. The widget
-is omitted when the key is empty.
+The Dockerfile enables both Tailwind and Vite build targets during publish. For local .NET builds, run the relevant npm scripts after editing `ClientApp/` or `styles/themes/`.
 
-`EMAIL_PUBLIC_BASE_URL` is used for canonical links in email. `SMTP_USE_SSL=true` selects
-SSL-on-connect; `false` selects STARTTLS. Failed SMTP deliveries are retried after 2, 8, and 30
-seconds, then logged and discarded. The queue applies backpressure when full and is not persistent,
-so queued messages are lost when the application restarts.
+## Configuration
 
----
+The required database connection key is `ConnectionStrings:blogdb`.
 
-## Deployment
+Important configuration sections:
 
-The repository includes a `Dockerfile` and `docker-compose.yml` for production deployment, along
-with a Traefik configuration for TLS termination and reverse proxying.
+- `Tenant:PlatformHosts`: root/platform hosts that are not treated as tenant subdomains.
+- `Storage`: image quality settings and optional `Storage:R2` credentials. R2 is enabled only when account id, access key, secret, bucket, and public base URL are all present.
+- `Email`: enables/disables queued email delivery and sets public URL/from metadata.
+- `Smtp`: SMTP host, port, credentials, and SSL mode.
+- `Analytics:IpHashSalt`: salt used for analytics IP hashing.
+- `FeedbackHub:PublicKey`: enables the Blog Admin Feedback Hub widget when set.
+- `DataProtection:KeysPath`: optional override for persisted data-protection keys.
+
+Development email delivery is disabled by default. Production Docker Compose enables email by default and requires SMTP settings.
+
+## Docker Deployment
+
+The repository includes a production `Dockerfile` and `docker-compose.yml` that publishes the web app, builds frontend assets, stores SQLite/uploads/data-protection keys in volumes, and exposes the app behind an external Traefik network named `web`.
+
+Create `.env` from `.env.example`, then run:
 
 ```bash
 docker compose up -d
 ```
 
-See the `docs/` directory for detailed deployment and configuration notes.
+The compose file expects the image at `ghcr.io/${OWNER}/blogify-web:${IMAGE_TAG}` and currently routes `blogify.com.tr`, `www.blogify.com.tr`, and wildcard subdomains through Traefik.
 
----
+## CI/CD
 
-## License
+GitHub Actions include:
 
-MIT — see [LICENSE](LICENSE) if present, otherwise all rights reserved.
+- CI on pushes and pull requests: restore, build, and test.
+- CD on published releases: build and push the Docker image to GHCR, copy `docker-compose.yml` to the VPS, and restart the service over SSH.

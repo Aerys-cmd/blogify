@@ -1,65 +1,83 @@
 # Blogify Agent Guide
 
-Read this file first. Inspect nearby code before changing behavior; the code is the source of truth when documentation disagrees.
+Read this first. The code is the source of truth when documentation disagrees, so inspect nearby implementations before changing behavior.
 
-## Stack and Commands
+## Stack
 
-- .NET 10, ASP.NET Core Razor Pages, EF Core with SQLite, .NET Aspire.
-- Server-rendered UI with Bootstrap, HTMX, small vanilla JS, and React only for the existing BlockNote editor.
-- Restore/build: `dotnet restore Blogify.Web/Blogify.Web.csproj` then `dotnet build Blogify.Web/Blogify.Web.csproj --no-restore`.
-- Run locally: `dotnet run --project Blogify.AppHost`.
-- Build editor/themes after related frontend changes:
-  `cd Blogify.Web && npm ci && npm run build:editor && npm run build:css:minimal && npm run build:css:aurora`.
-- There is currently no automated test project. At minimum, run the relevant build.
+- .NET 10, ASP.NET Core Razor Pages, ASP.NET Identity, EF Core SQLite.
+- .NET Aspire AppHost for local orchestration with Traefik subdomain routing.
+- Server-rendered UI with Bootstrap, HTMX, vanilla JS, Tailwind-built public themes, and React only for the existing BlockNote editor.
+- xUnit tests live in `Blogify.Tests`.
+- Docker production image builds Tailwind and Vite assets during publish.
+
+## Commands
+
+- Restore solution: `dotnet restore Blogify.sln`
+- Build app: `dotnet build Blogify.Web/Blogify.Web.csproj --no-restore`
+- Run tests: `dotnet test Blogify.Tests/Blogify.Tests.csproj --no-restore`
+- Run locally with Aspire: `dotnet run --project Blogify.AppHost`
+- Build frontend assets after source changes:
+  - `cd Blogify.Web && npm ci`
+  - `npm run build:editor`
+  - `npm run build:css:default`
+  - `npm run build:css:minimal`
+  - `npm run build:css:aurora`
+
+Use the smallest relevant verification. Backend/domain changes normally need the xUnit project. Razor/CSS/JS changes need the .NET build and the relevant npm build script.
 
 ## Repository Map
 
-- `Blogify.Web/`: application, domain models, EF Core, Razor Pages, middleware, endpoints, and frontend assets.
-- `Blogify.AppHost/`: local Aspire orchestration and Traefik.
-- `Blogify.ServiceDefaults/`: shared telemetry, health checks, resilience, and service discovery only.
+- `Blogify.Web/`: deployable web app, Razor Pages, domain models, EF Core, middleware, endpoints, services, and static assets.
+- `Blogify.Tests/`: xUnit coverage for tenancy, permissions, localization, storage, themes, caching, content organization, and moderation behavior.
+- `Blogify.AppHost/`: Aspire composition for local development; runs `Blogify.Web` and Traefik.
+- `Blogify.ServiceDefaults/`: shared telemetry, health checks, resilience, and service discovery.
 - `Blogify.Web/Areas/Blog/`: public blog pages and theme views.
-- `Blogify.Web/Areas/BlogAdmin/`: tenant admin pages.
-- `Blogify.Web/Areas/SuperAdmin/`: platform admin pages.
-- `Blogify.Web/Pages/`: root-domain landing, dashboard, setup, and shared pages.
-- `Blogify.Web/Models/`: domain entities. `Models/Posts/` contains the Post aggregate.
-- `Blogify.Web/Data/Configurations/`: EF mappings; migrations are in `Data/Migrations/`.
+- `Blogify.Web/Areas/BlogAdmin/`: per-blog admin under `/app/admin/{blogSlug}`.
+- `Blogify.Web/Areas/SuperAdmin/`: platform admin under `/sa`.
+- `Blogify.Web/Pages/`: root-domain landing, dashboard, identity-adjacent pages, invitation flow, and shared layouts.
+- `Blogify.Web/Models/`: domain entities. `Models/Posts/` contains the post aggregate.
+- `Blogify.Web/Data/Configurations/`: EF Fluent mappings; generated migrations are in `Data/Migrations/`.
 - `Blogify.Web/ClientApp/`: BlockNote React editor source. Generated bundles are under `wwwroot/`.
+- `Blogify.Web/styles/themes/`: Tailwind inputs for public themes.
 
-See [system-overview.md](architecture/system-overview.md) only when working on routing, tenancy, authorization, themes, or data boundaries.
+For tenancy, routing, authorization, themes, or data-boundary changes, also read `.github/architecture/system-overview.md`.
 
 ## Critical Rules
 
 ### Tenancy and Access
 
-- A tenant is a blog. Public tenant resolution uses the subdomain; BlogAdmin resolution uses the `{blogSlug}` route in `/app/admin/{blogSlug}`.
-- Always take the current tenant from `TenantContext`, never trust a route value, claim, or submitted tenant ID by itself.
-- `Post`, `Category`, `Media`, and `Comment` have tenant/soft-delete global query filters. Do not add redundant tenant filters to normal scoped queries.
-- `Tag`, `BlogMembership`, `BlogInvitation`, and `AnalyticsEvent` do not have tenant global filters. Scope their queries explicitly where relevant.
-- Ownership is `Tenant.OwnerId`. Multi-blog access is `BlogMembership` with `BlogRole` (`Writer`, `Editor`, `Admin`). Do not use an `ApplicationUser.TenantId`; it does not exist.
-- Keep middleware order in `Program.cs`: routing, authentication, tenant resolution, access control, analytics, authorization, antiforgery.
+- A tenant is a blog. Public tenant resolution uses the host subdomain. BlogAdmin resolution uses `{blogSlug}` in `/app/admin/{blogSlug}`.
+- Always use `TenantContext` and `ApplicationDbContext.CurrentTenantId` as established by middleware. Never trust a route value, claim, hidden field, or submitted tenant ID alone.
+- Global tenant/soft-delete query filters exist for `Post`, `Category`, `Tag`, `Media`, and `Comment`.
+- `BlogMembership`, `BlogInvitation`, and `AnalyticsEvent` do not have tenant global filters. Scope them explicitly.
+- Ownership is `Tenant.OwnerId`. Delegated access is `BlogMembership` with `BlogRole` (`Writer`, `Editor`, `Admin`). There is no `ApplicationUser.TenantId`.
+- Use `IBlogPermissionService` for role-gated actions and keep area access consistent with `AccessControlMiddleware`.
+- Keep middleware order in `Program.cs`: forwarded headers, HTTPS/static files, routing, authentication, tenant resolution, public-blog culture, access control, analytics, authorization, output cache, antiforgery, endpoints.
 
 ### Backend
 
-- Put business invariants and state changes in domain methods; do not mutate entity properties from handlers.
-- PageModels orchestrate requests and may use `ApplicationDbContext` directly. Keep focused services for behavior shared across pages or involving infrastructure, such as permissions, storage, feeds, analytics, and rendering.
-- Use async EF APIs and `AsNoTracking()` for read-only queries. Materialize queries before returning them.
+- Put business invariants and state transitions in domain methods; do not mutate entity state directly from PageModels when a domain method exists.
+- PageModels may use `ApplicationDbContext` directly for request orchestration. Add focused services only for shared behavior or infrastructure such as permissions, storage, feeds, analytics, rendering, and email.
+- Use async EF APIs and `AsNoTracking()` for read-only queries. Do not expose `IQueryable` outside the method that builds it.
 - For a normal mutation, load data, call domain methods, and call `SaveChangesAsync` once.
-- Use EF Fluent configuration rather than data annotations on domain entities. Input-model validation attributes are allowed.
-- Use `DateTimeOffset` for persisted dates and soft-delete entities that already support `DeletedAt`.
-- Minimal endpoints belong in `Blogify.Web/Endpoints/` and are mapped from `Program.cs`.
-- Do not hand-edit generated migrations or the model snapshot unless migration tooling cannot perform the required change.
+- Use EF Fluent configuration for domain entities. Input-model validation attributes are allowed.
+- Use `DateTimeOffset` for persisted dates and existing soft-delete methods instead of physical deletion.
+- Minimal endpoint groups belong in `Blogify.Web/Endpoints/` with `Map{Feature}Endpoints` extensions registered in `Program.cs`.
+- Do not hand-edit generated migrations or the model snapshot unless the EF tooling cannot express the required change.
 
-### Razor and Frontend
+### Razor, Frontend, and Localization
 
-- Prefer server-rendered Razor Pages and existing local patterns.
-- Use strongly typed PageModel properties for page data. `ViewData` is allowed for conventional page titles and the existing theme SEO metadata contract.
-- Localize user-visible Razor text and keep English/Turkish resource keys in sync.
-- React is limited to the existing BlockNote editor. Use small vanilla JS or HTMX elsewhere unless a broader frontend change is explicitly requested.
-- Do not edit generated frontend bundles when source files exist.
+- Prefer server-rendered Razor Pages and existing area layouts/partials.
+- Use strongly typed PageModel properties for page data. `ViewData` is allowed for page titles and the established public-theme SEO metadata contract.
+- Localize user-visible Razor text through `SharedResource`; keep English and Turkish resource files in sync.
+- Use Tag Helpers for forms, links, validation, and partials. Preserve antiforgery protection.
+- React is limited to the BlockNote editor under `ClientApp/`. Use HTMX or small vanilla JS elsewhere unless explicitly asked to change the frontend architecture.
+- Edit source files in `ClientApp/` and `styles/themes/`; do not manually edit generated `wwwroot` bundles when source exists.
+- Follow `PRODUCT.md` and `DESIGN.md` for UI tone, layout, colors, and accessibility expectations.
 
 ## Change Discipline
 
-- Keep changes scoped; do not introduce a new architectural layer or dependency without a concrete need.
-- Preserve existing user changes and generated-file conventions.
-- When behavior is unclear, inspect the model, EF configuration, middleware, and calling PageModel before deciding.
-- Update this documentation only for stable, cross-cutting facts. Avoid inventories of properties, pages, or methods that are easy to discover with `rg`.
+- Keep changes scoped to the requested behavior. Avoid new layers, dependencies, or rewrites unless the surrounding code already points there.
+- Preserve user changes and generated-file conventions.
+- When behavior is unclear, inspect the model, EF configuration, middleware, PageModel, service, and tests before deciding.
+- Update these instructions only for stable, cross-cutting facts. Avoid inventories of pages, properties, or methods that are easy to rediscover with `rg`.
