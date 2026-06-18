@@ -95,12 +95,31 @@
 
     function extractText(blocks) {
         return blocks.reduce(function (text, block) {
-            var ownText = Array.isArray(block.content)
-                ? block.content.filter(function (item) { return item.type === 'text'; }).map(function (item) { return item.text; }).join(' ')
-                : '';
+            var ownText = extractInlineContent(block.content);
+            var propText = [block.props?.caption, block.props?.name, block.type === 'embed' ? block.props?.title : '', block.type === 'embed' ? block.props?.url : '']
+                .filter(Boolean)
+                .join(' ');
             var childText = Array.isArray(block.children) ? extractText(block.children) : '';
-            return text + ' ' + ownText + ' ' + childText;
+            return text + ' ' + ownText + ' ' + propText + ' ' + childText;
         }, '');
+    }
+
+    function extractInlineContent(content) {
+        if (Array.isArray(content)) {
+            return content.map(function (item) {
+                if (item.type === 'text') return item.text || '';
+                if (item.type === 'link') return extractInlineContent(item.content);
+                return '';
+            }).join(' ');
+        }
+        if (content?.rows && Array.isArray(content.rows)) {
+            return content.rows.map(function (row) {
+                return Array.isArray(row.cells)
+                    ? row.cells.map(function (cell) { return extractInlineContent(Array.isArray(cell) ? cell : cell?.content); }).join(' ')
+                    : '';
+            }).join(' ');
+        }
+        return '';
     }
 
     function updateWordCount(json) {

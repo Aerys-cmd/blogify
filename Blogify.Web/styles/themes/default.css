@@ -18,3 +18,15 @@
     }
   }
 }
+
+@layer components {
+  .blogify-embed {
+    @apply my-8 overflow-hidden rounded-lg border border-line bg-white;
+  }
+  .blogify-embed iframe {
+    @apply aspect-video w-full border-0;
+  }
+  .blogify-embed figcaption {
+    @apply border-t border-line px-4 py-3 text-sm text-muted;
+  }
+}

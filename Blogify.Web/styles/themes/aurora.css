@@ -16,3 +16,15 @@
     }
   }
 }
+
+@layer components {
+  .blogify-embed {
+    @apply my-8 overflow-hidden rounded-lg border border-[#d9dce7] bg-white;
+  }
+  .blogify-embed iframe {
+    @apply aspect-video w-full border-0;
+  }
+  .blogify-embed figcaption {
+    @apply border-t border-[#d9dce7] px-4 py-3 font-sans text-sm text-[#69708d];
+  }
+}

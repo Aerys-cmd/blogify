@@ -73,7 +73,7 @@ The public theme layouts consume SEO values through the established `ViewData` c
 - `OgType`
 - `CanonicalUrl`
 
-Posts store BlockNote JSON in `PostRevision.Content` and searchable/plain text in `ContentText`. The React BlockNote editor is isolated under `ClientApp/`; public rendering uses server-side rendering services.
+Posts store BlockNote JSON in `PostRevision.Content` and searchable/plain text in `ContentText`. The React BlockNote editor is isolated under `ClientApp/`; public rendering uses server-side rendering services. Rich embeds render as trusted provider iframes only for the renderer allowlist, and otherwise fall back to safe external links.
 
 ## Cross-Cutting Features
 

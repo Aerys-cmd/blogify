@@ -129,6 +129,14 @@ public sealed class BlockNoteHtmlRenderer : IBlockNoteHtmlRenderer
                 RenderTableBlock(block, sb);
                 break;
 
+            case "embed":
+                RenderEmbedBlock(block, sb);
+                break;
+
+            case "pageBreak":
+                sb.Append("<hr />\n");
+                break;
+
             // file / video / audio: render a simple link or skip
             case "file":
             case "audio":
@@ -181,7 +189,7 @@ public sealed class BlockNoteHtmlRenderer : IBlockNoteHtmlRenderer
     private static void RenderImageBlock(JsonElement block, StringBuilder sb)
     {
         string url = GetStringProp(block, "url") ?? string.Empty;
-        if (string.IsNullOrEmpty(url)) return;
+        if (!IsSafeUrl(url)) return;
 
         string caption = GetStringProp(block, "caption") ?? string.Empty;
         int? previewWidth = GetIntProp(block, "previewWidth");
@@ -241,9 +249,42 @@ public sealed class BlockNoteHtmlRenderer : IBlockNoteHtmlRenderer
         string url = GetStringProp(block, "url") ?? string.Empty;
         string name = GetStringProp(block, "name") ?? GetStringProp(block, "caption") ?? type;
 
-        if (string.IsNullOrEmpty(url)) return;
+        if (!IsSafeUrl(url)) return;
+
+        if (type == "video" && IsTrustedEmbedProvider(url, out string provider, out string embedUrl))
+        {
+            sb.Append($"<figure class=\"blogify-embed blogify-embed-{provider}\">\n");
+            sb.Append($"<iframe src=\"{WebUtility.HtmlEncode(embedUrl)}\" title=\"{WebUtility.HtmlEncode(name)}\" loading=\"lazy\" allowfullscreen referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>\n");
+            if (!string.IsNullOrEmpty(name) && name != type)
+            {
+                sb.Append($"<figcaption>{WebUtility.HtmlEncode(name)}</figcaption>\n");
+            }
+            sb.Append("</figure>\n");
+            return;
+        }
 
         sb.Append($"<p><a href=\"{WebUtility.HtmlEncode(url)}\" rel=\"noopener noreferrer\">{WebUtility.HtmlEncode(name)}</a></p>\n");
+    }
+
+    private static void RenderEmbedBlock(JsonElement block, StringBuilder sb)
+    {
+        string url = GetStringProp(block, "url") ?? string.Empty;
+        string title = GetStringProp(block, "title") ?? url;
+        if (!IsSafeUrl(url)) return;
+
+        if (IsTrustedEmbedProvider(url, out string provider, out string embedUrl))
+        {
+            sb.Append($"<figure class=\"blogify-embed blogify-embed-{provider}\">\n");
+            sb.Append($"<iframe src=\"{WebUtility.HtmlEncode(embedUrl)}\" title=\"{WebUtility.HtmlEncode(title)}\" loading=\"lazy\" allowfullscreen referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>\n");
+            if (!string.IsNullOrWhiteSpace(title) && title != url)
+            {
+                sb.Append($"<figcaption>{WebUtility.HtmlEncode(title)}</figcaption>\n");
+            }
+            sb.Append("</figure>\n");
+            return;
+        }
+
+        sb.Append($"<p><a href=\"{WebUtility.HtmlEncode(url)}\" rel=\"noopener noreferrer\">{WebUtility.HtmlEncode(title)}</a></p>\n");
     }
 
     // ─── Inline content rendering ─────────────────────────────────────────────
@@ -311,7 +352,8 @@ public sealed class BlockNoteHtmlRenderer : IBlockNoteHtmlRenderer
             }
         }
 
-        sb.Append($"<a href=\"{WebUtility.HtmlEncode(href)}\" rel=\"noopener noreferrer\">{inner}</a>");
+        string safeHref = IsSafeUrl(href) ? href : "#";
+        sb.Append($"<a href=\"{WebUtility.HtmlEncode(safeHref)}\" rel=\"noopener noreferrer\">{inner}</a>");
     }
 
     private static string ApplyInlineStyles(JsonElement styles, string content)
@@ -373,5 +415,102 @@ public sealed class BlockNoteHtmlRenderer : IBlockNoteHtmlRenderer
     {
         if (!styles.TryGetProperty(name, out JsonElement val)) return false;
         return val.ValueKind == JsonValueKind.True;
+    }
+
+    private static bool IsSafeUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return false;
+        if (url.StartsWith("/", StringComparison.Ordinal)) return true;
+
+        return Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)
+            && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+    }
+
+    private static bool IsTrustedEmbedProvider(string url, out string provider, out string embedUrl)
+    {
+        provider = "link";
+        embedUrl = string.Empty;
+
+        if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return false;
+        string host = uri.Host.ToLowerInvariant();
+
+        if (host is "youtu.be")
+        {
+            string id = uri.AbsolutePath.Trim('/');
+            if (IsSafeEmbedId(id))
+            {
+                provider = "youtube";
+                embedUrl = $"https://www.youtube-nocookie.com/embed/{id}";
+                return true;
+            }
+        }
+
+        if (host.EndsWith("youtube.com", StringComparison.Ordinal) && uri.AbsolutePath == "/watch")
+        {
+            string? id = GetQueryValue(uri.Query, "v");
+            if (IsSafeEmbedId(id))
+            {
+                provider = "youtube";
+                embedUrl = $"https://www.youtube-nocookie.com/embed/{id}";
+                return true;
+            }
+        }
+
+        if (host.EndsWith("vimeo.com", StringComparison.Ordinal))
+        {
+            string id = uri.AbsolutePath.Trim('/').Split('/').LastOrDefault() ?? string.Empty;
+            if (IsSafeEmbedId(id))
+            {
+                provider = "vimeo";
+                embedUrl = $"https://player.vimeo.com/video/{id}";
+                return true;
+            }
+        }
+
+        if (host.EndsWith("spotify.com", StringComparison.Ordinal))
+        {
+            string path = uri.AbsolutePath.Trim('/');
+            if (!string.IsNullOrEmpty(path) && path.All(c => char.IsLetterOrDigit(c) || c is '/' or '-' or '_'))
+            {
+                provider = "spotify";
+                embedUrl = $"https://open.spotify.com/embed/{path}";
+                return true;
+            }
+        }
+
+        if (host.EndsWith("codepen.io", StringComparison.Ordinal))
+        {
+            string path = uri.AbsolutePath.Trim('/');
+            string[] parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length >= 3 && parts[^2] == "pen" && IsSafeEmbedId(parts[^1]))
+            {
+                provider = "codepen";
+                embedUrl = $"https://codepen.io/{WebUtility.UrlEncode(parts[0])}/embed/{parts[^1]}";
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsSafeEmbedId(string? value)
+    {
+        return !string.IsNullOrWhiteSpace(value)
+            && value.Length <= 128
+            && value.All(c => char.IsLetterOrDigit(c) || c is '-' or '_');
+    }
+
+    private static string? GetQueryValue(string query, string name)
+    {
+        if (string.IsNullOrWhiteSpace(query)) return null;
+
+        foreach (string part in query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            string[] pair = part.Split('=', 2);
+            if (pair.Length == 0 || pair[0] != name) continue;
+            return pair.Length == 2 ? Uri.UnescapeDataString(pair[1].Replace("+", " ", StringComparison.Ordinal)) : string.Empty;
+        }
+
+        return null;
     }
 }
