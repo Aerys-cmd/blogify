@@ -112,13 +112,15 @@ builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("A
 builder.Services.AddSingleton<AnalyticsChannel>();
 builder.Services.AddHostedService<AnalyticsWriterService>();
 
-builder.Services.Configure<SaySiftOptions>(
-    builder.Configuration.GetSection("SaySift"));
+var saySiftConfiguration = builder.Configuration.GetSection("SaySift");
+var legacyFeedbackHubConfiguration = builder.Configuration.GetSection("FeedbackHub");
+
+builder.Services.Configure<SaySiftOptions>(saySiftConfiguration);
 builder.Services.PostConfigure<SaySiftOptions>(options =>
 {
     if (string.IsNullOrWhiteSpace(options.PublicKey))
     {
-        builder.Configuration.GetSection("FeedbackHub").Bind(options);
+        legacyFeedbackHubConfiguration.Bind(options);
     }
 });
 
