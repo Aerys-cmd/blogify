@@ -85,5 +85,5 @@ Posts store BlockNote JSON in `PostRevision.Content` and searchable/plain text i
 - Analytics: middleware queues public page views; a hosted service persists them.
 - Public caching: selected Blog area pages use `PublicBlogOutputCachePolicy`; use `IPublicBlogCacheInvalidator` when mutations should invalidate public output.
 - Email: localized Razor emails are queued in memory and delivered by SMTP when `Email:Enabled` is true; disabled delivery logs and discards messages.
-- Feedback Hub: Blog Admin renders the widget only when `FeedbackHub:PublicKey` is configured.
+- SaySift: Blog Admin renders the widget only when `SaySift:PublicKey` is configured.
 - Data protection keys persist to `keys/` in development and `/app/keys` in production unless overridden.

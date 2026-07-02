@@ -112,8 +112,15 @@ builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("A
 builder.Services.AddSingleton<AnalyticsChannel>();
 builder.Services.AddHostedService<AnalyticsWriterService>();
 
-builder.Services.Configure<FeedbackHubOptions>(
-    builder.Configuration.GetSection("FeedbackHub"));
+builder.Services.Configure<SaySiftOptions>(
+    builder.Configuration.GetSection("SaySift"));
+builder.Services.PostConfigure<SaySiftOptions>(options =>
+{
+    if (string.IsNullOrWhiteSpace(options.PublicKey))
+    {
+        builder.Configuration.GetSection("FeedbackHub").Bind(options);
+    }
+});
 
 builder.Services.Configure<TenantOptions>(
     builder.Configuration.GetSection("Tenant"));
