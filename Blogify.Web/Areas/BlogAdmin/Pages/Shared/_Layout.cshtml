@@ -1,5 +1,5 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
-@inject Microsoft.Extensions.Options.IOptions<SaySiftOptions> SaySiftOptions
+@inject Microsoft.Extensions.Options.IOptions<FeedbackHubOptions> FeedbackHubOptions
 @inject Blogify.Web.Services.TenantContext TenantContext
 @inject Blogify.Web.Services.BlogBrandingService BrandingService
 @{
@@ -79,9 +79,9 @@
 
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/blogadmin-layout.js" asp-append-version="true"></script>
-    @if (!string.IsNullOrWhiteSpace(SaySiftOptions.Value.PublicKey))
+    @if (!string.IsNullOrWhiteSpace(FeedbackHubOptions.Value.PublicKey))
     {
-        <script src="https://saysift.com/widget/feedback-widget.js" data-project-key="@SaySiftOptions.Value.PublicKey"></script>
+        <script src="https://saysift.com/widget/feedback-widget.js" data-project-key="@FeedbackHubOptions.Value.PublicKey"></script>
     }
 
 </body>

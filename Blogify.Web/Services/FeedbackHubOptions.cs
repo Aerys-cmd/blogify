@@ -1,6 +1,6 @@
 namespace Blogify.Web.Services;
 
-public sealed class SaySiftOptions
+public sealed class FeedbackHubOptions
 {
     public string PublicKey { get; set; } = string.Empty;
 }

@@ -85,7 +85,7 @@ Important configuration sections:
 - `Email`: enables/disables queued email delivery and sets public URL/from metadata.
 - `Smtp`: SMTP host, port, credentials, and SSL mode.
 - `Analytics:IpHashSalt`: salt used for analytics IP hashing.
-- `SaySift:PublicKey`: enables the Blog Admin SaySift widget when set.
+- `FeedbackHub:PublicKey`: enables the Blog Admin SaySift widget when set.
 - `DataProtection:KeysPath`: optional override for persisted data-protection keys.
 
 Development email delivery is disabled by default. Production Docker Compose enables email by default and requires SMTP settings.
