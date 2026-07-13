@@ -40,32 +40,10 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           push: true
           cache-from: type=gha,scope=blogify-web-cd
           cache-to: type=gha,scope=blogify-web-cd,mode=max
           tags: |
             ghcr.io/${{ env.OWNER }}/blogify-web:${{ github.ref_name }}
             ghcr.io/${{ env.OWNER }}/blogify-web:latest
-
-      - name: Push docker-compose to VPS
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          source: "docker-compose.yml"
-          target: "/opt/blogify"
-
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            cd /opt/blogify
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            OWNER="${{ env.OWNER }}" IMAGE_TAG="${{ github.ref_name }}" docker compose pull blogify-web
-            OWNER="${{ env.OWNER }}" IMAGE_TAG="${{ github.ref_name }}" docker compose up -d --remove-orphans
-            docker image prune -f
-
